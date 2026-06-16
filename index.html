@@ -37,59 +37,59 @@
             box-shadow: 0 0 10px #38bdf8;
             transition: all 0.5s ease;
         }
-    </style>
-</head>
-<body class="min-h-screen p-4 md:p-8">
+        
+        .gumroad-node-active {
+            background-color: #ffc900 !important;
+            transform: scale(1.1) translate(-2px, -2px);
+            box-shadow: 8px 8px 0px rgba(0,0,0,1) !important;
+            z-index: 20;
+        }
+        .gumroad-line-active {
+            opacity: 1 !important;
+            border-style: solid !important;
+            background-color: #00E5FF !important;
+        }
 
-    <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-            <h1 class="text-3xl font-bold tracking-tight text-white">Multi-Cloud VOD Pipeline</h1>
-            <p class="text-sm text-slate-400 mt-1">Architecture: GCP Eventarc → AWS MediaConvert → Secure Shaka Player</p>
-        </div>
-        <div class="flex gap-3">
-            <div class="px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-2" id="status-unauth">
-                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> UNAUTHORIZED
-            </div>
-            <div class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-2 hidden" id="status-online">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> SYSTEM ONLINE
+        /* Fix for Shaka Player UI click interception */
+        [data-shaka-player-container] {
             </div>
         </div>
     </header>
 
-    <!-- Pipeline Visualizer -->
-    <div class="glass-panel rounded-xl p-6 mb-6">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xs font-bold text-slate-400 tracking-widest uppercase">Ingest & Transcode Pipeline Status</h2>
-            <button onclick="simulatePipeline()" class="text-xs bg-slate-800 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg">
-                Simulate Backend Process
+    <!-- Pipeline Visualizer (Gumroad Style) -->
+    <div class="bg-[#f4f4f0] rounded-[3rem] p-6 md:p-10 mb-8 border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] relative">
+        <div class="flex justify-between items-center mb-10 relative z-10">
+            <h2 class="text-lg md:text-2xl font-bold text-black tracking-tight font-sans">Pipeline Status</h2>
+            <button onclick="simulatePipeline()" class="text-sm md:text-base bg-[#ff90e8] text-black font-bold px-6 py-3 rounded-full border-4 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all cursor-pointer">
+                Simulate Backend
             </button>
         </div>
         
-        <div class="flex justify-between items-center relative px-8">
+        <div class="flex justify-between items-center relative px-2 md:px-12 z-10">
             <!-- Connecting Lines -->
-            <div id="line-1" class="absolute left-[10%] right-[50%] top-1/2 h-1 bg-slate-700 -z-10 -translate-y-1/2 transition-all duration-500"></div>
-            <div id="line-2" class="absolute left-[50%] right-[10%] top-1/2 h-1 bg-slate-700 -z-10 -translate-y-1/2 transition-all duration-500"></div>
+            <div id="line-1" class="absolute left-[15%] right-[50%] top-[40%] h-2 bg-black -z-10 border-y-2 border-black border-dashed transition-all duration-500 opacity-30"></div>
+            <div id="line-2" class="absolute left-[50%] right-[15%] top-[40%] h-2 bg-black -z-10 border-y-2 border-black border-dashed transition-all duration-500 opacity-30"></div>
             
             <!-- Nodes -->
-            <div id="node-1" class="flex flex-col items-center gap-3 bg-[#0B1120] px-4 py-2">
-                <div class="w-14 h-14 rounded-full border-2 border-slate-600 flex items-center justify-center bg-slate-800 transition-all z-10 relative">
-                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <div class="flex flex-col items-center gap-4 bg-[#f4f4f0] px-2 md:px-6">
+                <div id="node-1" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-all duration-300 z-10 relative">
+                    <svg class="w-8 h-8 md:w-10 md:h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                 </div>
-                <div class="text-center"><p class="text-sm font-bold text-white">Raw Ingest</p><p class="text-xs text-slate-500">GCP Cloud Storage</p></div>
+                <div class="text-center"><p class="text-sm md:text-base font-bold text-black">Raw Ingest</p><p class="text-xs md:text-sm font-semibold text-gray-600">GCP Storage</p></div>
             </div>
             
-            <div id="node-2" class="flex flex-col items-center gap-3 bg-[#0B1120] px-4 py-2">
-                <div class="w-14 h-14 rounded-full border-2 border-slate-600 flex items-center justify-center bg-slate-800 transition-all z-10 relative">
-                    <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <div class="flex flex-col items-center gap-4 bg-[#f4f4f0] px-2 md:px-6">
+                <div id="node-2" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-all duration-300 z-10 relative">
+                    <svg class="w-8 h-8 md:w-10 md:h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </div>
-                <div class="text-center"><p class="text-sm font-bold text-white">Transcoding</p><p class="text-xs text-slate-500">AWS MediaConvert</p></div>
+                <div class="text-center"><p class="text-sm md:text-base font-bold text-black">Transcoding</p><p class="text-xs md:text-sm font-semibold text-gray-600">MediaConvert</p></div>
             </div>
 
-            <div id="node-3" class="flex flex-col items-center gap-3 bg-[#0B1120] px-4 py-2">
-                <div class="w-14 h-14 rounded-full border-2 border-slate-600 flex items-center justify-center bg-slate-800 transition-all z-10 relative">
-                    <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+            <div class="flex flex-col items-center gap-4 bg-[#f4f4f0] px-2 md:px-6">
+                <div id="node-3" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-all duration-300 z-10 relative">
+                    <svg class="w-8 h-8 md:w-10 md:h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
                 </div>
-                <div class="text-center"><p class="text-sm font-bold text-white">Packaged HLS</p><p class="text-xs text-slate-500">AWS S3 Output</p></div>
+                <div class="text-center"><p class="text-sm md:text-base font-bold text-black">Packaged HLS</p><p class="text-xs md:text-sm font-semibold text-gray-600">AWS S3</p></div>
             </div>
         </div>
     </div>
@@ -326,10 +326,17 @@
                 const activeTrack = tracks.find(t => t.active);
 
                 if (activeTrack) {
-                    // Fix: Shaka v4 puts width and bandwidth directly on the track object
-                    document.getElementById('statResolution').innerText = `${activeTrack.width || '--'}x${activeTrack.height || '--'}`;
-                    document.getElementById('statVBitrate').innerText = activeTrack.videoBandwidth ? Math.round(activeTrack.videoBandwidth / 1000) : '--';
-                    document.getElementById('statABitrate').innerText = activeTrack.audioBandwidth ? Math.round(activeTrack.audioBandwidth / 1000) : '--';
+                    const width = activeTrack.width || (activeTrack.video && activeTrack.video.width) || '--';
+                    const height = activeTrack.height || (activeTrack.video && activeTrack.video.height) || '--';
+                    document.getElementById('statResolution').innerText = `${width}x${height}`;
+                    
+                    // Fallback logic: HLS manifests often group bandwidth instead of splitting video/audio
+                    const totalBandwidth = activeTrack.bandwidth || 0;
+                    const vBandwidth = activeTrack.videoBandwidth || totalBandwidth;
+                    const aBandwidth = activeTrack.audioBandwidth;
+                    
+                    document.getElementById('statVBitrate').innerText = vBandwidth ? Math.round(vBandwidth / 1000) : '--';
+                    document.getElementById('statABitrate').innerText = aBandwidth ? Math.round(aBandwidth / 1000) : (totalBandwidth ? 'MUX' : '--');
                 }
                 
                 document.getElementById('statDropped').innerText = stats.droppedFrames || 0;
@@ -360,47 +367,47 @@
             const l2 = document.getElementById('line-2');
             
             // Reset
-            n1.children[0].classList.remove('node-active');
-            n2.children[0].classList.remove('node-active');
-            n3.children[0].classList.remove('node-active');
-            l1.classList.remove('line-active');
-            l2.classList.remove('line-active');
+            n1.classList.remove('gumroad-node-active');
+            n2.classList.remove('gumroad-node-active');
+            n3.classList.remove('gumroad-node-active');
+            l1.classList.remove('gumroad-line-active');
+            l2.classList.remove('gumroad-line-active');
             
             logSecurity("<br><span class='text-white font-bold'>--- SIMULATING BACKEND DATA FLOW ---</span>");
             
             setTimeout(() => {
-                n1.children[0].classList.add('node-active');
+                n1.classList.add('gumroad-node-active');
                 logSecurity("1. [GCP] ObjectCreated:Put -> gs://ott-video-raw-input/complexity_hdr.mp4");
                 logSecurity("2. [Eventarc] Triggering Cloud Run Orchestrator...");
             }, 500);
 
             setTimeout(() => {
-                l1.classList.add('line-active');
+                l1.classList.add('gumroad-line-active');
             }, 1500);
 
             setTimeout(() => {
-                n1.children[0].classList.remove('node-active');
-                n2.children[0].classList.add('node-active');
+                n1.classList.remove('gumroad-node-active');
+                n2.classList.add('gumroad-node-active');
                 logSecurity("3. [Cloud Run] Python script validates S3 sidecars (Audio/SRT)");
                 logSecurity("4. [Cloud Run] IAM API Generates signed URLs.");
                 logSecurity("5. [AWS] Submitted Job to MediaConvert.");
             }, 2500);
 
             setTimeout(() => {
-                l2.classList.add('line-active');
+                l2.classList.add('gumroad-line-active');
             }, 4500);
 
             setTimeout(() => {
-                n2.children[0].classList.remove('node-active');
-                n3.children[0].classList.add('node-active');
+                n2.classList.remove('gumroad-node-active');
+                n3.classList.add('gumroad-node-active');
                 logSecurity("6. [AWS MediaConvert] COMPLETE.");
                 logSecurity("7. [AWS S3] HLS Segments written to Packaged Output Bucket.");
             }, 5500);
             
             setTimeout(() => {
-                n3.children[0].classList.remove('node-active');
-                l1.classList.remove('line-active');
-                l2.classList.remove('line-active');
+                n3.classList.remove('gumroad-node-active');
+                l1.classList.remove('gumroad-line-active');
+                l2.classList.remove('gumroad-line-active');
                 logSecurity("<span class='text-white font-bold'>--- PIPELINE IDLE ---</span><br>");
             }, 8000);
         }
