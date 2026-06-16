@@ -319,14 +319,14 @@
             if (telemetryInterval) clearInterval(telemetryInterval);
             
             telemetryInterval = setInterval(() => {
-                if(!player) return;
+                if(!player || player.isDestroyed()) return;
                 
                 const stats = player.getStats();
                 const tracks = player.getVariantTracks();
                 const activeTrack = tracks.find(t => t.active);
 
                 if (activeTrack) {
-                    // FIX: Shaka v4 track API uses .width and .height directly
+                    // Fix: Shaka v4 puts width and bandwidth directly on the track object
                     document.getElementById('statResolution').innerText = `${activeTrack.width || '--'}x${activeTrack.height || '--'}`;
                     document.getElementById('statVBitrate').innerText = activeTrack.videoBandwidth ? Math.round(activeTrack.videoBandwidth / 1000) : '--';
                     document.getElementById('statABitrate').innerText = activeTrack.audioBandwidth ? Math.round(activeTrack.audioBandwidth / 1000) : '--';
