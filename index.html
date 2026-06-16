@@ -37,6 +37,17 @@
             box-shadow: 0 0 10px #38bdf8;
             transition: all 0.5s ease;
         }
+
+        /* Fix for Shaka Player UI click interception */
+        [data-shaka-player-container] {
+            /* Let clicks fall through the main invisible container... */
+            pointer-events: none; 
+        }
+        [data-shaka-player-container] .shaka-controls-container,
+        [data-shaka-player-container] .shaka-controls-container * {
+            /* ...but catch them on the actual controls and buttons */
+            pointer-events: auto; 
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
