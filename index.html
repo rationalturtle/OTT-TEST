@@ -319,7 +319,6 @@
             if (telemetryInterval) clearInterval(telemetryInterval);
             
             telemetryInterval = setInterval(() => {
-                // BUG FIX 2: Removed the invalid isDestroyed() method causing the 71+ crashes
                 if(!player) return;
                 
                 const stats = player.getStats();
@@ -327,18 +326,19 @@
                 const activeTrack = tracks.find(t => t.active);
 
                 if (activeTrack) {
-                    document.getElementById('statResolution').innerText = `${activeTrack.video.width}x${activeTrack.video.height}`;
-                    document.getElementById('statVBitrate').innerText = Math.round(activeTrack.videoBandwidth / 1000);
-                    document.getElementById('statABitrate').innerText = Math.round(activeTrack.audioBandwidth / 1000);
+                    // FIX: Shaka v4 track API uses .width and .height directly
+                    document.getElementById('statResolution').innerText = `${activeTrack.width || '--'}x${activeTrack.height || '--'}`;
+                    document.getElementById('statVBitrate').innerText = activeTrack.videoBandwidth ? Math.round(activeTrack.videoBandwidth / 1000) : '--';
+                    document.getElementById('statABitrate').innerText = activeTrack.audioBandwidth ? Math.round(activeTrack.audioBandwidth / 1000) : '--';
                 }
                 
-                document.getElementById('statDropped').innerText = stats.droppedFrames;
+                document.getElementById('statDropped').innerText = stats.droppedFrames || 0;
                 if (stats.droppedFrames > 0) {
                     document.getElementById('statDropped').classList.replace('text-emerald-400', 'text-red-500');
                     document.getElementById('statDropped').classList.add('animate-pulse');
                 }
                 
-                document.getElementById('statBandwidth').innerText = (stats.estimatedBandwidth / 1000000).toFixed(1);
+                document.getElementById('statBandwidth').innerText = stats.estimatedBandwidth ? (stats.estimatedBandwidth / 1000000).toFixed(1) : '--';
                 
                 const video = document.getElementById('video');
                 let bufferLength = 0;
