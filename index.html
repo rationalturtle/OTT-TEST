@@ -74,39 +74,39 @@
     <div class="w-full max-w-6xl space-y-6 md:space-y-8">
         
         <!-- Header -->
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b-[3px] border-black pb-4">
-            <h1 class="text-4xl md:text-5xl font-black tracking-tighter uppercase">Multi-Cloud VOD</h1>
+        <header class="flex flex-row justify-between items-start md:items-end gap-2 md:gap-4 border-b-[3px] border-black pb-4 w-full">
+            <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter uppercase leading-none md:leading-tight w-[60%] md:w-auto break-words">Multi-Cloud VOD</h1>
             
-            <div class="flex gap-3 mt-2 md:mt-0">
+            <div class="flex flex-shrink-0 mt-1 md:mt-0">
                 <!-- Sleek Professional Status Tag -->
-                <div id="status-unauth" class="bg-white brutal-border brutal-shadow-sm px-3 py-2 flex items-center gap-3 w-fit">
-                    <div class="relative flex h-3 w-3">
+                <div id="status-unauth" class="bg-white brutal-border brutal-shadow-sm px-2 py-1 md:px-3 md:py-2 flex items-center gap-2 md:gap-3 w-fit">
+                    <div class="relative flex h-2 w-2 md:h-3 md:w-3">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500 border border-black"></span>
+                      <span class="relative inline-flex rounded-full h-full w-full bg-[#ff5f56] border border-black"></span>
                     </div>
                     <div class="flex flex-col text-left">
-                        <span class="text-xs font-black uppercase leading-none">System Locked</span>
-                        <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-1">Awaiting Valid Token</span>
+                        <span class="text-[10px] md:text-xs font-black uppercase leading-none">System Locked</span>
+                        <span class="text-[7px] md:text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-1">Awaiting Valid Token</span>
                     </div>
                 </div>
-                <div id="status-online" class="bg-white brutal-border brutal-shadow-sm px-3 py-2 flex items-center gap-3 w-fit hidden">
-                    <div class="relative flex h-3 w-3">
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-[#a0e8af] border border-black"></span>
+                <div id="status-online" class="bg-white brutal-border brutal-shadow-sm px-2 py-1 md:px-3 md:py-2 flex items-center gap-2 md:gap-3 w-fit hidden">
+                    <div class="relative flex h-2 w-2 md:h-3 md:w-3">
+                      <span class="relative inline-flex rounded-full h-full w-full bg-[#27c93f] border border-black"></span>
                     </div>
                     <div class="flex flex-col text-left">
-                        <span class="text-xs font-black uppercase leading-none">Stream Active</span>
-                        <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-1">Auth Verified</span>
+                        <span class="text-[10px] md:text-xs font-black uppercase leading-none">Stream Active</span>
+                        <span class="text-[7px] md:text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-1">Auth Verified</span>
                     </div>
                 </div>
             </div>
         </header>
 
         <!-- Pipeline Architecture Flow (Moved to top) -->
-        <div class="w-full">
-            <div class="flex overflow-x-auto hide-scroll gap-4 pb-2 pt-2 snap-x -mx-4 px-6 md:mx-0 md:px-2">
+        <div class="w-full pt-2">
+            <div class="flex md:grid md:grid-cols-3 overflow-x-auto md:overflow-visible hide-scroll gap-6 pb-6 pt-4 snap-x -mx-4 px-8 md:mx-0 md:px-0">
                 <!-- Card 1 -->
-                <div class="brutal-border brutal-shadow-sm bg-white p-4 min-w-[260px] w-[85%] md:w-1/3 flex-shrink-0 snap-center rounded-lg flex flex-col relative transition-transform hover:-translate-y-1">
-                    <div class="w-8 h-8 brutal-border bg-[#c8b6ff] rounded-full flex items-center justify-center absolute -top-3 -left-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-10">
+                <div class="brutal-border brutal-shadow-sm bg-white p-4 min-w-[260px] w-[85%] md:w-auto flex-shrink-0 snap-center flex flex-col relative transition-transform hover:-translate-y-1 ml-2 md:ml-0">
+                    <div class="w-8 h-8 brutal-border bg-[#c8b6ff] rounded-full flex items-center justify-center absolute -top-4 -left-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-10">
                         <span class="font-black text-sm">1</span>
                     </div>
                     <h3 class="text-sm font-black uppercase mt-1">Raw Ingest</h3>
@@ -114,8 +114,8 @@
                     <p class="text-xs font-bold leading-relaxed">High-res mezzanine files and sidecars are uploaded, triggering a serverless container to validate assets.</p>
                 </div>
                 <!-- Card 2 -->
-                <div class="brutal-border brutal-shadow-sm bg-white p-4 min-w-[260px] w-[85%] md:w-1/3 flex-shrink-0 snap-center rounded-lg flex flex-col relative transition-transform hover:-translate-y-1">
-                    <div class="w-8 h-8 brutal-border bg-[#ffea00] rounded-full flex items-center justify-center absolute -top-3 -left-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-10">
+                <div class="brutal-border brutal-shadow-sm bg-white p-4 min-w-[260px] w-[85%] md:w-auto flex-shrink-0 snap-center flex flex-col relative transition-transform hover:-translate-y-1">
+                    <div class="w-8 h-8 brutal-border bg-[#ffea00] rounded-full flex items-center justify-center absolute -top-4 -left-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-10">
                         <span class="font-black text-sm">2</span>
                     </div>
                     <h3 class="text-sm font-black uppercase mt-1">Transcoding</h3>
@@ -123,8 +123,8 @@
                     <p class="text-xs font-bold leading-relaxed">The GCP orchestrator signs URLs for the raw assets and submits a job to AWS to generate an ABR ladder.</p>
                 </div>
                 <!-- Card 3 -->
-                <div class="brutal-border brutal-shadow-sm bg-white p-4 min-w-[260px] w-[85%] md:w-1/3 flex-shrink-0 snap-center rounded-lg flex flex-col relative transition-transform hover:-translate-y-1">
-                    <div class="w-8 h-8 brutal-border bg-[#a0e8af] rounded-full flex items-center justify-center absolute -top-3 -left-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-10">
+                <div class="brutal-border brutal-shadow-sm bg-white p-4 min-w-[260px] w-[85%] md:w-auto flex-shrink-0 snap-center flex flex-col relative transition-transform hover:-translate-y-1 mr-2 md:mr-0">
+                    <div class="w-8 h-8 brutal-border bg-[#a0e8af] rounded-full flex items-center justify-center absolute -top-4 -left-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] z-10">
                         <span class="font-black text-sm">3</span>
                     </div>
                     <h3 class="text-sm font-black uppercase mt-1">Delivery</h3>
