@@ -25,7 +25,6 @@
             font-family: 'JetBrains Mono', monospace;
         }
         
-        /* Neo-Brutalism Utilities - Absolute Black for Contrast */
         .brutal-border {
             border: 4px solid #000000;
         }
@@ -38,7 +37,6 @@
             box-shadow: 0px 0px 0px 0px #000000;
         }
         
-        /* Hide scrollbar */
         .hide-scroll::-webkit-scrollbar {
             display: none;
         }
@@ -47,7 +45,6 @@
             scrollbar-width: none;
         }
 
-        /* Fix for Shaka Player UI click interception */
         [data-shaka-player-container] {
             pointer-events: none;
         }
@@ -61,25 +58,11 @@
 
     <div class="w-full max-w-6xl space-y-6 md:space-y-8">
         
-        <!-- Header -->
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b-4 border-black pb-4">
-            <div>
-                <h1 class="text-3xl md:text-5xl font-black tracking-tighter uppercase">Secure OTT Edge Pipeline</h1>
-                <p class="text-sm md:text-base font-bold text-gray-500 mt-1 uppercase tracking-widest">Serverless Transcode & CDN Token Entitlement</p>
-            </div>
-            <!-- Dynamic Lock Status -->
-            <div class="flex gap-3 flex-shrink-0">
-                <div id="status-unauth" class="brutal-border px-4 py-2 bg-white text-black font-black text-sm uppercase flex items-center gap-3 brutal-shadow">
-                    <span class="w-3 h-3 rounded-full bg-[#ff5f56] border-2 border-black"></span> 
-                    <div class="flex flex-col">
-                        <span class="leading-none">System Locked</span>
-                        <span class="text-[8px] text-gray-500 tracking-wider">Awaiting Valid Token</span>
-                    </div>
-                </div>
-            </div>
+        <header class="flex flex-col border-b-4 border-black pb-4">
+            <h1 class="text-3xl md:text-5xl font-black tracking-tighter uppercase">Secure OTT Edge Pipeline</h1>
+            <p class="text-sm md:text-base font-bold text-gray-500 mt-1 uppercase tracking-widest">Serverless Transcode & CDN Token Entitlement</p>
         </header>
 
-        <!-- Pipeline Explainer Cards -->
         <div class="flex overflow-x-auto lg:overflow-visible hide-scroll gap-4 lg:gap-2 xl:gap-6 pb-8 pt-6 snap-x px-6 -mx-6 lg:items-stretch">
             
             <!-- Card 1 -->
@@ -89,16 +72,17 @@
                 </div>
                 <h3 class="text-lg font-black uppercase mt-2">Raw Ingest</h3>
                 <div class="mb-3 border-b-2 border-gray-100 pb-2">
-                    <!-- Removed black border, added rounded-sm for authentic highlighter look -->
                     <span class="text-[10px] font-bold text-black bg-[#c8b6ff] px-2 py-0.5 rounded-sm tracking-wider uppercase inline-block mt-1">GCP Storage & Eventarc</span>
                 </div>
                 <p class="text-sm font-semibold">High-res mezzanine files and sidecars are uploaded, triggering a serverless container to validate assets.</p>
             </div>
 
-            <!-- Twisty Flow Arrow 1 (Desktop Only) -->
-            <div class="hidden lg:flex flex-col justify-center items-center flex-shrink-0 px-2">
-                <svg class="w-10 h-10 opacity-30 text-black transform rotate-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 12c4-4 8 4 12 0m0 0l-3-3m3 3l-3 3" />
+            <div class="hidden lg:flex flex-col justify-center items-center flex-shrink-0 px-2 -mx-2 z-10 pointer-events-none">
+                <svg class="w-14 h-14" fill="none" viewBox="0 0 100 50" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(4px 4px 0px rgba(0,0,0,1));">
+                    <!-- Upward S-Curve -->
+                    <path d="M10 25 C 30 5, 70 45, 90 25" />
+                    <!-- Arrowhead -->
+                    <path d="M 75 10 L 90 25 L 75 40" />
                 </svg>
             </div>
 
@@ -109,16 +93,17 @@
                 </div>
                 <h3 class="text-lg font-black uppercase mt-2">Transcoding</h3>
                 <div class="mb-3 border-b-2 border-gray-100 pb-2">
-                    <!-- Removed black border, added rounded-sm for authentic highlighter look -->
                     <span class="text-[10px] font-bold text-black bg-[#ffea00] px-2 py-0.5 rounded-sm tracking-wider uppercase inline-block mt-1">AWS MediaConvert</span>
                 </div>
                 <p class="text-sm font-semibold">The GCP orchestrator signs URLs for the raw assets and submits a job to AWS to generate an ABR ladder.</p>
             </div>
 
-            <!-- Twisty Flow Arrow 2 (Desktop Only) -->
-            <div class="hidden lg:flex flex-col justify-center items-center flex-shrink-0 px-2">
-                <svg class="w-10 h-10 opacity-30 text-black transform rotate-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 12c4-4 8 4 12 0m0 0l-3-3m3 3l-3 3" />
+            <div class="hidden lg:flex flex-col justify-center items-center flex-shrink-0 px-2 -mx-2 z-10 pointer-events-none">
+                <svg class="w-14 h-14" fill="none" viewBox="0 0 100 50" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(4px 4px 0px rgba(0,0,0,1));">
+                    <!-- Downward S-Curve -->
+                    <path d="M10 25 C 30 45, 70 5, 90 25" />
+                    <!-- Arrowhead -->
+                    <path d="M 75 10 L 90 25 L 75 40" />
                 </svg>
             </div>
 
@@ -129,14 +114,12 @@
                 </div>
                 <h3 class="text-lg font-black uppercase mt-2">Delivery</h3>
                 <div class="mb-3 border-b-2 border-gray-100 pb-2">
-                    <!-- Removed black border, added rounded-sm for authentic highlighter look -->
                     <span class="text-[10px] font-bold text-black bg-[#a0e8af] px-2 py-0.5 rounded-sm tracking-wider uppercase inline-block mt-1">AWS S3 & Client Auth</span>
                 </div>
                 <p class="text-sm font-semibold">AWS outputs HLS segments. Shaka Player intercepts requests to inject custom tokens for secure playback.</p>
             </div>
         </div>
 
-        <!-- Stream Configuration Toggle Bar -->
         <div class="brutal-border brutal-shadow bg-[#c8b6ff] rounded-[4px] transition-all duration-300 relative z-30">
             <div class="flex flex-col md:flex-row justify-between items-center p-3 gap-4">
                 <button onclick="toggleConfig()" class="flex items-center gap-2 font-black uppercase w-full md:w-auto hover:opacity-80 transition-opacity">
@@ -174,7 +157,6 @@
             </div>
         </div>
 
-        <!-- Main Dashboard Area -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
             
             <!-- Left Column: Telemetry (Top) + Video Player (Bottom) -->
@@ -186,7 +168,6 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         Telemetry
                     </h2>
-                    <!-- 3x2 Grid for standard horizontal fit -->
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                         <div class="bg-white brutal-border p-2">
                             <div class="text-[9px] font-bold uppercase mb-1 text-gray-500">Resolution</div>
@@ -215,7 +196,6 @@
                     </div>
                 </div>
 
-                <!-- Video Player Container -->
                 <div class="brutal-border brutal-shadow bg-[#1a1b26] rounded-[4px] overflow-hidden aspect-video relative flex items-center justify-center w-full z-20">
                     
                     <!-- Secure Enclave Lock Screen -->
@@ -236,7 +216,6 @@
                 </div>
             </div>
 
-            <!-- Right Column: Full-Height Security Log -->
             <div class="lg:col-span-1 flex flex-col">
                 <div class="brutal-border brutal-shadow bg-[#1a1b26] rounded-[4px] flex flex-col text-white h-full min-h-[300px]">
                     <!-- Retro Window Header -->
@@ -370,12 +349,9 @@
                 
                 logSecurity(`<span class="text-[#27c93f] font-bold">[SUCCESS] Manifest parsed. Unlocking Stream.</span>`);
                 
+                // Drop the overlay once stream is successfully unlocked
                 document.getElementById('playerOverlay').style.opacity = '0';
                 document.getElementById('playerOverlay').style.pointerEvents = 'none';
-                
-                // Unlocked Status Tag Update
-                const statusBadge = document.getElementById('status-unauth');
-                statusBadge.innerHTML = `<span class="w-3 h-3 rounded-full bg-[#27c93f] border-2 border-black"></span><div class="flex flex-col"><span class="leading-none">Stream Active</span><span class="text-[8px] text-gray-500 tracking-wider">Secure Connection</span></div>`;
                 
                 startTelemetry();
             } catch (e) {
