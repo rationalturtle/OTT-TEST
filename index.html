@@ -7,37 +7,53 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/shaka-player.ui.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/controls.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0B1120;
-            color: #F8FAFC;
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #f4f4f0;
+            color: #111;
         }
         .code-font {
             font-family: 'JetBrains Mono', monospace;
         }
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         
-        /* Gumroad Neo-Brutalism Styles */
-        .gumroad-node-active {
-            background-color: #ffc900 !important;
-            transform: scale(1.1) translate(-2px, -2px);
-            box-shadow: 8px 8px 0px rgba(0,0,0,1) !important;
-            z-index: 20;
+        /* Neo-Brutalism Core Utilities */
+        .brutal-border {
+            border: 3px solid #000;
         }
-        .gumroad-line-active {
-            opacity: 1 !important;
-            border-style: solid !important;
-            background-color: #00E5FF !important;
+        .brutal-shadow {
+            box-shadow: 6px 6px 0px rgba(0,0,0,1);
+        }
+        .brutal-shadow-sm {
+            box-shadow: 4px 4px 0px rgba(0,0,0,1);
+        }
+        .brutal-button {
+            transition: all 0.1s ease;
+        }
+        .brutal-button:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px rgba(0,0,0,1);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f4f4f0; border-left: 3px solid #000; }
+        ::-webkit-scrollbar-thumb { background: #ff90e8; border: 3px solid #000; }
+
+        /* Animation States for Simulator */
+        .card-inactive {
+            background-color: #fff;
+            opacity: 0.7;
+            transform: scale(0.98);
+        }
+        .card-active {
+            background-color: #ffc900;
+            opacity: 1;
+            transform: scale(1.02) translateY(-4px);
+            box-shadow: 8px 8px 0px rgba(0,0,0,1);
+            z-index: 10;
         }
 
         /* Fix for Shaka Player UI click interception */
@@ -48,165 +64,168 @@
         [data-shaka-player-container] .shaka-controls-container * {
             pointer-events: auto;
         }
+        /* Make sure the player fills our brutalist container safely */
+        .shaka-video-container {
+            background-color: #000;
+        }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-8">
+<body class="min-h-screen p-4 md:p-8 flex flex-col gap-8">
 
-    <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 brutal-border brutal-shadow bg-white p-6 rounded-xl">
         <div>
-            <h1 class="text-3xl font-bold tracking-tight text-white">Multi-Cloud VOD Pipeline</h1>
-            <p class="text-sm text-slate-400 mt-1">Architecture: GCP Eventarc → AWS MediaConvert → Secure Shaka Player</p>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight uppercase">Multi-Cloud VOD Architecture</h1>
+            <p class="text-base font-semibold mt-2 bg-[#ff90e8] inline-block px-2 py-1 brutal-border shadow-[2px_2px_0px_#000]">
+                GCP Eventarc → AWS MediaConvert → Edge CDN
+            </p>
         </div>
         <div class="flex gap-3">
-            <div class="px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-2" id="status-unauth">
-                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> UNAUTHORIZED
+            <div id="status-unauth" class="px-4 py-2 font-bold bg-red-400 brutal-border brutal-shadow-sm flex items-center gap-2">
+                <span class="w-3 h-3 border-2 border-black rounded-full bg-white animate-pulse"></span> SYSTEM LOCKED
             </div>
-            <div class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-2 hidden" id="status-online">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> SYSTEM ONLINE
+            <div id="status-online" class="hidden px-4 py-2 font-bold bg-[#00E5FF] brutal-border brutal-shadow-sm flex items-center gap-2">
+                <span class="w-3 h-3 border-2 border-black rounded-full bg-white"></span> PIPELINE ONLINE
             </div>
         </div>
     </header>
 
-    <!-- Pipeline Visualizer (Gumroad Style) -->
-    <div class="bg-[#f4f4f0] rounded-[3rem] p-6 md:p-10 mb-8 border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] relative overflow-hidden">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 relative z-10 gap-4">
-            <h2 class="text-xl md:text-3xl font-black text-black tracking-tight font-sans uppercase">Pipeline Status</h2>
-            <button onclick="simulatePipeline()" class="text-sm md:text-base bg-[#ff90e8] text-black font-bold px-6 py-3 rounded-full border-4 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all cursor-pointer">
-                Simulate Backend
+    <section class="brutal-border brutal-shadow bg-white p-6 md:p-8 rounded-xl relative">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b-4 border-black pb-6">
+            <h2 class="text-2xl font-bold uppercase">How the Pipeline Works</h2>
+            <button onclick="simulatePipeline()" class="brutal-button brutal-border brutal-shadow-sm bg-[#ff90e8] text-black font-bold px-6 py-3 uppercase tracking-wider cursor-pointer">
+                Simulate Data Flow
             </button>
         </div>
         
-        <div class="flex justify-between items-center relative px-2 md:px-12 z-10 mt-8">
-            <!-- Connecting Lines -->
-            <div id="line-1" class="absolute left-[15%] right-[50%] top-[40%] h-2 bg-black -z-10 border-y-2 border-black border-dashed transition-all duration-500 opacity-30"></div>
-            <div id="line-2" class="absolute left-[50%] right-[15%] top-[40%] h-2 bg-black -z-10 border-y-2 border-black border-dashed transition-all duration-500 opacity-30"></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
             
-            <!-- Nodes -->
-            <div class="flex flex-col items-center gap-4 px-2 md:px-6">
-                <div id="node-1" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-all duration-300 z-10 relative">
-                    <svg class="w-8 h-8 md:w-10 md:h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <!-- Step 1 -->
+            <div id="step-1" class="card-inactive transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4">
+                <div class="w-16 h-16 rounded-full brutal-border flex items-center justify-center bg-white brutal-shadow-sm">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                 </div>
-                <div class="text-center"><p class="text-sm md:text-base font-bold text-black">Raw Ingest</p><p class="text-xs md:text-sm font-semibold text-gray-600">GCP Storage</p></div>
-            </div>
-            
-            <div class="flex flex-col items-center gap-4 px-2 md:px-6">
-                <div id="node-2" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-all duration-300 z-10 relative">
-                    <svg class="w-8 h-8 md:w-10 md:h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <div>
+                    <h3 class="text-xl font-bold uppercase mb-1">1. Raw Ingest (GCP)</h3>
+                    <p class="text-sm font-semibold border-b-2 border-black pb-2 mb-2">Cloud Storage & Eventarc</p>
+                    <p class="text-sm">High-res mezzanine files and sidecars (audio, subtitles) are uploaded to a Google Cloud bucket. Eventarc instantly detects the upload and triggers a serverless Cloud Run container to validate the bundle.</p>
                 </div>
-                <div class="text-center"><p class="text-sm md:text-base font-bold text-black">Transcoding</p><p class="text-xs md:text-sm font-semibold text-gray-600">MediaConvert</p></div>
             </div>
 
-            <div class="flex flex-col items-center gap-4 px-2 md:px-6">
-                <div id="node-3" class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-all duration-300 z-10 relative">
-                    <svg class="w-8 h-8 md:w-10 md:h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+            <!-- Step 2 -->
+            <div id="step-2" class="card-inactive transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4">
+                <div class="w-16 h-16 rounded-full brutal-border flex items-center justify-center bg-white brutal-shadow-sm">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </div>
-                <div class="text-center"><p class="text-sm md:text-base font-bold text-black">Packaged HLS</p><p class="text-xs md:text-sm font-semibold text-gray-600">AWS S3</p></div>
+                <div>
+                    <h3 class="text-xl font-bold uppercase mb-1">2. Transcode (AWS)</h3>
+                    <p class="text-sm font-semibold border-b-2 border-black pb-2 mb-2">MediaConvert & Boto3</p>
+                    <p class="text-sm">The Python orchestrator generates secure, short-lived IAM Signed URLs. AWS MediaConvert pulls the GCP assets across the cloud boundary and crunches them into a multi-bitrate HLS ladder (1080p, 720p, 480p).</p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div id="step-3" class="card-inactive transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4">
+                <div class="w-16 h-16 rounded-full brutal-border flex items-center justify-center bg-white brutal-shadow-sm">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold uppercase mb-1">3. Delivery & Auth</h3>
+                    <p class="text-sm font-semibold border-b-2 border-black pb-2 mb-2">S3 & Secure Shaka Player</p>
+                    <p class="text-sm">Packaged `.m3u8` and `.ts` files land in an S3 bucket. To play them, the client player must inject cryptographic auth tokens into the network header of every chunk request, stopping direct URL piracy.</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <!-- Left Column: Player & Config -->
-        <div class="lg:col-span-2 flex flex-col gap-6">
+        <!-- Left Column: Config & Player -->
+        <div class="lg:col-span-2 flex flex-col gap-8">
             
-            <!-- Stream Configuration -->
-            <div class="glass-panel rounded-xl p-6 relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
-                <h2 class="text-xs font-bold text-slate-400 tracking-widest uppercase mb-4">Stream Configuration & Delivery</h2>
-                
+            <!-- Config Form -->
+            <div class="brutal-border brutal-shadow bg-[#bbf7d0] p-6 rounded-xl">
+                <h2 class="text-lg font-bold uppercase mb-4 flex items-center gap-2 border-b-4 border-black pb-2">
+                    Player Configuration
+                </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">TARGET S3 BUCKET</label>
-                        <input type="text" id="bucketInput" value="ott-video-packaged-output-349412601452-us-east-1-an" class="w-full bg-[#0B1120] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 code-font">
+                        <label class="block text-sm font-bold mb-1 uppercase">S3 Origin Bucket</label>
+                        <input type="text" id="bucketInput" value="ott-video-packaged-output-349412601452-us-east-1-an" class="w-full brutal-border p-2 bg-white code-font text-sm focus:outline-none focus:ring-2 ring-black">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">AWS REGION</label>
-                        <input type="text" id="regionInput" value="us-east-1" class="w-full bg-[#0B1120] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 code-font">
+                        <label class="block text-sm font-bold mb-1 uppercase">AWS Region</label>
+                        <input type="text" id="regionInput" value="us-east-1" class="w-full brutal-border p-2 bg-white code-font text-sm focus:outline-none focus:ring-2 ring-black">
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">ASSET BASE NAME</label>
-                        <input type="text" id="assetInput" value="complexity_hdr" placeholder="e.g. complexity_hdr" class="w-full bg-[#0B1120] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 code-font">
+                        <label class="block text-sm font-bold mb-1 uppercase">Asset Base Name</label>
+                        <input type="text" id="assetInput" value="complexity_hdr" class="w-full brutal-border p-2 bg-white code-font text-sm focus:outline-none focus:ring-2 ring-black">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1 flex items-center gap-2">
-                            ACCESS TOKEN <span class="bg-purple-500/20 text-purple-400 text-[10px] px-1 rounded border border-purple-500/30">NETWORK INTERCEPT</span>
-                        </label>
-                        <input type="password" id="tokenInput" value="allow-123" class="w-full bg-[#0B1120] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500 code-font">
+                        <label class="block text-sm font-bold mb-1 uppercase">Access Token</label>
+                        <input type="password" id="tokenInput" value="allow-123" class="w-full brutal-border p-2 bg-white code-font text-sm focus:outline-none focus:ring-2 ring-black">
                     </div>
                     <div>
-                        <button onclick="handlePlaybackRequest()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)]">
-                            Compute URL & Load
+                        <button onclick="handlePlaybackRequest()" class="w-full brutal-button brutal-border brutal-shadow-sm bg-[#00E5FF] hover:bg-white text-black font-bold py-2.5 px-4 uppercase tracking-widest text-sm">
+                            Connect & Play
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Video Player -->
-            <div class="glass-panel rounded-xl overflow-hidden shadow-2xl relative bg-[#05080f] aspect-video flex items-center justify-center border border-slate-800" id="playerWrapper">
-                
-                <!-- Overlay message before playback -->
-                <div id="playerOverlay" class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center bg-[#05080f] z-20 transition-opacity duration-500">
-                    <svg class="w-12 h-12 text-slate-600 mb-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <h3 class="text-xl font-semibold text-slate-400">Awaiting Stream Manifest...</h3>
+            <div class="brutal-border brutal-shadow bg-black aspect-video relative rounded-xl overflow-hidden flex items-center justify-center">
+                <!-- Overlay Message -->
+                <div id="playerOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20 backdrop-blur-sm pointer-events-none transition-opacity duration-300">
+                    <h3 class="text-2xl font-bold text-white uppercase tracking-widest bg-[#ff90e8] text-black px-4 py-2 brutal-border">Awaiting Signal</h3>
                 </div>
                 
-                <div data-shaka-player-container class="w-full h-full z-10 relative">
-                    <video id="video" autoplay class="w-full h-full object-contain"></video>
+                <div data-shaka-player-container class="w-full h-full z-10 bg-black">
+                    <video id="video" autoplay class="w-full h-full"></video>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column: Telemetry & Logs -->
-        <div class="flex flex-col gap-6">
+        <!-- Right Column: Stats & Logs -->
+        <div class="flex flex-col gap-8">
             
-            <!-- Telemetry Panel -->
-            <div class="glass-panel rounded-xl p-6 flex-grow relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
-                <h2 class="text-xs font-bold text-slate-400 tracking-widest uppercase mb-4 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    Engine Telemetry
-                </h2>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-[#0B1120] p-4 rounded-lg border border-slate-800">
-                        <div class="text-[10px] text-slate-500 font-semibold mb-1 uppercase tracking-wider">Resolution</div>
-                        <div id="statResolution" class="text-lg font-bold code-font text-blue-400">--</div>
+            <!-- Telemetry -->
+            <div class="brutal-border brutal-shadow bg-[#fde047] p-6 rounded-xl flex-grow">
+                <h2 class="text-lg font-bold uppercase mb-4 border-b-4 border-black pb-2">Stream Telemetry</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white brutal-border p-3">
+                        <div class="text-xs font-bold uppercase mb-1">Resolution</div>
+                        <div id="statResolution" class="text-lg font-bold code-font text-blue-600">--</div>
                     </div>
-                    <div class="bg-[#0B1120] p-4 rounded-lg border border-slate-800">
-                        <div class="text-[10px] text-slate-500 font-semibold mb-1 uppercase tracking-wider">Dropped</div>
-                        <div id="statDropped" class="text-lg font-bold code-font text-red-400">0</div>
+                    <div class="bg-white brutal-border p-3">
+                        <div class="text-xs font-bold uppercase mb-1">Dropped</div>
+                        <div id="statDropped" class="text-lg font-bold code-font text-red-600">0</div>
                     </div>
-                    <div class="bg-[#0B1120] p-4 rounded-lg border border-slate-800">
-                        <div class="text-[10px] text-slate-500 font-semibold mb-1 uppercase tracking-wider">Video Bitrate</div>
-                        <div class="text-lg font-bold code-font text-blue-400"><span id="statVBitrate">--</span> <span class="text-xs text-slate-500">kbps</span></div>
+                    <div class="bg-white brutal-border p-3">
+                        <div class="text-xs font-bold uppercase mb-1">Video Speed</div>
+                        <div class="text-lg font-bold code-font text-green-600"><span id="statVBitrate">--</span> <span class="text-xs text-black">kbps</span></div>
                     </div>
-                    <div class="bg-[#0B1120] p-4 rounded-lg border border-slate-800">
-                        <div class="text-[10px] text-slate-500 font-semibold mb-1 uppercase tracking-wider">Audio Bitrate</div>
-                        <div class="text-lg font-bold code-font text-purple-400"><span id="statABitrate">--</span> <span class="text-xs text-slate-500">kbps</span></div>
+                    <div class="bg-white brutal-border p-3">
+                        <div class="text-xs font-bold uppercase mb-1">Audio Speed</div>
+                        <div class="text-lg font-bold code-font text-purple-600"><span id="statABitrate">--</span> <span class="text-xs text-black">kbps</span></div>
                     </div>
-                    <div class="bg-[#0B1120] p-4 rounded-lg border border-slate-800">
-                        <div class="text-[10px] text-slate-500 font-semibold mb-1 uppercase tracking-wider">Est. Bandwidth</div>
-                        <div class="text-lg font-bold code-font text-emerald-400"><span id="statBandwidth">--</span> <span class="text-xs text-slate-500">Mbps</span></div>
+                    <div class="bg-white brutal-border p-3">
+                        <div class="text-xs font-bold uppercase mb-1">Est. Bandwidth</div>
+                        <div class="text-lg font-bold code-font"><span id="statBandwidth">--</span> <span class="text-xs">Mbps</span></div>
                     </div>
-                    <div class="bg-[#0B1120] p-4 rounded-lg border border-slate-800">
-                        <div class="text-[10px] text-slate-500 font-semibold mb-1 uppercase tracking-wider">Buffer Health</div>
-                        <div class="text-lg font-bold code-font text-yellow-400"><span id="statBuffer">0.0</span><span class="text-xs text-slate-500">s</span></div>
+                    <div class="bg-white brutal-border p-3">
+                        <div class="text-xs font-bold uppercase mb-1">Buffer Health</div>
+                        <div class="text-lg font-bold code-font"><span id="statBuffer">0.0</span><span class="text-xs">s</span></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Security & Network Log -->
-            <div class="glass-panel rounded-xl p-6 flex flex-col h-64 relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                <h2 class="text-xs font-bold text-slate-400 tracking-widest uppercase mb-4 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    Network Filter Log
-                </h2>
-                <div id="logBox" class="flex-grow bg-[#0B1120] rounded-lg p-3 overflow-y-auto text-[10px] md:text-xs code-font text-slate-400 border border-slate-800 flex flex-col gap-2">
-                    <div class="text-slate-500">> Awaiting authentication...</div>
+            <!-- Network Log -->
+            <div class="brutal-border brutal-shadow bg-black p-6 rounded-xl flex flex-col h-72">
+                <h2 class="text-lg font-bold uppercase text-white mb-4 border-b-4 border-[#ff90e8] pb-2">Security Console</h2>
+                <div id="logBox" class="flex-grow bg-[#111] brutal-border border-[#444] p-3 overflow-y-auto text-xs code-font text-green-400 flex flex-col gap-2">
+                    <div class="text-slate-500">> SYSTEM READY...</div>
                 </div>
             </div>
             
@@ -221,7 +240,7 @@
             const box = document.getElementById('logBox');
             const time = new Date().toISOString().split('T')[1].substring(0, 12);
             const entry = document.createElement('div');
-            entry.innerHTML = `<span class="text-slate-600">[${time}]</span> ${message}`;
+            entry.innerHTML = `<span class="text-slate-500">[${time}]</span> ${message}`;
             box.appendChild(entry);
             box.scrollTop = box.scrollHeight;
         }
@@ -230,23 +249,18 @@
             const video = document.getElementById('video');
             const videoContainer = document.querySelector('[data-shaka-player-container]');
             
-            // Instantiate Player FIRST, then attach UI overlay.
             player = new shaka.Player();
             await player.attach(video);
-            
             const ui = new shaka.ui.Overlay(player, videoContainer, video);
 
-            // Listen for Shaka Engine Errors
             player.addEventListener('error', (e) => {
-                console.error('Shaka Error caught by listener:', e.detail);
-                
+                console.error('Shaka Error:', e.detail);
                 if(e.detail && e.detail.code === 1002) {
                     logSecurity(`<span class="text-red-500 font-bold">[FATAL 1002] NETWORK BLOCK: S3 rejected the request.</span>`);
-                    logSecurity(`<span class="text-yellow-400">-> CORS Issue: Ensure your S3 bucket exposes the 'Range' and 'X-OTT-Access-Token' headers.</span>`);
                 } else if (e.detail && e.detail.code === 1001) {
-                    logSecurity(`<span class="text-red-500 font-bold">[FATAL 1001] FILE NOT FOUND: Check bucket name and asset base name.</span>`);
+                    logSecurity(`<span class="text-red-500 font-bold">[FATAL 1001] FILE NOT FOUND.</span>`);
                 } else {
-                    logSecurity(`<span class="text-red-400">[ERROR] Player encountered error code: ${e.detail ? e.detail.code : 'Unknown'}</span>`);
+                    logSecurity(`<span class="text-red-400">[ERROR] Code: ${e.detail ? e.detail.code : 'Unknown'}</span>`);
                 }
             });
         }
@@ -258,70 +272,40 @@
             const token = document.getElementById('tokenInput').value.trim();
             
             if (baseName.startsWith('/')) baseName = baseName.substring(1);
-            
-            // 1. Compute deterministic AWS S3 URL
             const manifestUri = `https://${bucket}.s3.${region}.amazonaws.com/${baseName}/${baseName}.m3u8`;
             
-            logSecurity(`Computed Manifest URI: <span class="text-blue-400 break-all">${manifestUri}</span>`);
-            logSecurity("Checking authorization token...");
+            logSecurity(`Target Manifest: <span class="text-[#00E5FF] break-all">${manifestUri}</span>`);
 
-            // 2. Auth Gate check
             if (token !== "allow-123") {
-                logSecurity(`<span class="text-red-500 font-bold">[403 FORBIDDEN] Invalid token provided. Playback aborted.</span>`);
-                document.getElementById('playerOverlay').innerHTML = `
-                    <div class="flex flex-col items-center p-8 bg-red-900/20 border border-red-500/50 rounded-xl">
-                        <svg class="w-16 h-16 text-red-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        <h3 class="text-2xl font-bold text-white mb-2">Access Denied</h3>
-                        <p class="text-red-200 text-sm">Valid Auth Token is required to fetch stream manifest.</p>
-                    </div>
-                `;
+                logSecurity(`<span class="text-red-500 font-bold">[403 FORBIDDEN] Invalid token. Aborting.</span>`);
+                document.getElementById('playerOverlay').innerHTML = `<h3 class="text-2xl font-bold text-white uppercase tracking-widest bg-red-500 text-white px-4 py-2 brutal-border">ACCESS DENIED</h3>`;
                 document.getElementById('playerOverlay').style.opacity = '1';
-                
-                // Set UI flags
                 document.getElementById('status-unauth').classList.remove('hidden');
                 document.getElementById('status-online').classList.add('hidden');
                 return; 
             }
 
-            logSecurity(`<span class="text-emerald-500 font-bold">[200 OK] Token validated. Installing Network Request Filter...</span>`);
-            
-            // Reset UI
+            logSecurity(`<span class="text-[#ff90e8] font-bold">[200 OK] Token Valid. Installing Network Interceptor...</span>`);
             document.getElementById('playerOverlay').style.opacity = '0';
             document.getElementById('status-unauth').classList.add('hidden');
             document.getElementById('status-online').classList.remove('hidden');
 
-            // 3. Register Shaka Network Interceptor
             player.getNetworkingEngine().clearAllRequestFilters(); 
             player.getNetworkingEngine().registerRequestFilter((type, request) => {
                 if (type == shaka.net.NetworkingEngine.RequestType.MANIFEST || 
                     type == shaka.net.NetworkingEngine.RequestType.SEGMENT) {
-                    // Inject our custom header on all outbound S3 requests
                     request.headers['X-OTT-Access-Token'] = token;
                 }
             });
 
-            // 4. Load Stream
             try {
-                logSecurity(`Initiating fetch from S3...`);
+                logSecurity(`Fetching from Edge...`);
                 await player.load(manifestUri);
-                logSecurity(`<span class="text-emerald-500 font-bold">[SUCCESS] Manifest parsed. Audio/Video/Subtitle segments downloading.</span>`);
+                logSecurity(`<span class="text-green-400 font-bold">[SUCCESS] Manifest parsed. Downloading chunks.</span>`);
                 startTelemetry();
             } catch (e) {
-                console.error("Player Load Error Caught in Try/Catch:", e);
-                // The error listener above usually catches Shaka errors, but we catch here just in case the promise rejects early.
-                if (e.code === 1002) {
-                    logSecurity(`<span class="text-red-500 font-bold">[FATAL 1002] HTTP Fetch Failed. CORS Blocked.</span>`);
-                } else if (e.code === 1001) {
-                    logSecurity(`<span class="text-red-500 font-bold">[FATAL 1001] File Not Found at S3 URL.</span>`);
-                }
-                
-                document.getElementById('playerOverlay').innerHTML = `
-                    <div class="flex flex-col items-center p-8 bg-red-900/20 border border-red-500/50 rounded-xl text-center">
-                        <svg class="w-12 h-12 text-red-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                        <h3 class="text-lg font-bold text-white mb-2">Network Error ${e.code || ''}</h3>
-                        <p class="text-red-200 text-xs">Check Network Logs. S3 CORS or missing files.</p>
-                    </div>
-                `;
+                logSecurity(`<span class="text-red-500 font-bold">[NETWORK ERROR] See console.</span>`);
+                document.getElementById('playerOverlay').innerHTML = `<h3 class="text-xl font-bold text-white uppercase tracking-widest bg-red-500 text-white px-4 py-2 brutal-border">PLAYBACK FAILED</h3>`;
                 document.getElementById('playerOverlay').style.opacity = '1';
             }
         }
@@ -337,14 +321,14 @@
                 const activeTrack = tracks.find(t => t.active);
 
                 if (activeTrack) {
-                    // Safe property checking for width/height
+                    // Safe property extraction (handles Shaka v4 API changes)
                     const width = activeTrack.width || (activeTrack.video && activeTrack.video.width) || '--';
                     const height = activeTrack.height || (activeTrack.video && activeTrack.video.height) || '--';
                     document.getElementById('statResolution').innerText = `${width}x${height}`;
                     
-                    // Fallback logic for Multiplexed streams where Audio and Video are combined
+                    // Bandwidth fallback logic (If multiplexed, Audio is bundled into Video)
                     const totalBandwidth = activeTrack.bandwidth || 0;
-                    const vBandwidth = activeTrack.videoBandwidth || totalBandwidth; 
+                    const vBandwidth = activeTrack.videoBandwidth || totalBandwidth;
                     const aBandwidth = activeTrack.audioBandwidth;
                     
                     document.getElementById('statVBitrate').innerText = vBandwidth ? Math.round(vBandwidth / 1000) : '--';
@@ -352,10 +336,6 @@
                 }
                 
                 document.getElementById('statDropped').innerText = stats.droppedFrames || 0;
-                if (stats.droppedFrames > 0) {
-                    document.getElementById('statDropped').classList.replace('text-emerald-400', 'text-red-500');
-                    document.getElementById('statDropped').classList.add('animate-pulse');
-                }
                 
                 document.getElementById('statBandwidth').innerText = stats.estimatedBandwidth ? (stats.estimatedBandwidth / 1000000).toFixed(1) : '--';
                 
@@ -374,65 +354,48 @@
         }
 
         function simulatePipeline() {
-            const n1 = document.getElementById('node-1');
-            const n2 = document.getElementById('node-2');
-            const n3 = document.getElementById('node-3');
-            const l1 = document.getElementById('line-1');
-            const l2 = document.getElementById('line-2');
+            const s1 = document.getElementById('step-1');
+            const s2 = document.getElementById('step-2');
+            const s3 = document.getElementById('step-3');
             
-            // Reset state
-            n1.classList.remove('gumroad-node-active');
-            n2.classList.remove('gumroad-node-active');
-            n3.classList.remove('gumroad-node-active');
-            l1.classList.remove('gumroad-line-active');
-            l2.classList.remove('gumroad-line-active');
+            s1.className = 'card-inactive transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4';
+            s2.className = 'card-inactive transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4';
+            s3.className = 'card-inactive transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4';
             
-            logSecurity("<br><span class='text-white font-bold'>--- SIMULATING BACKEND DATA FLOW ---</span>");
+            logSecurity("<br><span class='text-[#ff90e8] font-bold'>--- INITIATING PIPELINE SIMULATION ---</span>");
             
             setTimeout(() => {
-                n1.classList.add('gumroad-node-active');
-                logSecurity("1. [GCP] ObjectCreated:Put -> gs://ott-video-raw-input/complexity_hdr.mp4");
-                logSecurity("2. [Eventarc] Triggering Cloud Run Orchestrator...");
+                s1.className = 'card-active transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4';
+                logSecurity("1. ObjectCreated:Put -> gs://raw-bucket/video.mp4");
+                logSecurity("2. Eventarc triggers Cloud Run.");
             }, 500);
 
             setTimeout(() => {
-                l1.classList.add('gumroad-line-active');
-            }, 1500);
+                s1.className = 'card-inactive transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4';
+                s2.className = 'card-active transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4';
+                logSecurity("3. Generating IAM Signed URLs...");
+                logSecurity("4. AWS MediaConvert Job Submitted.");
+                logSecurity("5. Crunching HLS ladder (1080p, 720p, 480p)...");
+            }, 3000);
 
             setTimeout(() => {
-                n1.classList.remove('gumroad-node-active');
-                n2.classList.add('gumroad-node-active');
-                logSecurity("3. [Cloud Run] Python script validates S3 sidecars (Audio/SRT)");
-                logSecurity("4. [Cloud Run] IAM API Generates signed URLs.");
-                logSecurity("5. [AWS] Submitted Job to MediaConvert.");
-            }, 2500);
-
-            setTimeout(() => {
-                l2.classList.add('gumroad-line-active');
-            }, 4500);
-
-            setTimeout(() => {
-                n2.classList.remove('gumroad-node-active');
-                n3.classList.add('gumroad-node-active');
-                logSecurity("6. [AWS MediaConvert] COMPLETE.");
-                logSecurity("7. [AWS S3] HLS Segments written to Packaged Output Bucket.");
-            }, 5500);
+                s2.className = 'card-inactive transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4';
+                s3.className = 'card-active transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4';
+                logSecurity("6. Packaging complete.");
+                logSecurity("7. Segments written to Edge Origin.");
+            }, 6000);
             
             setTimeout(() => {
-                n3.classList.remove('gumroad-node-active');
-                l1.classList.remove('gumroad-line-active');
-                l2.classList.remove('gumroad-line-active');
+                s3.className = 'card-inactive transition-all duration-300 brutal-border p-6 rounded-lg flex flex-col gap-4';
                 logSecurity("<span class='text-white font-bold'>--- PIPELINE IDLE ---</span><br>");
-            }, 8000);
+            }, 9000);
         }
 
-        // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             if (shaka.Player.isBrowserSupported()) {
                 initPlayer();
             } else {
-                console.error('Browser not supported!');
-                logSecurity(`<span class="text-red-500 font-bold">[FATAL] Browser does not support MediaSource Extensions.</span>`);
+                logSecurity(`<span class="text-red-500 font-bold">[FATAL] Browser not supported.</span>`);
             }
         });
     </script>
