@@ -263,34 +263,25 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        function updateLockScreen(title, subtitle, colorClass = 'text-black', bgColorClass = 'bg-white', isError = false) {
-            const overlay = document.getElementById('playerOverlay');
-            const card = document.getElementById('overlayCard');
-            const titleEl = document.getElementById('overlayTitle');
-            const subtitleEl = document.getElementById('overlayErrorText');
-            
-            overlay.style.opacity = '1';
-            overlay.style.pointerEvents = 'auto'; 
-            
-            titleEl.innerText = title;
-            titleEl.className = `text-2xl md:text-3xl font-black uppercase tracking-wider text-center ${colorClass}`;
-            
-            subtitleEl.innerText = subtitle;
-            subtitleEl.className = `text-xs mt-2 font-bold code-font text-center uppercase tracking-widest ${isError ? 'text-red-500' : 'text-gray-600'}`;
-            
-            card.className = `brutal-border p-6 md:p-8 transform ${isError ? 'rotate-1' : '-rotate-2'} flex flex-col items-center shadow-2xl transition-all duration-300 ${bgColorClass}`;
-        }
-
         async function initPlayer() {
             const video = document.getElementById('video');
             const videoContainer = document.querySelector('[data-shaka-player-container]');
             
             player = new shaka.Player();
-            await player.attach(video);
+            await player.attach(video); // Use attach() for newer Shaka API
             const ui = new shaka.ui.Overlay(player, videoContainer, video);
 
+            // Explicitly enable Quality, Audio Language, and Captions in the UI
+            const uiConfig = {
+                controlPanelElements: ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
+                overflowMenuButtons: ['quality', 'language', 'captions', 'picture_in_picture']
+            };
+            ui.configure(uiConfig);
+
+            // Listen for Shaka Engine Errors
             player.addEventListener('error', (e) => {
                 console.error('Shaka Error:', e.detail);
+                
                 if(e.detail && e.detail.code === 1002) {
                     logSecurity(`<span class="text-[#ff5f56] font-bold">[FATAL 1002] NETWORK BLOCK: CORS or S3 rejected the request.</span>`);
                     updateLockScreen("Access Denied", "CORS OR NETWORK POLICY REJECTED TOKEN", "text-[#ff5f56]", "bg-white", true);
