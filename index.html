@@ -37,17 +37,6 @@
             box-shadow: 0 0 10px #38bdf8;
             transition: all 0.5s ease;
         }
-
-        /* Fix for Shaka Player UI click interception */
-        [data-shaka-player-container] {
-            /* Let clicks fall through the main invisible container... */
-            pointer-events: none; 
-        }
-        [data-shaka-player-container] .shaka-controls-container,
-        [data-shaka-player-container] .shaka-controls-container * {
-            /* ...but catch them on the actual controls and buttons */
-            pointer-events: auto; 
-        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
@@ -148,12 +137,12 @@
             <div class="glass-panel rounded-xl overflow-hidden shadow-2xl relative bg-[#05080f] aspect-video flex items-center justify-center border border-slate-800" id="playerWrapper">
                 
                 <!-- Overlay message before playback -->
-                <div id="playerOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-[#05080f] z-20 transition-opacity duration-500">
+                <div id="playerOverlay" class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center bg-[#05080f] z-20 transition-opacity duration-500">
                     <svg class="w-12 h-12 text-slate-600 mb-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <h3 class="text-xl font-semibold text-slate-400">Awaiting Stream Manifest...</h3>
                 </div>
                 
-                <div data-shaka-player-container class="w-full h-full z-10">
+                <div data-shaka-player-container class="relative w-full h-full z-10">
                     <video id="video" autoplay class="w-full h-full object-contain"></video>
                 </div>
             </div>
@@ -230,8 +219,10 @@
             const video = document.getElementById('video');
             const videoContainer = document.querySelector('[data-shaka-player-container]');
             
-            // BUG FIX: Instantiate Player FIRST, then attach UI overlay.
-            player = new shaka.Player(video);
+            // BUG FIX 1: Use modern Shaka v4 initialization
+            player = new shaka.Player();
+            await player.attach(video);
+            
             const ui = new shaka.ui.Overlay(player, videoContainer, video);
 
             // Listen for Shaka Engine Errors
@@ -328,7 +319,8 @@
             if (telemetryInterval) clearInterval(telemetryInterval);
             
             telemetryInterval = setInterval(() => {
-                if(!player || player.isDestroyed()) return;
+                // BUG FIX 2: Removed the invalid isDestroyed() method causing the 71+ crashes
+                if(!player) return;
                 
                 const stats = player.getStats();
                 const tracks = player.getVariantTracks();
