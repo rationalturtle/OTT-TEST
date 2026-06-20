@@ -574,7 +574,7 @@ export async function GET(req: Request) {
 }</code></pre>
 
                 <h3>Edge Interception & Verification</h3>
-                <p>The Edge Function intercepts every HTTP GET request targeting the `.ts` video chunks and mathematically validates the signature before serving the cache.</p>
+                <p>The Edge Function intercepts every HTTP GET request targeting the \`.ts\` video chunks and mathematically validates the signature before serving the cache.</p>
 
 <pre><code class="language-javascript">// CloudFront Edge Interceptor (JS 2.0)
 function handler(event) {
@@ -671,7 +671,7 @@ await player.load(manifestUri);
         paneContent.innerHTML = playbookData[id].content;
         
         // Strict Black/White Icon container
-        paneIcon.className = `w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-gray-300 dark:border-white/20 bg-black text-white dark:bg-white dark:text-black shadow-sm`;
+        paneIcon.className = \`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-gray-300 dark:border-white/20 bg-black text-white dark:bg-white dark:text-black shadow-sm\`;
         paneIcon.innerHTML = playbookData[id].icon;
 
         // Trigger Syntax Highlighting on newly injected code blocks
