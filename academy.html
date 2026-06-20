@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,245 +22,262 @@
       }
     }
   </script>
+  <style>
+    body {
+        font-family: 'Geist Sans', -apple-system, sans-serif;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    
+    .hide-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+    .hide-scroll::-webkit-scrollbar-track { background: transparent; }
+    .hide-scroll::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 2px; }
+    .hide-scroll { scrollbar-width: thin; scrollbar-color: rgba(150, 150, 150, 0.3) transparent; }
+
+    /* Explicit Data Flow Animation */
+    @keyframes data-flow {
+      to { stroke-dashoffset: -40; }
+    }
+    .flow-line {
+      stroke-dasharray: 8 12;
+      animation: data-flow 0.8s linear infinite;
+    }
+
+    /* Academy Article Typography */
+    .academy-article h3 { font-size: 1.25rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: #fff; }
+    .light .academy-article h3 { color: #000; }
+    .academy-article p { margin-bottom: 1rem; line-height: 1.7; color: #a1a1aa; }
+    .light .academy-article p { color: #4b5563; }
+    .academy-article pre { background: #111; border: 1px solid rgba(255,255,255,0.1); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; }
+    .light .academy-article pre { background: #f3f4f6; border-color: #e5e7eb; }
+    .academy-article code { font-family: 'Geist Mono', monospace; font-size: 0.85em; color: #e4e4e7; }
+    .light .academy-article code { color: #1f2937; }
+    .academy-article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #a1a1aa; }
+    .light .academy-article ul { color: #4b5563; }
+    .academy-article li { margin-bottom: 0.5rem; }
+  </style>
 </head>
-<body class="bg-white text-black dark:bg-black dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
+<body class="bg-white text-black dark:bg-[#000000] dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
 
   <!-- Header Control Nav -->
   <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
-      
+    <div class="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-16">
       <div class="flex items-center h-full">
         <div class="flex items-center mr-6">
-          <!-- Vercel-style Triangle Logo -->
-          <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L2 22h20L12 2z"/>
-          </svg>
+          <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
         </div>
-        
-        <!-- Navigation Tabs (Main / Player / Academy) -->
         <nav class="hidden md:flex items-center space-x-6 h-full">
             <a href="index.html" class="text-sm text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Main</a>
             <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Player</a>
             <a href="academy.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all">Academy</a>
         </nav>
       </div>
-      
       <div class="flex items-center space-x-3">
-        <!-- Theme Switcher -->
-        <button onclick="toggleTheme()" class="p-1.5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" title="Toggle Theme">
+        <button onclick="toggleTheme()" class="p-1.5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
             <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
             <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
         </button>
       </div>
-      
     </div>
   </header>
 
-  <!-- Core Content Grid -->
-  <main class="max-w-[1200px] mx-auto px-6 py-16 w-full relative">
+  <main class="max-w-[1400px] mx-auto px-6 py-12 w-full relative">
     
-    <!-- Subtle Grid Background Pattern (Vercel Style) -->
-    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-50" style="background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
-    <div class="dark:absolute dark:inset-0 dark:z-[-1] dark:pointer-events-none hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
+    <!-- Background Grid -->
+    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-40" style="background-image: linear-gradient(to right, rgba(150,150,150,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(150,150,150,0.1) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
 
-    <!-- Hero Banner -->
-    <div class="text-center mb-16 pt-8 flex flex-col items-center">
-      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">
-        Knowledge Base
-      </h1>
-      <p class="text-gray-500 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-        Deep-dive documentation and end-to-end architectural mappings for the entire streaming, encoding, and authentication workflow.
+    <div class="mb-10">
+      <h1 class="text-3xl font-extrabold tracking-tight text-black dark:text-white mb-2">Platform Academy</h1>
+      <p class="text-gray-500 dark:text-zinc-400 text-sm max-w-3xl leading-relaxed">
+        Select a module below to explore the technical documentation and observe its exact position within our serverless data flow.
       </p>
     </div>
 
-    <!-- Compressed Vercel-Style Pipeline Infographic -->
-    <div class="w-full overflow-x-auto hide-scroll pb-16 flex justify-start lg:justify-center">
-        <div class="relative w-[1060px] h-[200px] flex-shrink-0 select-none mx-auto">
+    <!-- The Flow Diagram (Top Section) -->
+    <div class="w-full bg-[#f8f9fa] dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl overflow-x-auto hide-scroll mb-10 relative shadow-sm">
+        
+        <!-- Legend -->
+        <div class="absolute top-4 left-4 z-20 flex gap-4 text-[10px] font-mono font-bold tracking-wider text-gray-500 dark:text-zinc-500 uppercase">
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Ingestion</div>
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-500"></span> Processing</div>
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Storage</div>
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Security / CDN</div>
+        </div>
+
+        <div class="relative w-[1100px] h-[260px] flex-shrink-0 select-none mx-auto mt-6">
             
-            <!-- SVG Connectors -->
-            <svg id="pipeline-svg" class="absolute inset-0 w-full h-full pointer-events-none text-gray-300 dark:text-white/20 transition-all duration-500 ease-out" stroke-width="1.5" fill="none" stroke-linecap="round">
-                <!-- N1 to N2 (Validation Branch) -->
-                <path data-source="node-payload-cms" data-target="node-gcp-validation" d="M 180 100 C 200 100, 200 50, 220 50" stroke="currentColor" class="transition-all duration-500" />
-                <!-- N1 to N3 (Transcode Branch) -->
-                <path data-source="node-payload-cms" data-target="node-aws-transcode" d="M 180 100 C 200 100, 200 150, 220 150" stroke="currentColor" class="transition-all duration-500" />
-                <!-- N3 to N4 (AWS to S3 Origin) -->
-                <path data-source="node-aws-transcode" data-target="node-s3-origin" d="M 400 150 L 440 150" stroke="currentColor" class="transition-all duration-500" />
-                <!-- N4 to N5 (S3 Origin to CDN) -->
-                <path data-source="node-s3-origin" data-target="node-cloudfront-cdn" d="M 620 150 L 660 150" stroke="currentColor" class="transition-all duration-500" />
-                <!-- N1 to N6 (CMS issues token to Auth Service) -->
-                <path data-source="node-payload-cms" data-target="node-jwt-auth-service" d="M 180 100 C 310 100, 310 50, 440 50" stroke="currentColor" class="transition-all duration-500" />
-                <!-- N6 to N7 (Auth Service to Edge Interceptor) -->
-                <path data-source="node-jwt-auth-service" data-target="node-edge-token-auth" d="M 620 50 L 660 50" stroke="currentColor" class="transition-all duration-500" />
-                <!-- N5 to N8 (CDN to Player) -->
-                <path data-source="node-cloudfront-cdn" data-target="node-client-playback" d="M 840 150 C 860 150, 860 100, 880 100" stroke="currentColor" class="transition-all duration-500" />
-                <!-- N7 to N8 (Edge Auth validation to Player) -->
-                <path data-source="node-edge-token-auth" data-target="node-client-playback" d="M 840 50 C 860 50, 860 100, 880 100" stroke="currentColor" class="transition-all duration-500" />
+            <svg id="pipeline-svg" class="absolute inset-0 w-full h-full pointer-events-none" stroke-width="2.5" fill="none" stroke-linecap="round">
+                <defs>
+                    <!-- Base Arrowhead -->
+                    <marker id="arrow-base" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(150,150,150,0.2)" />
+                    </marker>
+                    <!-- Dynamic Colored Arrowheads -->
+                    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" /></marker>
+                    <marker id="arrow-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f97316" /></marker>
+                    <marker id="arrow-yellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#eab308" /></marker>
+                    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" /></marker>
+                    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a855f7" /></marker>
+                    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" /></marker>
+                </defs>
+
+                <!-- Static Background Paths (Always visible, faint) -->
+                <g class="text-gray-300 dark:text-white/10" marker-end="url(#arrow-base)">
+                    <path d="M 180 130 C 220 130, 220 50, 280 50" stroke="currentColor" />
+                    <path d="M 180 130 C 220 130, 220 210, 280 210" stroke="currentColor" />
+                    <path d="M 440 210 L 520 210" stroke="currentColor" />
+                    <path d="M 680 210 L 760 210" stroke="currentColor" />
+                    <path d="M 180 130 C 350 130, 350 50, 520 50" stroke="currentColor" />
+                    <path d="M 680 50 L 760 50" stroke="currentColor" />
+                    <path d="M 920 210 C 960 210, 960 130, 1000 130" stroke="currentColor" />
+                    <path d="M 920 50 C 960 50, 960 130, 1000 130" stroke="currentColor" />
+                </g>
+
+                <!-- Animated Data Flow Paths (Overlay, hidden by default) -->
+                <g id="flow-overlay" class="opacity-0 transition-opacity duration-300">
+                    <path id="path-gcp" data-source="node-payload-cms" data-target="node-gcp-validation" d="M 180 130 C 220 130, 220 50, 280 50" class="flow-line" />
+                    <path id="path-aws" data-source="node-payload-cms" data-target="node-aws-transcode" d="M 180 130 C 220 130, 220 210, 280 210" class="flow-line" />
+                    <path id="path-s3" data-source="node-aws-transcode" data-target="node-s3-origin" d="M 440 210 L 520 210" class="flow-line" />
+                    <path id="path-cdn" data-source="node-s3-origin" data-target="node-cloudfront-cdn" d="M 680 210 L 760 210" class="flow-line" />
+                    <path id="path-jwt" data-source="node-payload-cms" data-target="node-jwt-auth-service" d="M 180 130 C 350 130, 350 50, 520 50" class="flow-line" />
+                    <path id="path-edge" data-source="node-jwt-auth-service" data-target="node-edge-token-auth" d="M 680 50 L 760 50" class="flow-line" />
+                    <path id="path-play1" data-source="node-cloudfront-cdn" data-target="node-client-playback" d="M 920 210 C 960 210, 960 130, 1000 130" class="flow-line" />
+                    <path id="path-play2" data-source="node-edge-token-auth" data-target="node-client-playback" d="M 920 50 C 960 50, 960 130, 1000 130" class="flow-line" />
+                </g>
             </svg>
 
-            <!-- Node 1: CMS Ingest -->
-            <div id="node-payload-cms" class="pipeline-node absolute left-[0px] top-[80px] w-[180px] h-[40px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-3 transition-all duration-500 ease-out transform origin-center">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-3 rounded-full border-2 border-orange-500"></div>
-                    <span class="font-sans font-medium text-black dark:text-white text-xs tracking-tight">payload-cms</span>
-                </div>
-                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
+            <!-- NODES -->
+            <!-- 1. Payload CMS -->
+            <div id="node-payload-cms" class="pipeline-node absolute left-[20px] top-[110px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-blue-500 shrink-0 indicator"></div>
+                <span class="font-sans font-medium text-xs tracking-tight text-black dark:text-white">payload-cms</span>
             </div>
 
-            <!-- Node 2: GCP Validation -->
-            <div id="node-gcp-validation" class="pipeline-node absolute left-[220px] top-[30px] w-[180px] h-[40px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-2.5 px-3 transition-all duration-500 ease-out transform origin-center">
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
-                <div class="w-3 h-3 rounded-full border-2 border-blue-500"></div>
-                <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-xs tracking-tight">gcp-validation</span>
+            <!-- 2. GCP Validation -->
+            <div id="node-gcp-validation" class="pipeline-node absolute left-[280px] top-[30px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-blue-500 shrink-0 indicator"></div>
+                <span class="font-sans font-medium text-xs tracking-tight text-gray-500 dark:text-zinc-300">gcp-validation</span>
             </div>
 
-            <!-- Node 3: AWS MediaConvert -->
-            <div id="node-aws-transcode" class="pipeline-node absolute left-[220px] top-[130px] w-[180px] h-[40px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-3 transition-all duration-500 ease-out transform origin-center">
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
-                <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-3 rounded-full border-2 border-yellow-500"></div>
-                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-xs tracking-tight">aws-transcode</span>
-                </div>
-                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
+            <!-- 3. AWS Transcode -->
+            <div id="node-aws-transcode" class="pipeline-node absolute left-[280px] top-[190px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-yellow-500 shrink-0 indicator"></div>
+                <span class="font-sans font-medium text-xs tracking-tight text-gray-500 dark:text-zinc-300">aws-transcode</span>
             </div>
 
-            <!-- Node 4: S3 Origin -->
-            <div id="node-s3-origin" class="pipeline-node absolute left-[440px] top-[130px] w-[180px] h-[40px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-3 transition-all duration-500 ease-out transform origin-center">
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
-                <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-3 rounded-full border-2 border-emerald-500"></div>
-                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-xs tracking-tight">s3-origin</span>
-                </div>
-                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
+            <!-- 4. S3 Origin -->
+            <div id="node-s3-origin" class="pipeline-node absolute left-[520px] top-[190px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-emerald-500 shrink-0 indicator"></div>
+                <span class="font-sans font-medium text-xs tracking-tight text-gray-500 dark:text-zinc-300">s3-origin</span>
             </div>
 
-            <!-- Node 5: CloudFront CDN -->
-            <div id="node-cloudfront-cdn" class="pipeline-node absolute left-[660px] top-[130px] w-[180px] h-[40px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-3 transition-all duration-500 ease-out transform origin-center">
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
-                <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-3 rounded-full border-2 border-purple-500"></div>
-                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-xs tracking-tight">cloudfront-cdn</span>
-                </div>
-                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
+            <!-- 5. CloudFront CDN -->
+            <div id="node-cloudfront-cdn" class="pipeline-node absolute left-[760px] top-[190px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-purple-500 shrink-0 indicator"></div>
+                <span class="font-sans font-medium text-xs tracking-tight text-gray-500 dark:text-zinc-300">cloudfront-cdn</span>
             </div>
 
-            <!-- Node 6: JWT Auth Service -->
-            <div id="node-jwt-auth-service" class="pipeline-node absolute left-[440px] top-[30px] w-[180px] h-[40px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-3 transition-all duration-500 ease-out transform origin-center">
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
-                <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-3 rounded-full border-2 border-pink-500"></div>
-                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-xs tracking-tight">jwt-auth-service</span>
-                </div>
-                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
+            <!-- 6. JWT Auth Service -->
+            <div id="node-jwt-auth-service" class="pipeline-node absolute left-[520px] top-[30px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-purple-500 shrink-0 indicator"></div>
+                <span class="font-sans font-medium text-xs tracking-tight text-gray-500 dark:text-zinc-300">jwt-auth-service</span>
             </div>
 
-            <!-- Node 7: Edge Token Auth -->
-            <div id="node-edge-token-auth" class="pipeline-node absolute left-[660px] top-[30px] w-[180px] h-[40px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-3 transition-all duration-500 ease-out transform origin-center">
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
-                <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-3 rounded-full border-2 border-rose-500"></div>
-                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-xs tracking-tight">edge-token-auth</span>
-                </div>
-                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
+            <!-- 7. Edge Token Auth -->
+            <div id="node-edge-token-auth" class="pipeline-node absolute left-[760px] top-[30px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-purple-500 shrink-0 indicator"></div>
+                <span class="font-sans font-medium text-xs tracking-tight text-gray-500 dark:text-zinc-300">edge-token-auth</span>
             </div>
 
-            <!-- Node 8: Shaka Player -->
-            <div id="node-client-playback" class="pipeline-node absolute left-[880px] top-[80px] w-[180px] h-[40px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-2.5 px-3 transition-all duration-500 ease-out transform origin-center">
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600 border border-white dark:border-[#0a0a0a]"></div>
-                <div class="w-3 h-3 rounded-full border-2 border-[#00df89] flex items-center justify-center">
-                    <div class="w-1.5 h-1.5 rounded-full bg-[#00df89] animate-pulse"></div>
-                </div>
-                <span class="font-sans font-medium text-black dark:text-white text-xs tracking-tight">client-playback</span>
+            <!-- 8. Shaka Player -->
+            <div id="node-client-playback" class="pipeline-node absolute left-[1000px] top-[110px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+                <div class="w-3 h-3 rounded-full bg-[#f43f5e] shrink-0 indicator flex items-center justify-center"></div>
+                <span class="font-sans font-medium text-xs tracking-tight text-gray-500 dark:text-zinc-300">client-playback</span>
             </div>
         </div>
     </div>
 
-    <!-- Interactivity Prompt Divider -->
-    <div class="flex items-center space-x-4 mb-8 mt-4">
-        <h2 class="text-[10px] font-mono font-bold tracking-widest text-gray-400 dark:text-zinc-500 uppercase">Select a topic below to highlight architecture flow</h2>
-        <div class="flex-grow h-px bg-gray-200 dark:bg-white/10"></div>
-    </div>
-
-    <!-- Interactive Docs Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+    <!-- Master-Detail Split Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start pb-20">
       
-      <!-- Card 1 -->
-      <div id="card-1" data-id="1" data-color="blue" data-nodes="node-payload-cms,node-gcp-validation" onclick="toggleCard(this)" class="guide-card group cursor-pointer border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 transition-all duration-300 relative hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20">
-         <div class="flex items-start justify-between mb-4">
-            <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-white/5 border border-blue-100 dark:border-white/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+      <!-- LEFT COLUMN: Module Navigation (4 Cols) -->
+      <div class="lg:col-span-4 flex flex-col gap-3">
+         <h2 class="text-[10px] font-mono font-bold tracking-widest text-gray-400 dark:text-zinc-500 uppercase mb-2">Curriculum Modules</h2>
+         
+         <!-- Module 1 -->
+         <button data-id="1" data-color="blue" data-nodes="node-payload-cms,node-gcp-validation" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-blue-400 dark:hover:border-blue-500/50 transition-all duration-200 group">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[9px] font-bold text-blue-500 tracking-wider uppercase">Module 01</span>
+                <svg class="w-4 h-4 text-gray-300 dark:text-zinc-600 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
-            <div class="highlight-badge opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[9px] font-mono text-blue-600 dark:text-blue-400 uppercase tracking-wider font-bold bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 px-2 py-1 rounded">View Flow &rarr;</div>
-         </div>
-         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">Direct-to-Cloud Ingestion</h3>
-         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Bypassing Node.js entirely by generating GCP presigned URLs for multi-gigabyte mezzanine video uploads.</p>
-      </div>
+            <h3 class="text-sm font-bold text-black dark:text-white">Direct-to-Cloud Ingestion</h3>
+         </button>
 
-      <!-- Card 2 -->
-      <div id="card-2" data-id="2" data-color="orange" data-nodes="node-payload-cms" onclick="toggleCard(this)" class="guide-card group cursor-pointer border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 transition-all duration-300 relative hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20">
-         <div class="flex items-start justify-between mb-4">
-            <div class="w-8 h-8 rounded-full bg-orange-50 dark:bg-white/5 border border-orange-100 dark:border-white/10 flex items-center justify-center text-orange-600 dark:text-orange-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+         <!-- Module 2 -->
+         <button data-id="2" data-color="orange" data-nodes="node-payload-cms" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-orange-400 dark:hover:border-orange-500/50 transition-all duration-200 group">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[9px] font-bold text-orange-500 tracking-wider uppercase">Module 02</span>
+                <svg class="w-4 h-4 text-gray-300 dark:text-zinc-600 group-hover:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
-            <div class="highlight-badge opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[9px] font-mono text-orange-600 dark:text-orange-400 uppercase tracking-wider font-bold bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 px-2 py-1 rounded">View Flow &rarr;</div>
-         </div>
-         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">Payload Upload Magic</h3>
-         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">How Payload CMS automatically handles Postgres columns, mimetypes, and sidecar relational mapping seamlessly.</p>
-      </div>
+            <h3 class="text-sm font-bold text-black dark:text-white">Payload Relational Magic</h3>
+         </button>
 
-      <!-- Card 3 -->
-      <div id="card-3" data-id="3" data-color="yellow" data-nodes="node-aws-transcode" onclick="toggleCard(this)" class="guide-card group cursor-pointer border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 transition-all duration-300 relative hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20">
-         <div class="flex items-start justify-between mb-4">
-            <div class="w-8 h-8 rounded-full bg-yellow-50 dark:bg-white/5 border border-yellow-100 dark:border-white/10 flex items-center justify-center text-yellow-600 dark:text-yellow-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+         <!-- Module 3 -->
+         <button data-id="3" data-color="yellow" data-nodes="node-aws-transcode" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-yellow-400 dark:hover:border-yellow-500/50 transition-all duration-200 group">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[9px] font-bold text-yellow-500 tracking-wider uppercase">Module 03</span>
+                <svg class="w-4 h-4 text-gray-300 dark:text-zinc-600 group-hover:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
-            <div class="highlight-badge opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[9px] font-mono text-yellow-600 dark:text-yellow-400 uppercase tracking-wider font-bold bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 px-2 py-1 rounded">View Flow &rarr;</div>
-         </div>
-         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">H.264 Profiles & Levels</h3>
-         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Demystifying AWS MediaConvert Error 1040 and why adaptive bitrates require the `AUTO` level tag dynamically.</p>
-      </div>
+            <h3 class="text-sm font-bold text-black dark:text-white">H.264 Profiles & Levels</h3>
+         </button>
 
-      <!-- Card 4 -->
-      <div id="card-4" data-id="4" data-color="emerald" data-nodes="node-s3-origin" onclick="toggleCard(this)" class="guide-card group cursor-pointer border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 transition-all duration-300 relative hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20">
-         <div class="flex items-start justify-between mb-4">
-            <div class="w-8 h-8 rounded-full bg-emerald-50 dark:bg-white/5 border border-emerald-100 dark:border-white/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+         <!-- Module 4 -->
+         <button data-id="4" data-color="emerald" data-nodes="node-s3-origin" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-emerald-400 dark:hover:border-emerald-500/50 transition-all duration-200 group">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[9px] font-bold text-emerald-500 tracking-wider uppercase">Module 04</span>
+                <svg class="w-4 h-4 text-gray-300 dark:text-zinc-600 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
-            <div class="highlight-badge opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[9px] font-mono text-emerald-600 dark:text-emerald-400 uppercase tracking-wider font-bold bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-1 rounded">View Flow &rarr;</div>
-         </div>
-         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">S3 Public Access Risks</h3>
-         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Understanding "Denial of Wallet" attacks and why OAC (Origin Access Control) is absolutely mandatory for OTT.</p>
+            <h3 class="text-sm font-bold text-black dark:text-white">S3 Public Access Risks (OAC)</h3>
+         </button>
+
+         <!-- Module 5 -->
+         <button data-id="5" data-color="purple" data-nodes="node-payload-cms,node-jwt-auth-service,node-edge-token-auth,node-cloudfront-cdn" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-purple-400 dark:hover:border-purple-500/50 transition-all duration-200 group">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[9px] font-bold text-purple-500 tracking-wider uppercase">Module 05</span>
+                <svg class="w-4 h-4 text-gray-300 dark:text-zinc-600 group-hover:text-purple-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+            <h3 class="text-sm font-bold text-black dark:text-white">Edge Token Verification (JWT)</h3>
+         </button>
+
+         <!-- Module 6 -->
+         <button data-id="6" data-color="rose" data-nodes="node-client-playback" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-rose-400 dark:hover:border-rose-500/50 transition-all duration-200 group">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[9px] font-bold text-rose-500 tracking-wider uppercase">Module 06</span>
+                <svg class="w-4 h-4 text-gray-300 dark:text-zinc-600 group-hover:text-rose-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+            <h3 class="text-sm font-bold text-black dark:text-white">Decoding Shaka Error 3016</h3>
+         </button>
+
       </div>
 
-      <!-- Card 5 -->
-      <div id="card-5" data-id="5" data-color="purple" data-nodes="node-jwt-auth-service,node-edge-token-auth,node-cloudfront-cdn" onclick="toggleCard(this)" class="guide-card group cursor-pointer border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 transition-all duration-300 relative hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20">
-         <div class="flex items-start justify-between mb-4">
-             <div class="w-8 h-8 rounded-full bg-purple-50 dark:bg-white/5 border border-purple-100 dark:border-white/10 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-             </div>
-             <div class="highlight-badge opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[9px] font-mono text-purple-600 dark:text-purple-400 uppercase tracking-wider font-bold bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 px-2 py-1 rounded">View Flow &rarr;</div>
-         </div>
-         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">Edge Token Verification</h3>
-         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Deploying lightweight JavaScript on CloudFront Functions to verify cryptographic JWTs with sub-millisecond latency.</p>
-      </div>
-
-      <!-- Card 6 -->
-      <div id="card-6" data-id="6" data-color="rose" data-nodes="node-client-playback" onclick="toggleCard(this)" class="guide-card group cursor-pointer border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 transition-all duration-300 relative hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20">
-         <div class="flex items-start justify-between mb-4">
-             <div class="w-8 h-8 rounded-full bg-rose-50 dark:bg-white/5 border border-rose-100 dark:border-white/10 flex items-center justify-center text-rose-600 dark:text-rose-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-             </div>
-             <div class="highlight-badge opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[9px] font-mono text-rose-600 dark:text-rose-400 uppercase tracking-wider font-bold bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 px-2 py-1 rounded">View Flow &rarr;</div>
-         </div>
-         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">Decoding Shaka Error 3016</h3>
-         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Diagnosing Safari MSE execution blocks and understanding cross-origin resource sharing (CORS) limits gracefully.</p>
+      <!-- RIGHT COLUMN: Permanent Reading Pane (8 Cols) -->
+      <div class="lg:col-span-8 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-12 shadow-sm min-h-[600px]">
+          <div class="flex items-center space-x-3 mb-8">
+              <div id="pane-icon" class="w-8 h-8 rounded-full flex items-center justify-center bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              </div>
+              <h2 id="pane-title" class="text-2xl font-bold text-black dark:text-white tracking-tight">Direct-to-Cloud Ingestion</h2>
+          </div>
+          
+          <article id="reading-pane" class="text-sm academy-article">
+              <!-- Content injected here via JS -->
+          </article>
       </div>
 
     </div>
-
   </main>
 
-  <footer class="border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-500 text-sm">
-    <div class="max-w-[1400px] mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-500 text-sm">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
         <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
@@ -270,125 +287,258 @@
   </footer>
 
   <script>
-    // Theme Toggle Logic
+    // Theme Logic
     function toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
-
-    // Initialize Theme
     function initTheme() {
         const savedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
         if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
     }
-
     document.addEventListener('DOMContentLoaded', initTheme);
 
-    // Interactive Diagram State Controller
-    let activeCardId = null;
+    // Deep-Dive Technical Content Repository
+    const playbookData = {
+        1: {
+            title: "Direct-to-Cloud Ingestion",
+            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>`,
+            content: `
+                <p>Routing multi-gigabyte mezzanine video files through a traditional Node.js backend introduces severe memory bottlenecks, upload timeouts, and high compute costs. To solve this, our pipeline utilizes <strong>Direct-to-Cloud (D2C)</strong> ingestion.</p>
+                
+                <h3>The Presigned Handshake</h3>
+                <p>By leveraging the official <code class="px-1.5 py-0.5 rounded">@payloadcms/storage-gcs</code> plugin, we bypass the server entirely. When a user drops a file into the Payload UI, the server instantly replies with a secure, time-limited cryptographic URL.</p>
+                <pre><code>// Example Payload Upload Config
+export const Media: CollectionConfig = {
+  slug: 'media',
+  upload: {
+    disableLocalStorage: true, // Forces D2C mode
+  }
+}</code></pre>
+                
+                <h3>Event-Driven Initiation</h3>
+                <p>Once the browser successfully pushes the bytes to the Google Cloud Storage bucket, the bucket autonomously fires a webhook via <strong>GCP Eventarc</strong>. This wakes up our Cloud Run orchestrator exactly when the file is physically verified on disk, completely eliminating polling or hanging connections on the CMS.</p>
+            `
+        },
+        2: {
+            title: "Payload Relational Magic",
+            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>`,
+            content: `
+                <p>Enterprise Media Asset Management (MAM) requires strict relational tracking between master videos, alternate language audio tracks, and localized subtitles. However, forcing operators to manually link these assets in a UI leads to catastrophic ingestion failures.</p>
+                
+                <h3>Automated Hook Association</h3>
+                <p>We solve this using Payload's <code>beforeChange</code> lifecycle hooks. When a sidecar file (like <code>movie_audio_es.m4a</code>) hits the database, the server runs a RegExp parse, identifies the parent base name (<code>movie</code>), and automatically injects the relational Postgres ID.</p>
+                
+                <pre><code>// Automatic Relational Binding
+hooks: {
+  beforeChange: [
+    async ({ data, req }) => {
+      // Find parent media by folder path
+      const matchedMedia = await req.payload.find({
+        collection: 'media',
+        where: { folder_path: { equals: \`/\${data.base_name}/\` } }
+      });
+      
+      // Auto-bind relationship!
+      if (matchedMedia.docs.length > 0) {
+        data.parent_media = matchedMedia.docs[0].id;
+      }
+      return data;
+    }
+  ]
+}</code></pre>
+                <p>This allows us to maintain pristine database normalization while providing a completely frictionless, drag-and-drop experience for operators.</p>
+            `
+        },
+        3: {
+            title: "H.264 Profiles & Levels",
+            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+            content: `
+                <p>In video engineering, a <strong>Profile</strong> (Baseline, Main, High) defines the algorithms used to compress data, while a <strong>Level</strong> defines the hardware horsepower required to decode it.</p>
+                
+                <h3>Decoding Error 1040</h3>
+                <p>If you hardcode a MediaConvert job to <code>Level 4.1</code> (the historical standard for 1080p @ 30fps), and a user uploads a 60fps video, AWS will violently reject the job with <strong>Error 1040</strong>.</p>
+                
+                <ul>
+                    <li><strong>Level 3.1:</strong> Maxes at 720p @ 30fps.</li>
+                    <li><strong>Level 4.1:</strong> Maxes at 1080p @ 30fps.</li>
+                    <li><strong>Level 4.2:</strong> Doubles the math, allowing 1080p @ 60fps.</li>
+                </ul>
 
-    const themeColors = {
-        blue: { hex: '#3b82f6', cardActive: 'border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.1)] bg-blue-50/10 dark:bg-blue-900/10' },
-        orange: { hex: '#f97316', cardActive: 'border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.1)] bg-orange-50/10 dark:bg-orange-900/10' },
-        yellow: { hex: '#eab308', cardActive: 'border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.1)] bg-yellow-50/10 dark:bg-yellow-900/10' },
-        emerald: { hex: '#10b981', cardActive: 'border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)] bg-emerald-50/10 dark:bg-emerald-900/10' },
-        purple: { hex: '#a855f7', cardActive: 'border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.1)] bg-purple-50/10 dark:bg-purple-900/10' },
-        rose: { hex: '#f43f5e', cardActive: 'border-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.1)] bg-rose-50/10 dark:bg-rose-900/10' }
+                <p>By configuring the Boto3 payload with <code>"CodecLevel": "AUTO"</code>, we allow AWS MediaConvert to dynamically analyze the source framerate and automatically apply the lowest safe hardware level, ensuring 100% pipeline reliability regardless of the input file.</p>
+            `
+        },
+        4: {
+            title: "S3 Public Access Risks (OAC)",
+            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`,
+            content: `
+                <p>Leaving an S3 bucket configured with <code>"Principal": "*"</code> creates a massive <strong>Denial of Wallet (DoW)</strong> vulnerability. Malicious scrapers can repeatedly download your multi-gigabyte video assets, racking up unmetered AWS egress fees.</p>
+                
+                <h3>Origin Access Control (OAC)</h3>
+                <p>To secure the origin, we remove all public access and implement OAC. This enforces a cryptographic requirement that the S3 bucket will <em>only</em> answer to requests routed internally through your specific CloudFront CDN distribution.</p>
+
+                <pre><code>// Secure OAC Bucket Policy
+{
+  "Effect": "Allow",
+  "Principal": { "Service": "cloudfront.amazonaws.com" },
+  "Action": "s3:GetObject",
+  "Resource": "arn:aws:s3:::ott-video-bucket/*",
+  "Condition": {
+    "StringEquals": {
+      "AWS:SourceArn": "arn:aws:cloudfront::12345:distribution/E1A2B3C"
+    }
+  }
+}</code></pre>
+            `
+        },
+        5: {
+            title: "Edge Token Verification (JWT)",
+            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>`,
+            content: `
+                <p>To prevent unauthorized users from hotlinking your CDN URLs, we deploy lightweight JavaScript execution environments directly onto CloudFront edge nodes. This verifies entitlement in sub-millisecond timeframes.</p>
+                
+                <h3>Stateless Cryptography</h3>
+                <p>Our Payload CMS acts as the Identity Provider, signing a JSON Web Token (JWT) with an exact expiration timestamp (<code>exp</code>). The Edge Function intercepts every HTTP GET request and mathematically validates the signature before serving the chunk.</p>
+
+                <pre><code>// CloudFront Edge Interceptor (JS 2.0)
+function handler(event) {
+    var req = event.request;
+    if (req.method === 'OPTIONS') return req; // Allow CORS
+
+    var token = req.headers['x-ott-access-token'];
+    if (!token) return { statusCode: 403 };
+
+    // Decode JWT Payload
+    var payload = JSON.parse(atob(token.value.split('.')[1]));
+    
+    // Check Expiration
+    if (Date.now()/1000 > payload.exp) {
+        return { statusCode: 403, body: 'Token Expired' };
+    }
+    
+    return req; // Valid! Serve video chunk.
+}</code></pre>
+            `
+        },
+        6: {
+            title: "Decoding Shaka Error 3016",
+            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`,
+            content: `
+                <p>Shaka Player throws a <code class="px-1.5 py-0.5 rounded">MEDIA_ERR_SRC_NOT_SUPPORTED</code> (Error 3016 / HTML5 Error 4) when the browser violently rejects the video Blob generated by MediaSource Extensions (MSE).</p>
+                
+                <h3>The Safari Quarantine</h3>
+                <p>While Chrome will attempt to play almost any buffer you hand it, Apple Safari has the strictest media security model of any modern browser. When Safari sees MSE trying to stitch together a video stream from a script running directly off a local <code>file://</code> domain, its security engine panics and blocks the media pipe to prevent local sandbox escapes.</p>
+
+                <h3>Resolution</h3>
+                <p>This is rarely an issue with your AWS output. By deploying the player to an HTTPS origin (like GitHub Pages) with properly configured <code>Access-Control-Allow-Origin</code> headers on your CloudFront distribution, the origin mismatch is resolved and Safari securely hands off the decrypted chunks to the hardware decoder.</p>
+            `
+        }
     };
 
-    function toggleCard(cardElement) {
+    const themeColors = {
+        blue: { hex: '#3b82f6', bgClass: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
+        orange: { hex: '#f97316', bgClass: 'bg-orange-500/10 text-orange-500 border-orange-500/20' },
+        yellow: { hex: '#eab308', bgClass: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' },
+        emerald: { hex: '#10b981', bgClass: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
+        purple: { hex: '#a855f7', bgClass: 'bg-purple-500/10 text-purple-500 border-purple-500/20' },
+        rose: { hex: '#f43f5e', bgClass: 'bg-rose-500/10 text-rose-500 border-rose-500/20' }
+    };
+
+    function selectModule(cardElement) {
         const id = cardElement.dataset.id;
         const colorKey = cardElement.dataset.color;
         const targetNodes = cardElement.dataset.nodes.split(',');
 
-        const isActive = activeCardId === id;
-
-        // Reset all cards to default states
-        document.querySelectorAll('.guide-card').forEach(card => {
-            const cColorKey = card.dataset.color;
-            const cActiveStyles = themeColors[cColorKey].cardActive.split(' ');
-            
-            // Restore default card classes
-            card.classList.remove(...cActiveStyles);
-            card.classList.add('border-gray-200', 'dark:border-white/10', 'hover:border-gray-300', 'dark:hover:border-white/20', 'hover:shadow-md', 'dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)]');
-            
-            // Reset Badges
-            const badge = card.querySelector('.highlight-badge');
-            if(badge) {
-                badge.classList.remove('opacity-100');
-                badge.classList.add('opacity-0', 'group-hover:opacity-100');
-            }
+        // 1. Reset all buttons
+        document.querySelectorAll('.module-btn').forEach(btn => {
+            btn.classList.remove('border-blue-400', 'border-orange-400', 'border-yellow-400', 'border-emerald-400', 'border-purple-400', 'border-rose-400', 'bg-gray-50', 'dark:bg-[#111]');
+            btn.classList.add('border-gray-200', 'dark:border-white/10', 'bg-white', 'dark:bg-[#0a0a0a]');
         });
 
-        // Reset all pipeline nodes to default states
-        const svgContainer = document.getElementById('pipeline-svg');
-        svgContainer.classList.remove('opacity-20');
-        svgContainer.querySelectorAll('path').forEach(path => {
-            path.style.stroke = '';
-            path.style.opacity = '1';
-        });
+        // 2. Highlight active button
+        cardElement.classList.remove('border-gray-200', 'dark:border-white/10', 'bg-white', 'dark:bg-[#0a0a0a]');
+        cardElement.classList.add(`border-${colorKey}-400`, 'bg-gray-50', 'dark:bg-[#111]');
+
+        // 3. Update Reading Pane
+        const paneTitle = document.getElementById('pane-title');
+        const paneContent = document.getElementById('reading-pane');
+        const paneIcon = document.getElementById('pane-icon');
         
+        paneTitle.innerText = playbookData[id].title;
+        paneContent.innerHTML = playbookData[id].content;
+        
+        const cardIcon = playbookData[id].icon;
+        paneIcon.className = `w-8 h-8 rounded-full flex items-center justify-center shrink-0 border ${themeColors[colorKey].bgClass}`;
+        paneIcon.innerHTML = cardIcon;
+
+        // 4. Animate SVG Diagram
+        const svgContainer = document.getElementById('pipeline-svg');
+        const overlayGroup = document.getElementById('flow-overlay');
+        
+        // Show the animation overlay
+        overlayGroup.classList.remove('opacity-0');
+        overlayGroup.classList.add('opacity-100');
+
+        // Reset all nodes to base state (dimmed)
         document.querySelectorAll('.pipeline-node').forEach(node => {
-            node.classList.remove('opacity-20', 'grayscale', 'scale-95', 'scale-105', 'z-30');
+            node.classList.remove('scale-105', 'z-30');
+            node.classList.add('opacity-40', 'grayscale', 'scale-95');
             node.style.borderColor = '';
             node.style.boxShadow = '';
-        });
-
-        if (isActive) {
-            activeCardId = null; // Simply close if clicking the currently open card
-            return;
-        }
-
-        // Apply active state
-        activeCardId = id;
-
-        // Apply active card outline/glow
-        const activeCardStyles = themeColors[colorKey].cardActive.split(' ');
-        cardElement.classList.remove('border-gray-200', 'dark:border-white/10', 'hover:border-gray-300', 'dark:hover:border-white/20', 'hover:shadow-md', 'dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)]');
-        cardElement.classList.add(...activeCardStyles);
-
-        const badge = cardElement.querySelector('.highlight-badge');
-        if(badge) {
-            badge.classList.remove('opacity-0', 'group-hover:opacity-100');
-            badge.classList.add('opacity-100');
-        }
-
-        // Map highlights onto the SVG diagram nodes
-        document.querySelectorAll('.pipeline-node').forEach(node => {
-            // Remove 'node-' prefix to match path dataset
-            const baseNodeId = node.id.replace('node-', '');
             
-            if (targetNodes.includes(node.id)) {
-                // Highlight target nodes
-                node.classList.add('scale-105', 'z-30');
-                node.style.borderColor = themeColors[colorKey].hex;
-                node.style.boxShadow = `0 0 20px ${themeColors[colorKey].hex}40`;
-            } else {
-                // Dim irrelevant nodes
-                node.classList.add('opacity-20', 'grayscale', 'scale-95');
+            const indicator = node.querySelector('.indicator');
+            if(indicator) {
+                indicator.style.borderColor = '';
+                indicator.classList.remove('shadow-[0_0_8px_currentColor]');
             }
         });
-        
-        // Highlight active SVG paths
-        svgContainer.querySelectorAll('path').forEach(path => {
-            const source = "node-" + path.dataset.source;
-            const target = "node-" + path.dataset.target;
+
+        // Highlight target nodes
+        document.querySelectorAll('.pipeline-node').forEach(node => {
+            if (targetNodes.includes(node.id)) {
+                node.classList.remove('opacity-40', 'grayscale', 'scale-95');
+                node.classList.add('scale-105', 'z-30');
+                node.style.borderColor = themeColors[colorKey].hex;
+                node.style.boxShadow = `0 0 20px ${themeColors[colorKey].hex}20`;
+                
+                const indicator = node.querySelector('.indicator');
+                if(indicator) {
+                    indicator.style.borderColor = themeColors[colorKey].hex;
+                    indicator.style.backgroundColor = themeColors[colorKey].hex;
+                    indicator.classList.add('shadow-[0_0_8px_currentColor]');
+                }
+            }
+        });
+
+        // Highlight and animate active SVG paths
+        overlayGroup.querySelectorAll('path').forEach(path => {
+            const source = "node-" + path.dataset.source.replace('node-','');
+            const target = "node-" + path.dataset.target.replace('node-','');
             
             if (targetNodes.includes(source) && targetNodes.includes(target)) {
                 path.style.stroke = themeColors[colorKey].hex;
                 path.style.opacity = '1';
+                
+                // Assign correct arrow marker based on color
+                path.setAttribute('marker-end', `url(#arrow-${colorKey})`);
             } else {
-                path.style.stroke = '';
-                path.style.opacity = '0.2';
+                path.style.opacity = '0';
+                path.removeAttribute('marker-end');
             }
         });
     }
+
+    // Initialize first module on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const firstModule = document.querySelector('.module-btn');
+        if(firstModule) selectModule(firstModule);
+    });
+
   </script>
 </body>
 </html>
