@@ -30,17 +30,18 @@
     <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
       
       <div class="flex items-center h-full">
-        <div class="flex items-center mr-8">
+        <div class="flex items-center mr-6">
           <!-- Vercel-style Triangle Logo -->
           <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2L2 22h20L12 2z"/>
           </svg>
         </div>
         
-        <!-- Navigation Tabs (Main / Player) -->
+        <!-- Navigation Tabs (Main / Player / Academy) -->
         <nav class="hidden md:flex items-center space-x-6 h-full">
             <a href="index.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all">Main</a>
             <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Player</a>
+            <a href="academy.html" class="text-sm text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Academy</a>
         </nav>
       </div>
       
@@ -67,7 +68,7 @@
     <div class="absolute top-8 right-6 text-gray-300 dark:text-gray-700 pointer-events-none select-none">+</div>
 
     <!-- Hero Banner -->
-    <div class="text-center mb-10 pt-8 flex flex-col items-center">
+    <div class="text-center mb-16 pt-8 flex flex-col items-center">
       <div class="inline-flex items-center space-x-2 mb-6 px-3 py-1 rounded-full border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
         <span class="w-1.5 h-1.5 rounded-full bg-[#00df89] animate-pulse shadow-[0_0_8px_#00df89]"></span>
         <span class="font-mono text-[9px] text-gray-600 dark:text-zinc-300 tracking-widest uppercase font-bold">Pipeline Active & Replicating</span>
@@ -80,63 +81,8 @@
       </p>
     </div>
 
-    <!-- Vercel-Style Pipeline Infographic -->
-    <div class="w-full overflow-x-auto hide-scroll pb-16 flex justify-start md:justify-center">
-        <div class="relative w-[800px] h-[200px] flex-shrink-0 select-none">
-            
-            <!-- SVG Connectors -->
-            <svg class="absolute inset-0 w-full h-full pointer-events-none text-gray-200 dark:text-white/10" stroke-width="2" fill="none" stroke-linecap="round">
-                <!-- Node 1 to Node 2 (Upwards curve) -->
-                <path d="M 230 100 C 255 100, 255 50, 280 50" stroke="currentColor" />
-                <!-- Node 1 to Node 3 (Downwards curve) -->
-                <path d="M 230 100 C 255 100, 255 150, 280 150" stroke="currentColor" />
-                <!-- Node 3 to Node 4 (Straight line) -->
-                <path d="M 510 150 L 560 150" stroke="currentColor" />
-            </svg>
-
-            <!-- Node 1: Ingest -->
-            <div class="absolute left-[0px] top-[78px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
-                <div class="flex items-center gap-3">
-                    <div class="w-3.5 h-3.5 rounded-full border-2 border-amber-500 flex items-center justify-center">
-                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                    </div>
-                    <span class="font-sans font-medium text-black dark:text-white text-sm tracking-tight">payload-ingest</span>
-                </div>
-                <span class="text-xs text-gray-400 dark:text-zinc-500 font-mono">14s</span>
-                <!-- Connection Dot Right -->
-                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
-            </div>
-
-            <!-- Node 2: GCP Validation -->
-            <div class="absolute left-[280px] top-[28px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-3 px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
-                <!-- Connection Dot Left -->
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
-                <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-zinc-600"></div>
-                <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">asset-validation</span>
-            </div>
-
-            <!-- Node 3: AWS MediaConvert -->
-            <div class="absolute left-[280px] top-[128px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-3 px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
-                <!-- Connection Dot Left -->
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
-                <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-zinc-600"></div>
-                <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">aws-transcode</span>
-                <!-- Connection Dot Right -->
-                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
-            </div>
-
-            <!-- Node 4: CloudFront Edge -->
-            <div class="absolute left-[560px] top-[128px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-3 px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
-                <!-- Connection Dot Left -->
-                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
-                <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-zinc-600"></div>
-                <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">edge-deploy</span>
-            </div>
-        </div>
-    </div>
-
     <!-- Title Divider -->
-    <div class="flex items-center space-x-4 mb-8">
+    <div class="flex items-center space-x-4 mb-8 mt-16">
         <h2 class="text-[10px] font-mono font-bold tracking-widest text-gray-400 dark:text-zinc-500 uppercase">Architecture & Integration Pillars</h2>
         <div class="flex-grow h-px bg-gray-200 dark:bg-white/10"></div>
     </div>
@@ -146,36 +92,29 @@
 
       <!-- Card 1: Payload CMS Orchestration -->
       <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
-        <!-- Image Area (Neutral Slate/Zinc - NO gradient mismatch) -->
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
              <div class="w-4/5 h-3/4 border border-gray-200 dark:border-white/10 rounded-md bg-white dark:bg-black shadow-sm flex overflow-hidden relative z-10 opacity-80 group-hover:opacity-100 transition-all transform group-hover:scale-105 duration-300">
-                <!-- Sidebar -->
                 <div class="w-12 border-r border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-[#0a0a0a] flex flex-col items-center py-2 gap-2">
                     <div class="w-4 h-4 rounded bg-black dark:bg-white"></div>
                     <div class="w-4 h-1 rounded bg-gray-200 dark:bg-white/10 mt-2"></div>
                     <div class="w-4 h-1 rounded bg-gray-200 dark:bg-white/10"></div>
                 </div>
-                <!-- Main Area -->
                 <div class="flex-grow p-3 flex flex-col gap-3">
                     <div class="flex justify-between items-center">
                         <div class="h-3 w-16 bg-gray-200 dark:bg-white/20 rounded"></div>
                         <div class="h-4 w-12 bg-black dark:bg-white text-[6px] text-white dark:text-black flex items-center justify-center rounded uppercase font-bold">Deploy</div>
                     </div>
-                    <!-- Dropzone -->
                     <div class="flex-grow border border-dashed border-gray-200 dark:border-white/10 rounded flex items-center justify-center bg-gray-50 dark:bg-white/5">
                         <svg class="w-5 h-5 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                     </div>
-                    <!-- Live Status Row -->
                     <div class="h-4 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 rounded flex items-center px-2 gap-1">
                         <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
                         <div class="h-1.5 w-12 bg-gray-200 dark:bg-white/20 rounded"></div>
                     </div>
                 </div>
              </div>
-             <!-- Subtle background grid -->
              <div class="absolute inset-0 z-0 opacity-30" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
-        <!-- Content Area -->
         <div class="p-6 flex flex-col flex-grow">
           <div class="font-mono text-[9px] font-bold tracking-widest text-zinc-400 dark:text-zinc-500 mb-2 uppercase">// STEP 01</div>
           <h3 class="text-base font-bold text-black dark:text-white mb-2">MAM Orchestration (Payload CMS)</h3>
@@ -187,7 +126,6 @@
       
       <!-- Card 2: Cloud Ingest (GCS & Eventarc) -->
       <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
-        <!-- Image Area (Neutral Slate/Zinc - NO gradient mismatch) -->
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
              <div class="w-3/4 h-3/4 border border-gray-200 dark:border-white/10 rounded-md bg-white dark:bg-black shadow-sm flex flex-col p-3 gap-2 relative z-10 opacity-80 group-hover:opacity-100 transition-all transform group-hover:scale-105 duration-300">
                 <div class="flex items-start gap-2">
@@ -207,7 +145,6 @@
                     <div class="w-4 h-4 bg-gray-200 dark:bg-white/20 rounded-sm"></div>
                 </div>
              </div>
-             <!-- Subtle background grid inside image area -->
              <div class="absolute inset-0 z-0 opacity-30" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
         <div class="p-6 flex flex-col flex-grow">
@@ -221,9 +158,7 @@
 
       <!-- Card 3: AWS MediaConvert Transcoding -->
       <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
-        <!-- Image Area (Neutral Slate/Zinc - NO gradient mismatch) -->
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
-           <!-- Simulated Nodes -->
            <div class="grid grid-cols-3 gap-2 opacity-60 group-hover:opacity-100 transition-all transform group-hover:scale-105 scale-90 duration-300">
                <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm"></div>
                <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm text-xs font-mono text-gray-400">ex</div>
@@ -241,7 +176,6 @@
            </div>
            <div class="absolute inset-0 z-0 opacity-30 pointer-events-none" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
-        <!-- Content Area -->
         <div class="p-6 flex flex-col flex-grow">
           <div class="font-mono text-[9px] font-bold tracking-widest text-zinc-400 dark:text-zinc-500 mb-2 uppercase">// STEP 03</div>
           <h3 class="text-base font-bold text-black dark:text-white mb-2">AWS MediaConvert</h3>
@@ -253,10 +187,8 @@
 
       <!-- Card 4: Security (Delivery) -->
       <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
-        <!-- Image Area (Neutral Slate/Zinc - NO gradient mismatch) -->
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
             <div class="relative z-10 transform transition-transform group-hover:scale-105 duration-300 opacity-90 group-hover:opacity-100">
-                <!-- Data Table UI -->
                 <div class="w-32 h-24 border border-gray-200 dark:border-white/10 rounded bg-white dark:bg-black shadow-sm flex flex-col overflow-hidden">
                     <div class="h-4 border-b border-gray-100 dark:border-white/5 flex items-center px-2 gap-1 bg-gray-50 dark:bg-[#0a0a0a]">
                         <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-zinc-700"></div>
@@ -265,7 +197,6 @@
                     </div>
                     <div class="flex-grow bg-grid-pattern opacity-10 dark:opacity-20" style="background-image: linear-gradient(to right, #888 1px, transparent 1px), linear-gradient(to bottom, #888 1px, transparent 1px); background-size: 8px 8px;"></div>
                 </div>
-                <!-- Floating Badges -->
                 <div class="absolute -left-4 top-4 w-6 h-6 rounded bg-black dark:bg-white flex items-center justify-center text-white dark:text-black shadow-sm border border-gray-200 dark:border-white/10">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 </div>
@@ -275,7 +206,6 @@
             </div>
             <div class="absolute inset-0 z-0 opacity-30" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
-        <!-- Content Area -->
         <div class="p-6 flex flex-col flex-grow">
           <div class="font-mono text-[9px] font-bold tracking-widest text-zinc-400 dark:text-zinc-500 mb-2 uppercase">// STEP 04</div>
           <h3 class="text-base font-bold text-black dark:text-white mb-2">CloudFront Edge Delivery</h3>
@@ -308,13 +238,11 @@
   </footer>
 
   <script>
-    // Theme Toggle Logic
     function toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
 
-    // Initialize Theme
     function initTheme() {
         const savedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
