@@ -30,8 +30,8 @@
     
     .hide-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
     .hide-scroll::-webkit-scrollbar-track { background: transparent; }
-    .hide-scroll::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 2px; }
-    .hide-scroll { scrollbar-width: thin; scrollbar-color: rgba(150, 150, 150, 0.3) transparent; }
+    .hide-scroll::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.4); border-radius: 2px; }
+    .hide-scroll { scrollbar-width: thin; scrollbar-color: rgba(150, 150, 150, 0.4) transparent; }
 
     /* Explicit Data Flow Animation */
     @keyframes data-flow {
@@ -42,20 +42,20 @@
       animation: data-flow 0.8s linear infinite;
     }
 
-    /* Academy Article Typography */
+    /* Academy Article Typography - Enhanced Legibility */
     .academy-article h3 { font-size: 1.15rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #fff; }
     .light .academy-article h3 { color: #111827; }
     .academy-article p { margin-bottom: 1.25rem; line-height: 1.6; color: #a1a1aa; }
-    .light .academy-article p { color: #4b5563; }
+    .light .academy-article p { color: #374151; font-weight: 400; }
     .academy-article pre { background: #111; border: 1px solid rgba(255,255,255,0.1); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; }
-    .light .academy-article pre { background: #f3f4f6; border-color: #e5e7eb; }
+    .light .academy-article pre { background: #f8fafc; border-color: #e2e8f0; }
     .academy-article code { font-family: 'Geist Mono', monospace; font-size: 0.85em; color: #e4e4e7; }
-    .light .academy-article code { color: #1f2937; }
+    .light .academy-article code { color: #0f172a; }
     .academy-article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #a1a1aa; }
-    .light .academy-article ul { color: #4b5563; }
+    .light .academy-article ul { color: #374151; }
     .academy-article li { margin-bottom: 0.5rem; }
     .academy-article strong { color: #f4f4f5; font-weight: 600; }
-    .light .academy-article strong { color: #111827; }
+    .light .academy-article strong { color: #111827; font-weight: 600; }
   </style>
 </head>
 <body class="bg-white text-black dark:bg-[#000000] dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
@@ -68,13 +68,13 @@
           <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
         </div>
         <nav class="hidden md:flex items-center space-x-6 h-full">
-            <a href="index.html" class="text-sm text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Main</a>
-            <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Player</a>
+            <a href="index.html" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Main</a>
+            <a href="player.html" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Player</a>
             <a href="academy.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all">Academy</a>
         </nav>
       </div>
       <div class="flex items-center space-x-3">
-        <button onclick="toggleTheme()" class="p-1.5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+        <button onclick="toggleTheme()" class="p-1.5 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
             <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
             <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
         </button>
@@ -85,45 +85,36 @@
   <main class="max-w-[1400px] mx-auto px-6 py-12 w-full relative">
     
     <!-- Background Grid -->
-    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-40" style="background-image: linear-gradient(to right, rgba(150,150,150,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(150,150,150,0.1) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
+    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-40 dark:opacity-40" style="background-image: linear-gradient(to right, rgba(150,150,150,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(150,150,150,0.15) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
 
     <div class="mb-10">
       <h1 class="text-3xl font-extrabold tracking-tight text-black dark:text-white mb-2">Platform Academy</h1>
-      <p class="text-gray-600 dark:text-zinc-400 text-sm max-w-3xl leading-relaxed">
+      <p class="text-gray-700 dark:text-zinc-400 text-sm max-w-3xl leading-relaxed">
         Select a module below to explore the technical implementation of each architectural stage, and observe its exact position within our serverless pipeline flow.
       </p>
     </div>
 
     <!-- The Flow Diagram (Top Section) -->
     <div class="w-full bg-[#f8f9fa] dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-xl overflow-x-auto hide-scroll mb-10 relative shadow-sm">
-        
-        <!-- Legend -->
-        <div class="absolute top-4 left-4 z-20 flex gap-4 text-[10px] font-mono font-bold tracking-wider text-gray-500 dark:text-zinc-500 uppercase">
-            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Ingestion</div>
-            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-orange-500"></span> Processing</div>
-            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-500"></span> Storage</div>
-            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Security / CDN</div>
-        </div>
 
         <div class="relative w-[1100px] h-[260px] flex-shrink-0 select-none mx-auto mt-6">
             
-            <!-- Increased contrast on default stroke for light mode (text-gray-400) -->
-            <svg id="pipeline-svg" class="absolute inset-0 w-full h-full pointer-events-none text-gray-400 dark:text-white/20 transition-all duration-500 ease-out" stroke-width="2.5" fill="none" stroke-linecap="round">
+            <svg id="pipeline-svg" class="absolute inset-0 w-full h-full pointer-events-none text-gray-500 dark:text-white/20 transition-all duration-500 ease-out" stroke-width="2.5" fill="none" stroke-linecap="round">
                 <defs>
-                    <!-- Base Arrowhead: Using currentColor for proper light/dark inheritance -->
+                    <!-- Base Arrowhead -->
                     <marker id="arrow-base" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                         <path d="M 0 0 L 10 5 L 0 10 z" class="fill-gray-400 dark:fill-[#333333]" />
                     </marker>
-                    <!-- Dynamic Colored Arrowheads -->
-                    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3b82f6" /></marker>
-                    <marker id="arrow-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f97316" /></marker>
-                    <marker id="arrow-yellow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#eab308" /></marker>
-                    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" /></marker>
-                    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a855f7" /></marker>
-                    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" /></marker>
+                    <!-- Active Monochrome Arrowhead -->
+                    <marker id="arrow-active-light" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-black" />
+                    </marker>
+                    <marker id="arrow-active-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-white" />
+                    </marker>
                 </defs>
 
-                <!-- Static Background Paths (Always visible, higher contrast in light mode) -->
+                <!-- Static Background Paths -->
                 <g class="text-gray-300 dark:text-white/10" marker-end="url(#arrow-base)">
                     <path d="M 180 130 C 220 130, 220 50, 280 50" stroke="currentColor" />
                     <path d="M 180 130 C 220 130, 220 210, 280 210" stroke="currentColor" />
@@ -148,53 +139,45 @@
                 </g>
             </svg>
 
-            <!-- NODES (Updated styling for extreme clarity in both modes) -->
-            <!-- 1. Payload CMS -->
+            <!-- NODES (Monochrome Clean Brutalism) -->
             <div id="node-payload-cms" class="pipeline-node absolute left-[20px] top-[110px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
-                <div class="w-3 h-3 rounded-full bg-blue-500 shrink-0 indicator"></div>
-                <span class="font-sans font-medium text-xs tracking-tight text-gray-800 dark:text-white">payload-cms</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
+                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">payload-cms</span>
             </div>
 
-            <!-- 2. GCP Validation -->
             <div id="node-gcp-validation" class="pipeline-node absolute left-[280px] top-[30px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
-                <div class="w-3 h-3 rounded-full bg-blue-500 shrink-0 indicator"></div>
-                <span class="font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300">gcp-validation</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
+                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">gcp-validation</span>
             </div>
 
-            <!-- 3. AWS Transcode -->
             <div id="node-aws-transcode" class="pipeline-node absolute left-[280px] top-[190px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
-                <div class="w-3 h-3 rounded-full bg-orange-500 shrink-0 indicator"></div>
-                <span class="font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300">aws-transcode</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
+                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">aws-transcode</span>
             </div>
 
-            <!-- 4. S3 Origin -->
             <div id="node-s3-origin" class="pipeline-node absolute left-[520px] top-[190px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
-                <div class="w-3 h-3 rounded-full bg-yellow-500 shrink-0 indicator"></div>
-                <span class="font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300">s3-origin</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
+                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">s3-origin</span>
             </div>
 
-            <!-- 5. CloudFront CDN -->
             <div id="node-cloudfront-cdn" class="pipeline-node absolute left-[760px] top-[190px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
-                <div class="w-3 h-3 rounded-full bg-emerald-500 shrink-0 indicator"></div>
-                <span class="font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300">cloudfront-cdn</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
+                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">cloudfront-cdn</span>
             </div>
 
-            <!-- 6. JWT Auth Service -->
             <div id="node-jwt-auth-service" class="pipeline-node absolute left-[520px] top-[30px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
-                <div class="w-3 h-3 rounded-full bg-purple-500 shrink-0 indicator"></div>
-                <span class="font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300">jwt-auth-service</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
+                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">jwt-auth-service</span>
             </div>
 
-            <!-- 7. Edge Token Auth -->
             <div id="node-edge-token-auth" class="pipeline-node absolute left-[760px] top-[30px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
-                <div class="w-3 h-3 rounded-full bg-purple-500 shrink-0 indicator"></div>
-                <span class="font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300">edge-token-auth</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
+                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">edge-token-auth</span>
             </div>
 
-            <!-- 8. Shaka Player -->
             <div id="node-client-playback" class="pipeline-node absolute left-[1000px] top-[110px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
-                <div class="w-3 h-3 rounded-full bg-[#f43f5e] shrink-0 indicator flex items-center justify-center"></div>
-                <span class="font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300">client-playback</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors flex items-center justify-center"></div>
+                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">client-playback</span>
             </div>
         </div>
     </div>
@@ -202,70 +185,64 @@
     <!-- Master-Detail Split Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start pb-20">
       
-      <!-- LEFT COLUMN: Module Navigation (4 Cols) -->
+      <!-- LEFT COLUMN: Module Navigation -->
       <div class="lg:col-span-4 flex flex-col gap-3">
          <h2 class="text-[10px] font-mono font-bold tracking-widest text-gray-500 dark:text-zinc-500 uppercase mb-2">Architectural Curriculum</h2>
          
-         <!-- Module 1 -->
-         <button data-id="1" data-color="blue" data-nodes="node-payload-cms,node-gcp-validation" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-blue-400 dark:hover:border-blue-500/50 transition-all duration-200 group shadow-sm dark:shadow-none">
+         <button data-id="1" data-nodes="node-payload-cms,node-gcp-validation" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-black dark:hover:border-white transition-all duration-200 group shadow-sm dark:shadow-none">
             <div class="flex items-center justify-between mb-1">
-                <span class="font-mono text-[9px] font-bold text-blue-600 dark:text-blue-500 tracking-wider uppercase">Stage 01</span>
-                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <span class="font-mono text-[10px] font-bold text-gray-600 dark:text-zinc-400 tracking-wider uppercase group-hover:text-black dark:group-hover:text-white transition-colors">Stage 01</span>
+                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-black dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
             <h3 class="text-sm font-bold text-gray-900 dark:text-white">CMS Ingestion & Validation</h3>
          </button>
 
-         <!-- Module 2 -->
-         <button data-id="2" data-color="orange" data-nodes="node-aws-transcode" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-orange-400 dark:hover:border-orange-500/50 transition-all duration-200 group shadow-sm dark:shadow-none">
+         <button data-id="2" data-nodes="node-aws-transcode" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-black dark:hover:border-white transition-all duration-200 group shadow-sm dark:shadow-none">
             <div class="flex items-center justify-between mb-1">
-                <span class="font-mono text-[9px] font-bold text-orange-600 dark:text-orange-500 tracking-wider uppercase">Stage 02</span>
-                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <span class="font-mono text-[10px] font-bold text-gray-600 dark:text-zinc-400 tracking-wider uppercase group-hover:text-black dark:group-hover:text-white transition-colors">Stage 02</span>
+                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-black dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
             <h3 class="text-sm font-bold text-gray-900 dark:text-white">Serverless Transcoding</h3>
          </button>
 
-         <!-- Module 3 -->
-         <button data-id="3" data-color="yellow" data-nodes="node-s3-origin" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-yellow-400 dark:hover:border-yellow-500/50 transition-all duration-200 group shadow-sm dark:shadow-none">
+         <button data-id="3" data-nodes="node-s3-origin" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-black dark:hover:border-white transition-all duration-200 group shadow-sm dark:shadow-none">
             <div class="flex items-center justify-between mb-1">
-                <span class="font-mono text-[9px] font-bold text-yellow-600 dark:text-yellow-500 tracking-wider uppercase">Stage 03</span>
-                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <span class="font-mono text-[10px] font-bold text-gray-600 dark:text-zinc-400 tracking-wider uppercase group-hover:text-black dark:group-hover:text-white transition-colors">Stage 03</span>
+                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-black dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
             <h3 class="text-sm font-bold text-gray-900 dark:text-white">Origin Storage Configuration</h3>
          </button>
 
-         <!-- Module 4 -->
-         <button data-id="4" data-color="emerald" data-nodes="node-cloudfront-cdn" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-emerald-400 dark:hover:border-emerald-500/50 transition-all duration-200 group shadow-sm dark:shadow-none">
+         <button data-id="4" data-nodes="node-cloudfront-cdn" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-black dark:hover:border-white transition-all duration-200 group shadow-sm dark:shadow-none">
             <div class="flex items-center justify-between mb-1">
-                <span class="font-mono text-[9px] font-bold text-emerald-600 dark:text-emerald-500 tracking-wider uppercase">Stage 04</span>
-                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <span class="font-mono text-[10px] font-bold text-gray-600 dark:text-zinc-400 tracking-wider uppercase group-hover:text-black dark:group-hover:text-white transition-colors">Stage 04</span>
+                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-black dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
             <h3 class="text-sm font-bold text-gray-900 dark:text-white">Global CDN Distribution</h3>
          </button>
 
-         <!-- Module 5 -->
-         <button data-id="5" data-color="purple" data-nodes="node-payload-cms,node-jwt-auth-service,node-edge-token-auth" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-purple-400 dark:hover:border-purple-500/50 transition-all duration-200 group shadow-sm dark:shadow-none">
+         <button data-id="5" data-nodes="node-payload-cms,node-jwt-auth-service,node-edge-token-auth" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-black dark:hover:border-white transition-all duration-200 group shadow-sm dark:shadow-none">
             <div class="flex items-center justify-between mb-1">
-                <span class="font-mono text-[9px] font-bold text-purple-600 dark:text-purple-500 tracking-wider uppercase">Stage 05</span>
-                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-purple-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <span class="font-mono text-[10px] font-bold text-gray-600 dark:text-zinc-400 tracking-wider uppercase group-hover:text-black dark:group-hover:text-white transition-colors">Stage 05</span>
+                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-black dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
             <h3 class="text-sm font-bold text-gray-900 dark:text-white">Stateless Edge Authorization</h3>
          </button>
 
-         <!-- Module 6 -->
-         <button data-id="6" data-color="rose" data-nodes="node-client-playback" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-rose-400 dark:hover:border-rose-500/50 transition-all duration-200 group shadow-sm dark:shadow-none">
+         <button data-id="6" data-nodes="node-client-playback" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-black dark:hover:border-white transition-all duration-200 group shadow-sm dark:shadow-none">
             <div class="flex items-center justify-between mb-1">
-                <span class="font-mono text-[9px] font-bold text-rose-600 dark:text-rose-500 tracking-wider uppercase">Stage 06</span>
-                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-rose-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <span class="font-mono text-[10px] font-bold text-gray-600 dark:text-zinc-400 tracking-wider uppercase group-hover:text-black dark:group-hover:text-white transition-colors">Stage 06</span>
+                <svg class="w-4 h-4 text-gray-400 dark:text-zinc-600 group-hover:text-black dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
             <h3 class="text-sm font-bold text-gray-900 dark:text-white">Secure Client Playback</h3>
          </button>
 
       </div>
 
-      <!-- RIGHT COLUMN: Permanent Reading Pane (8 Cols) -->
-      <div class="lg:col-span-8 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-8 md:p-12 shadow-sm min-h-[600px]">
-          <div class="flex items-center space-x-3 mb-8">
-              <div id="pane-icon" class="w-8 h-8 rounded-full flex items-center justify-center bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-500 border border-blue-200 dark:border-blue-500/20">
+      <!-- RIGHT COLUMN: Permanent Reading Pane -->
+      <div class="lg:col-span-8 bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-xl p-8 md:p-12 shadow-sm min-h-[600px]">
+          <div class="flex items-center space-x-3 mb-8 pb-6 border-b border-gray-200 dark:border-white/10">
+              <div id="pane-icon" class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white border border-gray-300 dark:border-white/20">
                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
               </div>
               <h2 id="pane-title" class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">CMS Ingestion & Validation</h2>
@@ -279,12 +256,12 @@
     </div>
   </main>
 
-  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-500 text-sm">
+  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-600 dark:text-zinc-500 text-sm font-mono tracking-wider">
     <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
         <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
-            <span>All systems normal.</span>
+            <span class="w-2 h-2 rounded-full bg-black dark:bg-white"></span>
+            <span>SYSTEM_READY</span>
         </div>
     </div>
   </footer>
@@ -294,6 +271,7 @@
     function toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateActiveSVGMarker();
     }
     function initTheme() {
         const savedTheme = localStorage.getItem('theme');
@@ -304,7 +282,28 @@
             document.documentElement.classList.remove('dark');
         }
     }
-    document.addEventListener('DOMContentLoaded', initTheme);
+    document.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+        const firstModule = document.querySelector('.module-btn');
+        if(firstModule) selectModule(firstModule);
+    });
+
+    // Determine the current marker string depending on light/dark mode
+    function getActiveMarkerUrl() {
+        return document.documentElement.classList.contains('dark') 
+            ? 'url(#arrow-active-dark)' 
+            : 'url(#arrow-active-light)';
+    }
+
+    function updateActiveSVGMarker() {
+        if (!activeCardId) return;
+        const overlayGroup = document.getElementById('flow-overlay');
+        overlayGroup.querySelectorAll('path').forEach(path => {
+            if(path.style.opacity === '1') {
+                path.setAttribute('marker-end', getActiveMarkerUrl());
+            }
+        });
+    }
 
     // Deep-Dive Technical Content Repository (Step-by-Step Architecture)
     const playbookData = {
@@ -372,7 +371,7 @@ aws_client.create_job(
             title: "Origin Storage Configuration",
             icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
             content: `
-                <p>The transcoded <code>.m3u8</code> manifests and <code>.ts</code> video chunks are deposited by AWS MediaConvert into an Amazon S3 output bucket acting as our origin server.</p>
+                <p>The transcoded <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.m3u8</code> manifests and <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.ts</code> video chunks are deposited by AWS MediaConvert into an Amazon S3 output bucket acting as our origin server.</p>
                 
                 <h3>Origin Access Control (OAC)</h3>
                 <p>Leaving an S3 bucket publicly accessible creates a severe vulnerability where malicious scrapers can hotlink your raw assets and rack up unmetered egress bandwidth fees (a "Denial of Wallet" attack).</p>
@@ -449,7 +448,7 @@ function handler(event) {
                 <p>On the client-side, standard HTML5 <code>&lt;video&gt;</code> tags cannot process HLS manifests natively (except in Safari) or attach custom headers. We use <strong>Shaka Player</strong> and MediaSource Extensions (MSE) to fetch chunks and stitch them together dynamically.</p>
                 
                 <h3>Dynamic Header Injection</h3>
-                <p>Before Shaka requests a <code>.m3u8</code> manifest or a <code>.ts</code> video segment, we intercept the XHR pipeline on the browser and inject the cryptographic JWT generated by the CMS.</p>
+                <p>Before Shaka requests a <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.m3u8</code> manifest or a <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.ts</code> video segment, we intercept the XHR pipeline on the browser and inject the cryptographic JWT generated by the CMS.</p>
 
                 <pre><code>// Shaka Player Network Filter Interceptor
 player.getNetworkingEngine().registerRequestFilter((type, request) => {
@@ -471,31 +470,37 @@ await player.load(manifestUri);
         }
     };
 
-    const themeColors = {
-        blue: { hex: '#3b82f6', bgClass: 'bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-500 border-blue-200 dark:border-blue-500/20' },
-        orange: { hex: '#f97316', bgClass: 'bg-orange-100 dark:bg-orange-500/10 text-orange-600 dark:text-orange-500 border-orange-200 dark:border-orange-500/20' },
-        yellow: { hex: '#eab308', bgClass: 'bg-yellow-100 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 border-yellow-200 dark:border-yellow-500/20' },
-        emerald: { hex: '#10b981', bgClass: 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 border-emerald-200 dark:border-emerald-500/20' },
-        purple: { hex: '#a855f7', bgClass: 'bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-purple-500 border-purple-200 dark:border-purple-500/20' },
-        rose: { hex: '#f43f5e', bgClass: 'bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-500 border-rose-200 dark:border-rose-500/20' }
-    };
-
     let activeCardId = null;
 
     function selectModule(cardElement) {
         const id = cardElement.dataset.id;
-        const colorKey = cardElement.dataset.color;
         const targetNodes = cardElement.dataset.nodes.split(',');
 
-        // 1. Reset all buttons
+        if (activeCardId === id) return; // Prevent re-triggering active state
+
+        activeCardId = id;
+
+        // 1. Reset all buttons (Monochrome Brutalism)
         document.querySelectorAll('.module-btn').forEach(btn => {
-            btn.classList.remove('border-blue-400', 'border-orange-400', 'border-yellow-400', 'border-emerald-400', 'border-purple-400', 'border-rose-400', 'bg-gray-50', 'dark:bg-[#111]');
+            btn.classList.remove('border-black', 'dark:border-white', 'bg-gray-50', 'dark:bg-[#111111]', 'shadow-sm');
             btn.classList.add('border-gray-200', 'dark:border-white/10', 'bg-white', 'dark:bg-[#0a0a0a]');
+            
+            // Revert title to unselected
+            const title = btn.querySelector('h3');
+            if(title) {
+                title.classList.remove('text-black', 'dark:text-white');
+                title.classList.add('text-gray-900', 'dark:text-white'); // Baseline
+            }
         });
 
-        // 2. Highlight active button
+        // 2. Highlight active button (Monochrome Active State)
         cardElement.classList.remove('border-gray-200', 'dark:border-white/10', 'bg-white', 'dark:bg-[#0a0a0a]');
-        cardElement.classList.add(`border-${colorKey}-400`, 'bg-gray-50', 'dark:bg-[#111]');
+        cardElement.classList.add('border-black', 'dark:border-white', 'bg-gray-50', 'dark:bg-[#111111]', 'shadow-sm');
+        
+        const activeTitle = cardElement.querySelector('h3');
+        if(activeTitle) {
+            activeTitle.classList.add('text-black', 'dark:text-white');
+        }
 
         // 3. Update Reading Pane
         const paneTitle = document.getElementById('pane-title');
@@ -505,9 +510,9 @@ await player.load(manifestUri);
         paneTitle.innerText = playbookData[id].title;
         paneContent.innerHTML = playbookData[id].content;
         
-        const cardIcon = playbookData[id].icon;
-        paneIcon.className = `w-8 h-8 rounded-full flex items-center justify-center shrink-0 border ${themeColors[colorKey].bgClass}`;
-        paneIcon.innerHTML = cardIcon;
+        // Strict Black/White Icon container
+        paneIcon.className = `w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-gray-300 dark:border-white/20 bg-black text-white dark:bg-white dark:text-black shadow-sm`;
+        paneIcon.innerHTML = playbookData[id].icon;
 
         // 4. Animate SVG Diagram
         const svgContainer = document.getElementById('pipeline-svg');
@@ -519,56 +524,59 @@ await player.load(manifestUri);
 
         // Reset all nodes to base state (dimmed)
         document.querySelectorAll('.pipeline-node').forEach(node => {
-            node.classList.remove('scale-105', 'z-30');
-            node.classList.add('opacity-40', 'grayscale', 'scale-95');
-            node.style.borderColor = '';
-            node.style.boxShadow = '';
+            node.classList.remove('scale-105', 'z-30', 'border-black', 'dark:border-white', 'shadow-md');
+            node.classList.add('opacity-40', 'grayscale', 'scale-95', 'border-gray-300', 'dark:border-white/10');
             
             const indicator = node.querySelector('.indicator');
             if(indicator) {
-                indicator.style.borderColor = '';
-                indicator.classList.remove('shadow-[0_0_8px_currentColor]');
+                indicator.classList.remove('bg-black', 'dark:bg-white', 'shadow-[0_0_8px_currentColor]');
+                indicator.classList.add('bg-gray-400', 'dark:bg-zinc-600');
+            }
+            
+            const label = node.querySelector('.node-label');
+            if(label) {
+                label.classList.remove('text-black', 'dark:text-white', 'font-bold');
+                label.classList.add('text-gray-700', 'dark:text-zinc-300', 'font-medium');
             }
         });
 
-        // Highlight target nodes
+        // Highlight target nodes (Monochrome)
         document.querySelectorAll('.pipeline-node').forEach(node => {
             if (targetNodes.includes(node.id)) {
-                node.classList.remove('opacity-40', 'grayscale', 'scale-95');
-                node.classList.add('scale-105', 'z-30');
-                node.style.borderColor = themeColors[colorKey].hex;
-                node.style.boxShadow = `0 0 20px ${themeColors[colorKey].hex}20`;
+                node.classList.remove('opacity-40', 'grayscale', 'scale-95', 'border-gray-300', 'dark:border-white/10');
+                node.classList.add('scale-105', 'z-30', 'border-black', 'dark:border-white', 'shadow-md');
                 
                 const indicator = node.querySelector('.indicator');
                 if(indicator) {
-                    indicator.style.borderColor = themeColors[colorKey].hex;
-                    indicator.style.backgroundColor = themeColors[colorKey].hex;
-                    indicator.classList.add('shadow-[0_0_8px_currentColor]');
+                    indicator.classList.remove('bg-gray-400', 'dark:bg-zinc-600');
+                    indicator.classList.add('bg-black', 'dark:bg-white', 'shadow-[0_0_8px_currentColor]');
+                }
+                
+                const label = node.querySelector('.node-label');
+                if(label) {
+                    label.classList.remove('text-gray-700', 'dark:text-zinc-300', 'font-medium');
+                    label.classList.add('text-black', 'dark:text-white', 'font-bold');
                 }
             }
         });
 
-        // Highlight and animate active SVG paths
+        // Highlight and animate active SVG paths (Monochrome)
         overlayGroup.querySelectorAll('path').forEach(path => {
             const source = "node-" + path.dataset.source.replace('node-','');
             const target = "node-" + path.dataset.target.replace('node-','');
             
             if (targetNodes.includes(source) && targetNodes.includes(target)) {
-                path.style.stroke = themeColors[colorKey].hex;
+                path.classList.add('text-black', 'dark:text-white');
+                path.style.stroke = 'currentColor';
                 path.style.opacity = '1';
-                path.setAttribute('marker-end', `url(#arrow-${colorKey})`);
+                path.setAttribute('marker-end', getActiveMarkerUrl());
             } else {
                 path.style.opacity = '0';
+                path.classList.remove('text-black', 'dark:text-white');
                 path.removeAttribute('marker-end');
             }
         });
     }
-
-    // Initialize first module on load
-    document.addEventListener('DOMContentLoaded', () => {
-        const firstModule = document.querySelector('.module-btn');
-        if(firstModule) selectModule(firstModule);
-    });
 
   </script>
 </body>
