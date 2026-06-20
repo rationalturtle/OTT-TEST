@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure OTT Edge Pipeline | Academy</title>
+  <!-- Vercel Geist Font Imports -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Geist Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['Geist Mono', 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-white text-black dark:bg-black dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
+
+  <!-- Header Control Nav -->
+  <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+      
+      <div class="flex items-center h-full">
+        <div class="flex items-center mr-6">
+          <!-- Vercel-style Triangle Logo -->
+          <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 22h20L12 2z"/>
+          </svg>
+        </div>
+        
+        <!-- Navigation Tabs (Main / Player / Academy) -->
+        <nav class="hidden md:flex items-center space-x-6 h-full">
+            <a href="index.html" class="text-sm text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Main</a>
+            <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Player</a>
+            <a href="academy.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all">Academy</a>
+        </nav>
+      </div>
+      
+      <div class="flex items-center space-x-3">
+        <!-- Theme Switcher -->
+        <button onclick="toggleTheme()" class="p-1.5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" title="Toggle Theme">
+            <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+            <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+        </button>
+      </div>
+      
+    </div>
+  </header>
+
+  <!-- Core Content Grid -->
+  <main class="max-w-[1400px] mx-auto px-6 py-16 w-full relative">
+    
+    <!-- Subtle Grid Background Pattern (Vercel Style) -->
+    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-50" style="background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
+    <div class="dark:absolute dark:inset-0 dark:z-[-1] dark:pointer-events-none hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
+
+    <!-- Hero Banner -->
+    <div class="text-center mb-16 pt-8 flex flex-col items-center">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">
+        Knowledge Base
+      </h1>
+      <p class="text-gray-500 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+        Deep-dive documentation and end-to-end architectural mappings for the entire streaming, encoding, and authentication workflow.
+      </p>
+    </div>
+
+    <!-- Expanded Vercel-Style Pipeline Infographic -->
+    <div class="w-full overflow-x-auto hide-scroll pb-16 flex justify-start lg:justify-center">
+        <div class="relative w-[1350px] h-[200px] flex-shrink-0 select-none mx-auto">
+            
+            <!-- SVG Connectors -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none text-gray-300 dark:text-white/10" stroke-width="2" fill="none" stroke-linecap="round">
+                <!-- N1 to N2 (Validation Branch) -->
+                <path d="M 230 100 C 255 100, 255 50, 280 50" stroke="currentColor" />
+                <!-- N1 to N3 (Transcode Branch) -->
+                <path d="M 230 100 C 255 100, 255 150, 280 150" stroke="currentColor" />
+                <!-- N3 to N4 (AWS to S3 Origin) -->
+                <path d="M 510 150 L 560 150" stroke="currentColor" />
+                <!-- N4 to N5 (S3 Origin to CDN) -->
+                <path d="M 790 150 L 840 150" stroke="currentColor" />
+                <!-- N1 to N6 (CMS issues token to Auth Service) -->
+                <path d="M 230 100 C 395 100, 395 50, 560 50" stroke="currentColor" />
+                <!-- N6 to N7 (Auth Service to Edge Interceptor) -->
+                <path d="M 790 50 L 840 50" stroke="currentColor" />
+                <!-- N5 to N8 (CDN to Player) -->
+                <path d="M 1070 150 C 1095 150, 1095 100, 1120 100" stroke="currentColor" />
+                <!-- N7 to N8 (Edge Auth validation to Player) -->
+                <path d="M 1070 50 C 1095 50, 1095 100, 1120 100" stroke="currentColor" />
+            </svg>
+
+            <!-- Node 1: CMS Ingest -->
+            <div class="absolute left-[0px] top-[78px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <div class="flex items-center gap-3">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-orange-500"></div>
+                    <span class="font-sans font-medium text-black dark:text-white text-sm tracking-tight">payload-cms</span>
+                </div>
+                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+            </div>
+
+            <!-- Node 2: GCP Validation -->
+            <div class="absolute left-[280px] top-[28px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-3 px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-blue-500"></div>
+                <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">gcp-validation</span>
+            </div>
+
+            <!-- Node 3: AWS MediaConvert -->
+            <div class="absolute left-[280px] top-[128px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-yellow-500"></div>
+                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">aws-transcode</span>
+                </div>
+                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+            </div>
+
+            <!-- Node 4: S3 Origin -->
+            <div class="absolute left-[560px] top-[128px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-emerald-500"></div>
+                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">s3-origin</span>
+                </div>
+                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+            </div>
+
+            <!-- Node 5: CloudFront CDN -->
+            <div class="absolute left-[840px] top-[128px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-purple-500"></div>
+                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">cloudfront-cdn</span>
+                </div>
+                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+            </div>
+
+            <!-- Node 6: JWT Auth Service -->
+            <div class="absolute left-[560px] top-[28px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-pink-500"></div>
+                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">jwt-auth-service</span>
+                </div>
+                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+            </div>
+
+            <!-- Node 7: Edge Token Auth -->
+            <div class="absolute left-[840px] top-[28px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="flex items-center gap-3">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-rose-500"></div>
+                    <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">edge-token-auth</span>
+                </div>
+                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+            </div>
+
+            <!-- Node 8: Shaka Player -->
+            <div class="absolute left-[1120px] top-[78px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-3 px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-[#00df89] flex items-center justify-center">
+                    <div class="w-1.5 h-1.5 rounded-full bg-[#00df89] animate-pulse"></div>
+                </div>
+                <span class="font-sans font-medium text-black dark:text-white text-sm tracking-tight">client-playback</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Knowledge Base Grid Divider -->
+    <div class="flex items-center space-x-4 mb-8 mt-12">
+        <h2 class="text-[10px] font-mono font-bold tracking-widest text-gray-400 dark:text-zinc-500 uppercase">Architecture Guides & Playbooks</h2>
+        <div class="flex-grow h-px bg-gray-200 dark:bg-white/10"></div>
+    </div>
+
+    <!-- Docs Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto pb-12">
+      
+      <!-- Card 1 -->
+      <a href="#" class="group block border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200">
+         <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-white/5 border border-blue-100 dark:border-white/10 flex items-center justify-center mb-4 text-blue-600 dark:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+         </div>
+         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">Direct-to-Cloud Ingestion</h3>
+         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Bypassing Node.js entirely by generating GCP presigned URLs for multi-gigabyte mezzanine video uploads.</p>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="#" class="group block border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200">
+         <div class="w-8 h-8 rounded-full bg-orange-50 dark:bg-white/5 border border-orange-100 dark:border-white/10 flex items-center justify-center mb-4 text-orange-600 dark:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+         </div>
+         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">Payload Upload Magic</h3>
+         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">How Payload CMS automatically handles Postgres columns, mimetypes, and sidecar relational mapping.</p>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="#" class="group block border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200">
+         <div class="w-8 h-8 rounded-full bg-yellow-50 dark:bg-white/5 border border-yellow-100 dark:border-white/10 flex items-center justify-center mb-4 text-yellow-600 dark:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+         </div>
+         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">H.264 Profiles & Levels</h3>
+         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Demystifying AWS MediaConvert Error 1040 and why adaptive bitrates require the `AUTO` level tag.</p>
+      </a>
+
+      <!-- Card 4 -->
+      <a href="#" class="group block border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200">
+         <div class="w-8 h-8 rounded-full bg-green-50 dark:bg-white/5 border border-green-100 dark:border-white/10 flex items-center justify-center mb-4 text-green-600 dark:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+         </div>
+         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">S3 Public Access Risks</h3>
+         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Understanding "Denial of Wallet" attacks and why OAC (Origin Access Control) is mandatory for OTT.</p>
+      </a>
+
+      <!-- Card 5 -->
+      <a href="#" class="group block border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200">
+         <div class="w-8 h-8 rounded-full bg-purple-50 dark:bg-white/5 border border-purple-100 dark:border-white/10 flex items-center justify-center mb-4 text-purple-600 dark:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+         </div>
+         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">Edge Token Verification</h3>
+         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Deploying lightweight JavaScript on CloudFront Functions to verify cryptographic JWTs with sub-millisecond latency.</p>
+      </a>
+
+      <!-- Card 6 -->
+      <a href="#" class="group block border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-lg p-6 hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200">
+         <div class="w-8 h-8 rounded-full bg-red-50 dark:bg-white/5 border border-red-100 dark:border-white/10 flex items-center justify-center mb-4 text-red-600 dark:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+         </div>
+         <h3 class="text-sm font-semibold text-black dark:text-white mb-2">Decoding Shaka Error 3016</h3>
+         <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">Diagnosing Safari MSE execution blocks and understanding cross-origin resource sharing (CORS) limits.</p>
+      </a>
+
+    </div>
+
+  </main>
+
+  <footer class="border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-500 text-sm">
+    <div class="max-w-[1400px] mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
+            <span>All systems normal.</span>
+        </div>
+    </div>
+  </footer>
+
+  <script>
+    // Theme Toggle Logic
+    function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Initialize Theme
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', initTheme);
+  </script>
+</body>
+</html>
