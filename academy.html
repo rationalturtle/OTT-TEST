@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Highlight.js for Syntax Highlighting -->
+  <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -42,19 +47,35 @@
       animation: data-flow 0.8s linear infinite;
     }
 
-    /* Academy Article Typography - Enhanced Legibility (Default Light, .dark overrides) */
+    /* Academy Article Typography - Enhanced Legibility */
     .academy-article h3 { font-size: 1.15rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #111827; }
     .dark .academy-article h3 { color: #fff; }
     
     .academy-article p { margin-bottom: 1.25rem; line-height: 1.6; color: #374151; font-weight: 400; }
     .dark .academy-article p { color: #a1a1aa; }
     
-    /* Code block styling */
-    .academy-article pre { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; color: #1f2937; }
-    .dark .academy-article pre { background: #111; border-color: rgba(255,255,255,0.1); color: #e4e4e7; }
+    /* Code block styling (Synced with Highlight.js Themes) */
+    .academy-article pre { 
+        background: #f6f8fa; /* GitHub Light BG */
+        border: 1px solid #e2e8f0; 
+        padding: 1rem; 
+        border-radius: 0.5rem; 
+        overflow-x: auto; 
+        margin-bottom: 1.5rem; 
+    }
+    .dark .academy-article pre { 
+        background: #0d1117; /* GitHub Dark BG */
+        border-color: rgba(255,255,255,0.1); 
+    }
     
-    /* Inline code styling */
-    .academy-article code { 
+    /* Strip default HLJS background padding so it respects our container */
+    .academy-article pre code.hljs {
+        background: transparent;
+        padding: 0;
+    }
+    
+    /* Inline code styling (Not inside <pre>) */
+    .academy-article code:not(.hljs) { 
         font-family: 'Geist Mono', monospace; 
         font-size: 0.85em; 
         color: #0f172a; 
@@ -63,23 +84,10 @@
         padding: 0.15rem 0.35rem;
         border-radius: 0.25rem;
     }
-    .dark .academy-article code { 
+    .dark .academy-article code:not(.hljs) { 
         color: #e4e4e7;
         background-color: rgba(255, 255, 255, 0.1);
         border-color: transparent;
-    }
-    
-    /* Strip background/borders from code inside pre tags */
-    .academy-article pre code {
-        background-color: transparent;
-        padding: 0;
-        border: none;
-        color: inherit;
-    }
-    .dark .academy-article pre code {
-        background-color: transparent;
-        border: none;
-        color: inherit;
     }
 
     .academy-article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #374151; }
@@ -300,21 +308,36 @@
   </footer>
 
   <script>
-    // Theme Logic
+    // Theme Logic & Highlight.js Management
     function toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         updateActiveSVGMarker();
+        updateHighlightTheme(isDark);
     }
+    
     function initTheme() {
         const savedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+        
+        if (isDark) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
+        updateHighlightTheme(isDark);
     }
+
+    function updateHighlightTheme(isDark) {
+        const link = document.getElementById('hljs-theme');
+        if (isDark) {
+            link.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css";
+        } else {
+            link.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         initTheme();
         const firstModule = document.querySelector('.module-btn');
@@ -348,7 +371,7 @@
                 
                 <h3>The Presigned Handshake</h3>
                 <p>By leveraging Payload's official GCS plugin, the server instantly replies with a secure, time-limited cryptographic URL. The browser pushes the heavy video file directly to the Google Cloud Storage bucket, completely bypassing the CMS runtime.</p>
-                <pre><code>// Payload Media Collection Configuration
+<pre><code class="language-typescript">// Payload Media Collection Configuration
 export const Media: CollectionConfig = {
   slug: 'media',
   upload: {
@@ -369,7 +392,7 @@ export const Media: CollectionConfig = {
                 <h3>Adaptive Bitrate (ABR) Ladders</h3>
                 <p>MediaConvert decodes the master mezzanine and encodes it into multiple resolution tiers (e.g., 1080p, 720p, 480p) to ensure seamless playback across varying network conditions. It also extracts the WebVTT subtitles and multiplexes the audio, packaging everything into Apple's HLS protocol.</p>
                 
-                <pre><code>// Boto3 MediaConvert Job Submission Payload
+<pre><code class="language-python"># Boto3 MediaConvert Job Submission Payload
 aws_client.create_job(
     Role=os.environ.get('AWS_MEDIACONVERT_ROLE_ARN'),
     Settings={
@@ -388,12 +411,12 @@ aws_client.create_job(
                     "VideoDescription": { 
                         "CodecSettings": { 
                             "Codec": "H_264",
-                            "H264Settings": { "CodecLevel": "AUTO" } // Avoids Error 1040 
+                            "H264Settings": { "CodecLevel": "AUTO" } # Avoids Error 1040 
                         } 
                     }, 
                     "NameModifier": "_1080p" 
                 }
-                // (Additional tiers for 720p, 480p...)
+                # (Additional tiers for 720p, 480p...)
             ]
         }]
     }
@@ -410,8 +433,7 @@ aws_client.create_job(
                 <p>Leaving an S3 bucket publicly accessible creates a severe vulnerability where malicious scrapers can hotlink your raw assets and rack up unmetered egress bandwidth fees (a "Denial of Wallet" attack).</p>
                 <p>To lock down the origin, we configure an <strong>Origin Access Control (OAC)</strong> policy on the bucket. This mathematically enforces that the S3 bucket will <em>only</em> answer to requests securely routed internally through our specific CloudFront CDN distribution.</p>
 
-                <pre><code>// Secure OAC Bucket Policy
-{
+<pre><code class="language-json">{
   "Effect": "Allow",
   "Principal": { "Service": "cloudfront.amazonaws.com" },
   "Action": "s3:GetObject",
@@ -426,15 +448,14 @@ aws_client.create_job(
         },
         4: {
             title: "Global CDN Distribution",
-            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`,
+            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`,
             content: `
                 <p><strong>AWS CloudFront</strong> sits in front of the locked S3 origin, caching the video segments at edge locations globally. This absorbs the massive bandwidth spikes of video playback, reducing origin load to near-zero and drastically cutting latency for end-users.</p>
                 
                 <h3>Handling Cross-Origin Resource Sharing (CORS)</h3>
                 <p>Because the web player requests video segments from a different domain (the CDN) than the website itself, CloudFront must be configured to correctly proxy <code>OPTIONS</code> preflight requests and return strict <code>Access-Control-Allow-Origin</code> headers.</p>
 
-                <pre><code>// CloudFront Cache Behavior Requirements
-{
+<pre><code class="language-json">{
   "ViewerProtocolPolicy": "redirect-to-https",
   "AllowedMethods": ["GET", "HEAD", "OPTIONS"],
   "CachePolicyId": "CachingOptimized",
@@ -453,7 +474,7 @@ aws_client.create_job(
                 <h3>Cryptographic JWT Interception</h3>
                 <p>Payload CMS acts as the Identity Provider, signing a <strong>JSON Web Token (JWT)</strong> with an exact expiration timestamp. The Edge Function intercepts every HTTP GET request and mathematically validates the signature before serving the chunk.</p>
 
-                <pre><code>// CloudFront Edge Interceptor (JS 2.0)
+<pre><code class="language-javascript">// CloudFront Edge Interceptor (JS 2.0)
 function handler(event) {
     var req = event.request;
     if (req.method === 'OPTIONS') return req; // Allow CORS
@@ -483,7 +504,7 @@ function handler(event) {
                 <h3>Dynamic Header Injection</h3>
                 <p>Before Shaka requests a <code>.m3u8</code> manifest or a <code>.ts</code> video segment, we intercept the XHR pipeline on the browser and inject the cryptographic JWT generated by the CMS.</p>
 
-                <pre><code>// Shaka Player Network Filter Interceptor
+<pre><code class="language-javascript">// Shaka Player Network Filter Interceptor
 player.getNetworkingEngine().registerRequestFilter((type, request) => {
     
     // Only intercept manifest and active segment requests
@@ -546,6 +567,11 @@ await player.load(manifestUri);
         // Strict Black/White Icon container
         paneIcon.className = `w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-gray-300 dark:border-white/20 bg-black text-white dark:bg-white dark:text-black shadow-sm`;
         paneIcon.innerHTML = playbookData[id].icon;
+
+        // Trigger Syntax Highlighting on newly injected code blocks
+        document.querySelectorAll('#reading-pane pre code').forEach((block) => {
+            hljs.highlightElement(block);
+        });
 
         // 4. Animate SVG Diagram
         const svgContainer = document.getElementById('pipeline-svg');
