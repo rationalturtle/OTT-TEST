@@ -67,7 +67,7 @@
     <div class="absolute top-8 right-6 text-gray-300 dark:text-gray-700 pointer-events-none select-none">+</div>
 
     <!-- Hero Banner -->
-    <div class="text-center mb-16 pt-8 flex flex-col items-center">
+    <div class="text-center mb-10 pt-8 flex flex-col items-center">
       <div class="inline-flex items-center space-x-2 mb-6 px-3 py-1 rounded-full border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
         <span class="w-1.5 h-1.5 rounded-full bg-[#00df89] animate-pulse shadow-[0_0_8px_#00df89]"></span>
         <span class="font-mono text-[9px] text-gray-600 dark:text-zinc-300 tracking-widest uppercase font-bold">Pipeline Active & Replicating</span>
@@ -75,13 +75,68 @@
       <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">
         Secure OTT Edge Pipeline
       </h1>
-      <p class="text-gray-500 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+      <p class="text-gray-500 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
         An event-driven media orchestration system converting master mezzanines into HLS Adaptive Bitrate (ABR) ladders with client-side token interceptors.
       </p>
     </div>
 
+    <!-- Vercel-Style Pipeline Infographic -->
+    <div class="w-full overflow-x-auto hide-scroll pb-16 flex justify-start md:justify-center">
+        <div class="relative w-[800px] h-[200px] flex-shrink-0 select-none">
+            
+            <!-- SVG Connectors -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none text-gray-200 dark:text-white/10" stroke-width="2" fill="none" stroke-linecap="round">
+                <!-- Node 1 to Node 2 (Upwards curve) -->
+                <path d="M 230 100 C 255 100, 255 50, 280 50" stroke="currentColor" />
+                <!-- Node 1 to Node 3 (Downwards curve) -->
+                <path d="M 230 100 C 255 100, 255 150, 280 150" stroke="currentColor" />
+                <!-- Node 3 to Node 4 (Straight line) -->
+                <path d="M 510 150 L 560 150" stroke="currentColor" />
+            </svg>
+
+            <!-- Node 1: Ingest -->
+            <div class="absolute left-[0px] top-[78px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center justify-between px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <div class="flex items-center gap-3">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-amber-500 flex items-center justify-center">
+                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                    </div>
+                    <span class="font-sans font-medium text-black dark:text-white text-sm tracking-tight">payload-ingest</span>
+                </div>
+                <span class="text-xs text-gray-400 dark:text-zinc-500 font-mono">14s</span>
+                <!-- Connection Dot Right -->
+                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+            </div>
+
+            <!-- Node 2: GCP Validation -->
+            <div class="absolute left-[280px] top-[28px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-3 px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <!-- Connection Dot Left -->
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-zinc-600"></div>
+                <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">asset-validation</span>
+            </div>
+
+            <!-- Node 3: AWS MediaConvert -->
+            <div class="absolute left-[280px] top-[128px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-3 px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <!-- Connection Dot Left -->
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-zinc-600"></div>
+                <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">aws-transcode</span>
+                <!-- Connection Dot Right -->
+                <div class="absolute -right-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+            </div>
+
+            <!-- Node 4: CloudFront Edge -->
+            <div class="absolute left-[560px] top-[128px] w-[230px] h-[44px] bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-md shadow-sm flex items-center gap-3 px-4 z-10 transition-colors hover:border-gray-300 dark:hover:border-white/20">
+                <!-- Connection Dot Left -->
+                <div class="absolute -left-[4px] top-1/2 -translate-y-1/2 w-[8px] h-[8px] rounded-full bg-gray-300 dark:bg-zinc-600"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-zinc-600"></div>
+                <span class="font-sans font-medium text-gray-500 dark:text-zinc-400 text-sm tracking-tight">edge-deploy</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Title Divider -->
-    <div class="flex items-center space-x-4 mb-8 mt-16">
+    <div class="flex items-center space-x-4 mb-8">
         <h2 class="text-[10px] font-mono font-bold tracking-widest text-gray-400 dark:text-zinc-500 uppercase">Architecture & Integration Pillars</h2>
         <div class="flex-grow h-px bg-gray-200 dark:bg-white/10"></div>
     </div>
