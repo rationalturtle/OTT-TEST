@@ -47,10 +47,39 @@
     .light .academy-article h3 { color: #111827; }
     .academy-article p { margin-bottom: 1.25rem; line-height: 1.6; color: #a1a1aa; }
     .light .academy-article p { color: #374151; font-weight: 400; }
+    
+    /* Code block styling */
     .academy-article pre { background: #111; border: 1px solid rgba(255,255,255,0.1); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; }
     .light .academy-article pre { background: #f8fafc; border-color: #e2e8f0; }
-    .academy-article code { font-family: 'Geist Mono', monospace; font-size: 0.85em; color: #e4e4e7; }
-    .light .academy-article code { color: #0f172a; }
+    
+    /* Inline code styling */
+    .academy-article code { 
+        font-family: 'Geist Mono', monospace; 
+        font-size: 0.85em; 
+        color: #e4e4e7;
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 0.15rem 0.35rem;
+        border-radius: 0.25rem;
+    }
+    .light .academy-article code { 
+        color: #0f172a; 
+        background-color: #f1f5f9;
+        border: 1px solid #e2e8f0;
+    }
+    
+    /* Strip background/borders from code inside pre tags */
+    .academy-article pre code {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        color: inherit;
+    }
+    .light .academy-article pre code {
+        background-color: transparent;
+        border: none;
+        color: inherit;
+    }
+
     .academy-article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #a1a1aa; }
     .light .academy-article ul { color: #374151; }
     .academy-article li { margin-bottom: 0.5rem; }
@@ -187,7 +216,7 @@
       
       <!-- LEFT COLUMN: Module Navigation -->
       <div class="lg:col-span-4 flex flex-col gap-3">
-         <h2 class="text-[10px] font-mono font-bold tracking-widest text-gray-500 dark:text-zinc-500 uppercase mb-2">Architectural Curriculum</h2>
+         <h2 class="text-[10px] font-mono font-bold tracking-widest text-gray-600 dark:text-zinc-500 uppercase mb-2">Architectural Curriculum</h2>
          
          <button data-id="1" data-nodes="node-payload-cms,node-gcp-validation" onclick="selectModule(this)" class="module-btn w-full text-left px-5 py-4 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] hover:border-black dark:hover:border-white transition-all duration-200 group shadow-sm dark:shadow-none">
             <div class="flex items-center justify-between mb-1">
@@ -371,7 +400,7 @@ aws_client.create_job(
             title: "Origin Storage Configuration",
             icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
             content: `
-                <p>The transcoded <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.m3u8</code> manifests and <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.ts</code> video chunks are deposited by AWS MediaConvert into an Amazon S3 output bucket acting as our origin server.</p>
+                <p>The transcoded <code>.m3u8</code> manifests and <code>.ts</code> video chunks are deposited by AWS MediaConvert into an Amazon S3 output bucket acting as our origin server.</p>
                 
                 <h3>Origin Access Control (OAC)</h3>
                 <p>Leaving an S3 bucket publicly accessible creates a severe vulnerability where malicious scrapers can hotlink your raw assets and rack up unmetered egress bandwidth fees (a "Denial of Wallet" attack).</p>
@@ -393,7 +422,7 @@ aws_client.create_job(
         },
         4: {
             title: "Global CDN Distribution",
-            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`,
+            icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`,
             content: `
                 <p><strong>AWS CloudFront</strong> sits in front of the locked S3 origin, caching the video segments at edge locations globally. This absorbs the massive bandwidth spikes of video playback, reducing origin load to near-zero and drastically cutting latency for end-users.</p>
                 
@@ -448,7 +477,7 @@ function handler(event) {
                 <p>On the client-side, standard HTML5 <code>&lt;video&gt;</code> tags cannot process HLS manifests natively (except in Safari) or attach custom headers. We use <strong>Shaka Player</strong> and MediaSource Extensions (MSE) to fetch chunks and stitch them together dynamically.</p>
                 
                 <h3>Dynamic Header Injection</h3>
-                <p>Before Shaka requests a <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.m3u8</code> manifest or a <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.ts</code> video segment, we intercept the XHR pipeline on the browser and inject the cryptographic JWT generated by the CMS.</p>
+                <p>Before Shaka requests a <code>.m3u8</code> manifest or a <code>.ts</code> video segment, we intercept the XHR pipeline on the browser and inject the cryptographic JWT generated by the CMS.</p>
 
                 <pre><code>// Shaka Player Network Filter Interceptor
 player.getNetworkingEngine().registerRequestFilter((type, request) => {
