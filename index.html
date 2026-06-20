@@ -114,9 +114,9 @@
                 </div>
                 <h3 class="text-lg font-black uppercase mt-2">Delivery</h3>
                 <div class="mb-3 border-b-2 border-gray-100 pb-2">
-                    <span class="text-[10px] font-bold text-black bg-[#a0e8af] px-2 py-0.5 rounded-sm tracking-wider uppercase inline-block mt-1">AWS S3 & Client Auth</span>
+                    <span class="text-[10px] font-bold text-black bg-[#a0e8af] px-2 py-0.5 rounded-sm tracking-wider uppercase inline-block mt-1">AWS CloudFront & OAC</span>
                 </div>
-                <p class="text-sm font-semibold">AWS outputs HLS segments. Shaka Player intercepts requests to inject custom tokens for secure playback.</p>
+                <p class="text-sm font-semibold">CloudFront caches HLS segments globally. Shaka Player intercepts requests to inject custom tokens for edge authorization.</p>
             </div>
         </div>
 
@@ -132,26 +132,25 @@
             </div>
             
             <div id="configContent" class="hidden border-t-4 border-black p-5 md:p-6 bg-[#fdfbf7]">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 gap-4 mb-4">
                     <div>
-                        <label class="block text-xs font-black uppercase mb-1">Target S3 Bucket</label>
-                        <input type="text" id="bucketInput" value="ott-video-packaged-output-349412601452-us-east-1-an" class="w-full brutal-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-[#c8b6ff] code-font">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black uppercase mb-1">AWS Region</label>
-                        <input type="text" id="regionInput" value="us-east-1" class="w-full brutal-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-[#c8b6ff] code-font">
+                        <label class="block text-xs font-black uppercase mb-1">AWS CloudFront Endpoint (Domain or Full Manifest URL)</label>
+                        <input type="text" id="cdnInput" value="d12345abcdef.cloudfront.net" class="w-full brutal-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-[#c8b6ff] code-font">
+                        <span class="text-[10px] text-gray-500 font-bold uppercase mt-1 block">Paste your d12345abcdef.cloudfront.net domain or a complete HTTPS .m3u8 URL directly</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-black uppercase mb-1">Asset Base Name</label>
+                        <label class="block text-xs font-black uppercase mb-1">Asset Base Name (Folder Prefix)</label>
                         <input type="text" id="assetInput" value="complexity_hdr" class="w-full brutal-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-[#c8b6ff] code-font">
+                        <span class="text-[10px] text-gray-500 font-bold uppercase mt-1 block">The directory folder name where assets are grouped</span>
                     </div>
                     <div>
                         <label class="block text-xs font-black uppercase mb-1 flex justify-between">
                             Access Token <span class="bg-[#ffea00] px-1 border-2 border-black text-[10px]">NETWORK INTERCEPT</span>
                         </label>
                         <input type="password" id="tokenInput" value="allow-123" class="w-full brutal-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-[#c8b6ff] code-font">
+                        <span class="text-[10px] text-gray-500 font-bold uppercase mt-1 block">The header parameter evaluated by CloudFront Functions</span>
                     </div>
                 </div>
             </div>
@@ -302,11 +301,11 @@
                 console.error('Shaka Error:', e.detail);
                 
                 if(e.detail && e.detail.code === 1002) {
-                    logSecurity(`<span class="text-[#ff5f56] font-bold">[FATAL 1002] NETWORK BLOCK: CORS or S3 rejected the request.</span>`);
-                    updateLockScreen("Access Denied", "CORS OR NETWORK POLICY REJECTED TOKEN", "text-[#ff5f56]", "bg-white", true);
+                    logSecurity(`<span class="text-[#ff5f56] font-bold">[FATAL 1002] NETWORK BLOCK: CORS or CDN rejected the request.</span>`);
+                    updateLockScreen("Access Denied", "CORS OR CDN SECURITY REJECTED TOKEN", "text-[#ff5f56]", "bg-white", true);
                 } else if (e.detail && e.detail.code === 1001) {
                     logSecurity(`<span class="text-[#ff5f56] font-bold">[FATAL 1001] FILE NOT FOUND.</span>`);
-                    updateLockScreen("404 Not Found", "VERIFY BUCKET AND ASSET NAME", "text-[#ff5f56]", "bg-white", true);
+                    updateLockScreen("404 Not Found", "VERIFY CDN DOMAIN AND ASSET PATH", "text-[#ff5f56]", "bg-white", true);
                 } else {
                     logSecurity(`<span class="text-red-400">[ERROR] Code: ${e.detail ? e.detail.code : 'Unknown'}</span>`);
                     updateLockScreen("Stream Error", `CODE: ${e.detail ? e.detail.code : 'UNKNOWN'}`, "text-red-500", "bg-white", true);
@@ -315,13 +314,20 @@
         }
 
         async function handlePlaybackRequest() {
-            const bucket = document.getElementById('bucketInput').value.trim();
-            const region = document.getElementById('regionInput').value.trim();
+            const cdnDomain = document.getElementById('cdnInput').value.trim();
             let baseName = document.getElementById('assetInput').value.trim();
             const token = document.getElementById('tokenInput').value.trim();
             
             if (baseName.startsWith('/')) baseName = baseName.substring(1);
-            const manifestUri = `https://${bucket}.s3.${region}.amazonaws.com/${baseName}/${baseName}.m3u8`;
+            
+            // 🚨 FLEXIBLE MANIFEST RESOLUTION
+            // Seamlessly allows both pasting a bare CDN domain, or pasting a fully formed manifest URL directly!
+            let manifestUri = '';
+            if (cdnDomain.startsWith('http://') || cdnDomain.startsWith('https://')) {
+                manifestUri = cdnDomain;
+            } else {
+                manifestUri = `https://${cdnDomain}/${baseName}/${baseName}.m3u8`;
+            }
             
             logSecurity(`Computing Entitlement: <span class="text-[#c8b6ff] break-all">${manifestUri}</span>`);
 
@@ -343,7 +349,7 @@
 
             try {
                 updateLockScreen("Decrypting...", "NEGOTIATING WITH EDGE CDN", "text-black", "bg-[#ffea00]", false);
-                logSecurity(`Initiating secure fetch from S3 Origin...`);
+                logSecurity(`Initiating secure fetch from CDN Edge Origin...`);
                 
                 await player.load(manifestUri);
                 
