@@ -370,17 +370,57 @@
                 <p>Routing multi-gigabyte mezzanine video files through a traditional Node.js backend introduces severe memory bottlenecks, upload timeouts, and high compute costs. To solve this, our pipeline utilizes <strong>Direct-to-Cloud (D2C)</strong> ingestion alongside GCP Eventarc.</p>
                 
                 <h3>The Presigned Handshake</h3>
-                <p>By leveraging Payload's official GCS plugin, the server instantly replies with a secure, time-limited cryptographic URL. The browser pushes the heavy video file directly to the Google Cloud Storage bucket, completely bypassing the CMS runtime.</p>
-<pre><code class="language-typescript">// Payload Media Collection Configuration
+                <p>By leveraging Payload's official GCS plugin, the server instantly replies with a secure, time-limited cryptographic URL. The browser executes an <code>XMLHttpRequest</code> to push the heavy video file directly to the Google Cloud Storage bucket, completely bypassing the CMS runtime.</p>
+<pre><code class="language-typescript">// 1. Payload Media Collection Configuration (Server)
 export const Media: CollectionConfig = {
   slug: 'media',
   upload: {
-    disableLocalStorage: true, // Forces D2C mode
+    disableLocalStorage: true, // Forces D2C mode natively
   }
 }</code></pre>
+
+<pre><code class="language-typescript">// 2. Frontend Bulk Ingest Canvas (Client React)
+const uploadWithProgress = (url: string, data: FormData) => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url, true);
+    
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const pct = Math.round((event.loaded / event.total) * 100);
+        console.log(\`Upload Progress: \${pct}%\`);
+      }
+    };
+    
+    xhr.onload = () => resolve(JSON.parse(xhr.responseText));
+    xhr.onerror = () => reject(new Error('Network Failed'));
+    xhr.send(data);
+  });
+};</code></pre>
                 
                 <h3>Event-Driven Validation</h3>
-                <p>Once the file hits the GCP bucket, an <strong>Eventarc</strong> webhook fires. This wakes up our serverless Cloud Run orchestrator. The python orchestrator scans the bucket for associated sidecars (alternate audio tracks, VTT subtitles) and verifies the entire package is complete before initiating the transcode phase.</p>
+                <p>Once the file physically lands in the GCP bucket, an <strong>Eventarc</strong> webhook fires instantly. This wakes up our serverless Cloud Run Python orchestrator. The python orchestrator scans the bucket for associated sidecars (alternate audio tracks, VTT subtitles) and verifies the entire package is complete before initiating the transcode phase.</p>
+
+<pre><code class="language-python"># 3. Python Orchestrator (GCP Cloud Run)
+def check_asset_bundle_complete(bucket_name, folder_prefix):
+    """
+    Scans the specific folder prefix in the bucket to ensure the 
+    video, audio, and captions have all finished uploading.
+    """
+    blobs = list(bucket.list_blobs(prefix=f"{folder_prefix}/"))
+    
+    found_video, found_audio, found_captions = None, None, None
+    
+    for blob in blobs:
+        if blob.name.endswith('.mp4'): found_video = blob.name
+        elif blob.name.endswith('.m4a'): found_audio = blob.name
+        elif blob.name.endswith('.srt'): found_captions = blob.name
+            
+    if found_video and found_audio and found_captions:
+        return True
+    
+    return False # Forces Eventarc to retry later
+</code></pre>
             `
         },
         2: {
@@ -389,10 +429,27 @@ export const Media: CollectionConfig = {
             content: `
                 <p>Once the GCP orchestrator validates the asset bundle, it generates temporary IAM signed URLs for the master files and securely triggers an <strong>AWS Elemental MediaConvert</strong> job using the Boto3 SDK.</p>
                 
+                <h3>Cross-Cloud Authentication</h3>
+                <p>Because AWS needs to read files from GCP, we must sign the URLs using GCP's IAM Credentials API. This ensures AWS can fetch the files without making the GCP bucket public.</p>
+
+<pre><code class="language-python"># 1. Generating a Cross-Cloud Signed URL
+def generate_iam_signed_url(bucket_name, object_name):
+    credentials, _ = google.auth.default()
+    credentials.refresh(Request())
+    
+    # ... Create string to sign ...
+    
+    iam_url = f"https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/{sa_email}:signBlob"
+    response = requests.post(iam_url, headers={"Authorization": f"Bearer {credentials.token}"}, json=payload)
+    
+    signature = urllib.parse.quote(response.json().get("signedBlob"), safe='')
+    return f"https://storage.googleapis.com/{bucket_name}/{object_name}?Signature={signature}"
+</code></pre>
+
                 <h3>Adaptive Bitrate (ABR) Ladders</h3>
                 <p>MediaConvert decodes the master mezzanine and encodes it into multiple resolution tiers (e.g., 1080p, 720p, 480p) to ensure seamless playback across varying network conditions. It also extracts the WebVTT subtitles and multiplexes the audio, packaging everything into Apple's HLS protocol.</p>
                 
-<pre><code class="language-python"># Boto3 MediaConvert Job Submission Payload
+<pre><code class="language-python"># 2. Boto3 MediaConvert Job Submission Payload
 aws_client.create_job(
     Role=os.environ.get('AWS_MEDIACONVERT_ROLE_ARN'),
     Settings={
@@ -411,7 +468,7 @@ aws_client.create_job(
                     "VideoDescription": { 
                         "CodecSettings": { 
                             "Codec": "H_264",
-                            "H264Settings": { "CodecLevel": "AUTO" } # Avoids Error 1040 
+                            "H264Settings": { "CodecLevel": "AUTO" } # 🚨 Crucial: Avoids Error 1040 
                         } 
                     }, 
                     "NameModifier": "_1080p" 
@@ -427,23 +484,40 @@ aws_client.create_job(
             title: "Origin Storage Configuration",
             icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
             content: `
-                <p>The transcoded <code>.m3u8</code> manifests and <code>.ts</code> video chunks are deposited by AWS MediaConvert into an Amazon S3 output bucket acting as our origin server.</p>
+                <p>The transcoded <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.m3u8</code> manifests and <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">.ts</code> video chunks are deposited by AWS MediaConvert into an Amazon S3 output bucket acting as our origin server.</p>
                 
                 <h3>Origin Access Control (OAC)</h3>
                 <p>Leaving an S3 bucket publicly accessible creates a severe vulnerability where malicious scrapers can hotlink your raw assets and rack up unmetered egress bandwidth fees (a "Denial of Wallet" attack).</p>
                 <p>To lock down the origin, we configure an <strong>Origin Access Control (OAC)</strong> policy on the bucket. This mathematically enforces that the S3 bucket will <em>only</em> answer to requests securely routed internally through our specific CloudFront CDN distribution.</p>
 
 <pre><code class="language-json">{
-  "Effect": "Allow",
-  "Principal": { "Service": "cloudfront.amazonaws.com" },
-  "Action": "s3:GetObject",
-  "Resource": "arn:aws:s3:::ott-video-origin/*",
-  "Condition": {
-    "StringEquals": {
-      "AWS:SourceArn": "arn:aws:cloudfront::12345:distribution/E1A2B3C"
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "cloudfront.amazonaws.com" },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::ott-video-origin/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::12345:distribution/E1A2B3C"
+        }
+      }
     }
-  }
+  ]
 }</code></pre>
+
+                <h3>Cross-Origin Resource Sharing (CORS)</h3>
+                <p>Even with OAC protecting the bucket from direct access, the browser still enforces CORS. When the player (running on your website) requests the video (stored on the CDN), the S3 bucket must return headers allowing the cross-origin fetch.</p>
+
+<pre><code class="language-json">[
+    {
+        "AllowedHeaders": ["*"],
+        "AllowedMethods": ["GET", "HEAD"],
+        "AllowedOrigins": ["*"],
+        "ExposeHeaders": ["Access-Control-Allow-Origin"]
+    }
+]</code></pre>
             `
         },
         4: {
@@ -455,14 +529,25 @@ aws_client.create_job(
                 <h3>Handling Cross-Origin Resource Sharing (CORS)</h3>
                 <p>Because the web player requests video segments from a different domain (the CDN) than the website itself, CloudFront must be configured to correctly proxy <code>OPTIONS</code> preflight requests and return strict <code>Access-Control-Allow-Origin</code> headers.</p>
 
-<pre><code class="language-json">{
+<pre><code class="language-json">// CloudFront Cache Behavior Requirements
+{
   "ViewerProtocolPolicy": "redirect-to-https",
   "AllowedMethods": ["GET", "HEAD", "OPTIONS"],
   "CachePolicyId": "CachingOptimized",
   "OriginRequestPolicyId": "CORS-S3Origin",
   "ResponseHeadersPolicyId": "CORS-With-Preflight"
 }</code></pre>
-                <p>Failing to configure this correctly will result in browsers (especially Safari) aggressively blocking the video streams due to strict cross-origin sandbox restrictions.</p>
+                
+                <h3>Error Response Overrides</h3>
+                <p>Single Page Applications (SPAs) and HLS stream manifests occasionally experience temporary 404s (e.g., if a live stream chunk is delayed). CloudFront is configured to intercept standard S3 403/404 errors and cache them for a minimal duration (e.g., 1 second) to prevent caching a "dead" stream indefinitely.</p>
+
+<pre><code class="language-json">// CloudFront Error Pages Configuration
+{
+  "ErrorCachingMinTTL": 1,
+  "ErrorCode": 403,
+  "ResponseCode": "",
+  "ResponsePagePath": ""
+}</code></pre>
             `
         },
         5: {
@@ -471,8 +556,25 @@ aws_client.create_job(
             content: `
                 <p>To prevent unauthorized users from hotlinking your CDN URLs, we deploy lightweight JavaScript execution environments directly onto CloudFront edge nodes using <strong>CloudFront Functions</strong>. This allows us to verify user entitlement in sub-millisecond timeframes.</p>
                 
-                <h3>Cryptographic JWT Interception</h3>
-                <p>Payload CMS acts as the Identity Provider, signing a <strong>JSON Web Token (JWT)</strong> with an exact expiration timestamp. The Edge Function intercepts every HTTP GET request and mathematically validates the signature before serving the chunk.</p>
+                <h3>Cryptographic JWT Generation</h3>
+                <p>Payload CMS acts as the Identity Provider. When a user requests to watch a video, the CMS securely generates a signed JSON Web Token using a secret key.</p>
+
+<pre><code class="language-typescript">// Payload CMS Route Handler (Server)
+import jwt from 'jsonwebtoken';
+
+export async function GET(req: Request) {
+    const payload = {
+        asset_id: "complexity",
+        exp: Math.floor(Date.now() / 1000) + (60 * 15) // Expires in 15 minutes
+    };
+    
+    // Sign the token with a secure backend secret
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
+    return NextResponse.json({ token });
+}</code></pre>
+
+                <h3>Edge Interception & Verification</h3>
+                <p>The Edge Function intercepts every HTTP GET request targeting the `.ts` video chunks and mathematically validates the signature before serving the cache.</p>
 
 <pre><code class="language-javascript">// CloudFront Edge Interceptor (JS 2.0)
 function handler(event) {
@@ -519,7 +621,11 @@ player.getNetworkingEngine().registerRequestFilter((type, request) => {
 // Proceed with secure fetch
 await player.load(manifestUri);
 </code></pre>
-                <p>This creates a perfectly closed loop: the client requests the video, provides proof of identity via the header, the edge function validates it globally, and the playback begins.</p>
+
+                <h3>Robust Error Handling (Decoding Error 3016)</h3>
+                <p>Shaka Player throws a <code class="bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono text-[11px] font-semibold">MEDIA_ERR_SRC_NOT_SUPPORTED</code> (Error 3016) when the browser violently rejects the video Blob generated by MSE.</p>
+                
+                <p>This is often caused by the <strong>Safari Quarantine</strong>. Safari aggressively blocks complex cross-origin XHR requests and MSE buffer stitching when running off a local <code>file://</code> domain. Deploying the player to an HTTPS origin (like GitHub Pages) resolves the origin mismatch and permits the browser to securely hand off the decrypted chunks to the hardware decoder.</p>
             `
         }
     };
