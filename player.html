@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTT Pipeline | Interactive Console</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Shaka Player -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/shaka-player.ui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/controls.min.css">
+    
+    <!-- Vercel Geist Font Imports -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
+    
+    <script>
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              fontFamily: {
+                sans: ['Geist Sans', '-apple-system', 'sans-serif'],
+                mono: ['Geist Mono', 'monospace'],
+              }
+            }
+          }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Geist Sans', -apple-system, sans-serif;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .code-font {
+            font-family: 'Geist Mono', monospace;
+        }
+        
+        .hide-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+        .hide-scroll::-webkit-scrollbar-track { background: transparent; }
+        .hide-scroll::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 2px; }
+        .hide-scroll { scrollbar-width: thin; scrollbar-color: rgba(150, 150, 150, 0.3) transparent; }
+
+        [data-shaka-player-container] { pointer-events: none; }
+        [data-shaka-player-container] .shaka-controls-container,
+        [data-shaka-player-container] .shaka-controls-container * { pointer-events: auto; }
+    </style>
+</head>
+<body class="bg-gray-50 text-black dark:bg-[#000000] dark:text-white min-h-screen p-4 md:p-8 flex flex-col items-center selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+
+    <div class="w-full max-w-6xl space-y-6 md:space-y-8">
+        
+        <!-- Header Console Bar -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between border-b border-gray-200 dark:border-white/10 pb-4 gap-4">
+            <div>
+                <div class="flex items-center space-x-2 mb-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#00df89] animate-pulse shadow-[0_0_5px_#00df89]"></span>
+                    <span class="font-mono text-[10px] text-[#00df89] tracking-widest uppercase font-bold">Node Online</span>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-black dark:text-white uppercase">Interactive Console</h1>
+                <p class="text-xs font-mono text-gray-500 dark:text-zinc-500 mt-1 uppercase tracking-wider">Live Edge Verification & Telemetry</p>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="flex items-center text-sm text-gray-600 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Back to Architecture
+                </a>
+                <button onclick="toggleTheme()" class="p-2 border border-gray-200 dark:border-white/10 rounded-md text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">
+                    <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+                    <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Unified Ingest Config Panel -->
+        <div class="border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-md overflow-hidden relative z-30 shadow-sm">
+            <div class="flex flex-col md:flex-row justify-between items-center p-3 gap-4 bg-gray-50 dark:bg-[#111111] border-b border-gray-200 dark:border-white/10">
+                <button onclick="toggleConfig()" class="flex items-center gap-2 font-mono text-xs font-bold uppercase text-gray-600 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors">
+                    <svg id="configChevron" class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                    Stream Configuration
+                </button>
+                <button onclick="handlePlaybackRequest()" class="w-full md:w-auto bg-black text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-all font-sans font-medium px-6 py-2 text-xs rounded shadow-sm uppercase whitespace-nowrap">
+                    Load Edge Stream
+                </button>
+            </div>
+            
+            <div id="configContent" class="hidden p-5 md:p-6 bg-white dark:bg-[#0a0a0a] space-y-4">
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-mono font-bold tracking-wider text-gray-500 dark:text-zinc-500 uppercase mb-1.5">AWS CloudFront Endpoint (Domain or Full Manifest URL)</label>
+                        <input type="text" id="cdnInput" value="d12345abcdef.cloudfront.net" class="w-full border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black px-3 py-2 text-xs rounded focus:outline-none focus:border-gray-400 dark:focus:border-white/30 text-black dark:text-white code-font transition-colors">
+                        <span class="text-[9px] text-gray-400 dark:text-zinc-600 font-mono uppercase mt-1.5 block">Paste your d12345abcdef.cloudfront.net domain or a complete HTTPS .m3u8 URL directly</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-mono font-bold tracking-wider text-gray-500 dark:text-zinc-500 uppercase mb-1.5">Asset Base Name (Folder Prefix)</label>
+                        <input type="text" id="assetInput" value="complexity_hdr" class="w-full border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black px-3 py-2 text-xs rounded focus:outline-none focus:border-gray-400 dark:focus:border-white/30 text-black dark:text-white code-font transition-colors">
+                        <span class="text-[9px] text-gray-400 dark:text-zinc-600 font-mono uppercase mt-1.5 block">The directory folder name where assets are grouped</span>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-mono font-bold tracking-wider text-gray-500 dark:text-zinc-500 uppercase mb-1.5 flex justify-between">
+                            Access Token <span class="text-[#00df89] text-[9px] font-bold">NETWORK INTERCEPT</span>
+                        </label>
+                        <input type="password" id="tokenInput" value="allow-123" class="w-full border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black px-3 py-2 text-xs rounded focus:outline-none focus:border-gray-400 dark:focus:border-white/30 text-black dark:text-white code-font transition-colors">
+                        <span class="text-[9px] text-gray-400 dark:text-zinc-600 font-mono uppercase mt-1.5 block">The header parameter evaluated by CloudFront Functions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Telemetry + Player Core Area -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            
+            <!-- Left Column: Telemetry (Top) + Video Player (Bottom) -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                
+                <!-- Telemetry Dash -->
+                <div class="border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] p-4 rounded-md z-10 shadow-sm">
+                    <h2 class="text-xs font-mono font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-400 mb-3 border-b border-gray-100 dark:border-white/10 pb-1.5 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        Telemetry Readout
+                    </h2>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        <div class="bg-gray-50 dark:bg-[#111111] border border-gray-100 dark:border-white/10 p-3 rounded">
+                            <div class="text-[9px] font-mono uppercase tracking-wider mb-1 text-gray-400 dark:text-zinc-500">Resolution</div>
+                            <div id="statResolution" class="text-sm font-bold code-font text-black dark:text-white">--</div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-[#111111] border border-gray-100 dark:border-white/10 p-3 rounded">
+                            <div class="text-[9px] font-mono uppercase tracking-wider mb-1 text-gray-400 dark:text-zinc-500">Dropped</div>
+                            <div id="statDropped" class="text-sm font-bold code-font text-black dark:text-white">0</div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-[#111111] border border-gray-100 dark:border-white/10 p-3 rounded">
+                            <div class="text-[9px] font-mono uppercase tracking-wider mb-1 text-gray-400 dark:text-zinc-500">Video Speed</div>
+                            <div class="text-sm font-bold code-font text-black dark:text-white"><span id="statVBitrate">--</span> <span class="text-[9px] text-gray-400 dark:text-zinc-500">kbps</span></div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-[#111111] border border-gray-100 dark:border-white/10 p-3 rounded">
+                            <div class="text-[9px] font-mono uppercase tracking-wider mb-1 text-gray-400 dark:text-zinc-500">Audio Speed</div>
+                            <div class="text-sm font-bold code-font text-black dark:text-white"><span id="statABitrate">--</span> <span class="text-[9px] text-gray-400 dark:text-zinc-500" id="statABitrateLabel">kbps</span></div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-[#111111] border border-gray-100 dark:border-white/10 p-3 rounded">
+                            <div class="text-[9px] font-mono uppercase tracking-wider mb-1 text-gray-400 dark:text-zinc-500">Est. Bandwidth</div>
+                            <div class="text-sm font-bold code-font text-black dark:text-white"><span id="statBandwidth">--</span> <span class="text-[9px] text-gray-400 dark:text-zinc-500">Mbps</span></div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-[#111111] border border-gray-100 dark:border-white/10 p-3 rounded">
+                            <div class="text-[9px] font-mono uppercase tracking-wider mb-1 text-gray-400 dark:text-zinc-500">Buffer Health</div>
+                            <div class="text-sm font-bold code-font text-black dark:text-white"><span id="statBuffer">0.0</span><span class="text-[9px] text-gray-400 dark:text-zinc-500">s</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Player Container -->
+                <div class="border border-gray-200 dark:border-white/10 bg-black dark:bg-[#030303] rounded-md overflow-hidden aspect-video relative flex items-center justify-center w-full z-20 shadow-sm">
+                    
+                    <!-- Secure Enclave Lock Screen -->
+                    <div id="playerOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 dark:bg-black/90 backdrop-blur-sm z-20 transition-opacity duration-300">
+                        <div id="overlayCard" class="border border-white/10 bg-[#0a0a0a] p-6 md:p-8 flex flex-col items-center max-w-sm rounded-md shadow-2xl transition-all duration-300">
+                            <svg id="overlayIcon" class="w-8 h-8 text-white mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            <h3 id="overlayTitle" class="text-lg font-bold text-white uppercase tracking-wider text-center">Stream Locked</h3>
+                            <p id="overlayErrorText" class="text-zinc-400 text-[10px] mt-2 font-mono text-center uppercase tracking-widest">Awaiting Edge Authorization</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Grid Background Pattern inside player empty state -->
+                    <div class="absolute inset-0 z-0 opacity-10 dark:opacity-[0.03] pointer-events-none" style="background-image: linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px); background-size: 40px 40px;"></div>
+                    
+                    <div data-shaka-player-container class="w-full h-full z-10">
+                        <video id="video" autoplay class="w-full h-full object-contain"></video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Directories + Console Logs -->
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                
+                <!-- Reactive GCP Asset Folder Visualizer -->
+                <div class="border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-md text-black dark:text-white flex flex-col p-4 shadow-sm">
+                    <h2 class="text-xs font-mono font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-400 mb-3 border-b border-gray-100 dark:border-white/10 pb-1.5 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                        GCS Active Directories
+                    </h2>
+                    
+                    <!-- Sim Ingest Sandbox Form -->
+                    <div class="mb-4 bg-gray-50 dark:bg-[#111111] border border-gray-100 dark:border-white/10 p-2.5 rounded flex flex-col gap-2">
+                        <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500">Local CMS Ingestion Sandbox</span>
+                        <div class="flex gap-2">
+                            <input type="text" id="simNameInput" placeholder="Simulate title upload..." class="w-full bg-white dark:bg-black border border-gray-200 dark:border-white/10 text-xs p-1.5 focus:outline-none focus:border-gray-400 dark:focus:border-white/30 text-black dark:text-white code-font rounded transition-colors">
+                            <button onclick="simulateAssetIngestion()" class="bg-black text-white dark:bg-white dark:text-black text-[10px] font-bold uppercase px-3 py-1.5 rounded hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">Ingest</button>
+                        </div>
+                    </div>
+
+                    <!-- Reactive Tree Directory -->
+                    <div id="treeContainer" class="code-font text-xs space-y-3 overflow-y-auto max-h-[220px] hide-scroll p-1">
+                        <!-- Dynamic Tree Generated Here -->
+                    </div>
+                </div>
+
+                <!-- Terminal Area -->
+                <div class="border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-md flex flex-col h-full min-h-[250px] overflow-hidden shadow-sm">
+                    <!-- Retro Window Header -->
+                    <div class="bg-gray-50 dark:bg-[#111111] border-b border-gray-100 dark:border-white/10 p-3 flex items-center gap-1.5 flex-shrink-0">
+                        <div class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-white/10"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-white/10"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-white/10"></div>
+                        <span class="text-[9px] font-mono font-bold uppercase ml-3 text-gray-400 dark:text-zinc-500 tracking-wider">Console Telemetry</span>
+                    </div>
+                    <!-- Terminal Area -->
+                    <div id="logBox" class="flex-grow p-4 text-[10px] md:text-xs code-font text-gray-600 dark:text-zinc-400 flex flex-col gap-2 overflow-y-auto hide-scroll bg-white dark:bg-[#0a0a0a]">
+                        <div class="text-[#0070f3] dark:text-[#0070f3]">&gt; INITIALIZING NETWORK INTERCEPTOR...</div>
+                        <div class="text-gray-400 dark:text-zinc-600">&gt; SYSTEM READY.</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        let player;
+        let telemetryInterval;
+
+        let activeBundles = [
+            {
+                folderName: 'complexity_hdr',
+                mp4: 'complexity_hdr.mp4',
+                m4a: 'complexity_hdr.m4a',
+                srt: 'complexity_hdr.srt'
+            },
+            {
+                folderName: 'trailer_stereo_en',
+                mp4: 'trailer_stereo_en.mp4',
+                m4a: 'trailer_stereo_en.m4a',
+                srt: 'trailer_stereo_en.srt'
+            }
+        ];
+
+        function renderDirectoryExplorer() {
+            const container = document.getElementById('treeContainer');
+            container.innerHTML = '';
+
+            activeBundles.forEach((bundle) => {
+                const folderDiv = document.createElement('div');
+                folderDiv.className = 'group transition-all duration-150';
+                
+                folderDiv.innerHTML = `
+                    <div onclick="selectActiveBundle('${bundle.folderName}')" class="font-bold text-black dark:text-white uppercase cursor-pointer hover:text-[#00df89] flex items-center gap-1.5 p-1 hover:bg-gray-100 dark:hover:bg-white/5 rounded transition-colors">
+                        <span>📁</span>
+                        <span class="underline decoration-1 decoration-gray-300 dark:decoration-white/20 group-hover:decoration-[#00df89]">${bundle.folderName}</span>
+                    </div>
+                    <div class="pl-6 border-l border-dashed border-gray-200 dark:border-white/10 mt-1 space-y-1 text-gray-500 dark:text-zinc-500">
+                        <div class="hover:text-black dark:hover:text-zinc-200 transition-colors">-> ${bundle.mp4}</div>
+                        <div class="hover:text-black dark:hover:text-zinc-200 transition-colors">-> ${bundle.m4a}</div>
+                        <div class="hover:text-black dark:hover:text-zinc-200 transition-colors">-> ${bundle.srt}</div>
+                    </div>
+                `;
+                container.appendChild(folderDiv);
+            });
+        }
+
+        function simulateAssetIngestion() {
+            const input = document.getElementById('simNameInput');
+            const name = input.value.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+            
+            if(!name) return;
+
+            if(activeBundles.some(b => b.folderName === name)) {
+                logSecurity(`<span class="text-amber-500 font-bold">[WARN] Folder '${name}' already registered in cloud cache.</span>`);
+                input.value = '';
+                return;
+            }
+
+            activeBundles.push({
+                folderName: name,
+                mp4: `${name}.mp4`,
+                m4a: `${name}.m4a`,
+                srt: `${name}.srt`
+            });
+
+            logSecurity(`<span class="text-[#0070f3] font-bold">[INGESTION STARTED] Direct-to-Cloud triggered for /${name}/</span>`);
+            logSecurity(`Adding sidecars to Symmetrical Bucket layout:`);
+            logSecurity(`-> gs://ott-video-bucket/${name}/${name}.mp4`);
+            logSecurity(`-> gs://ott-video-bucket/${name}/${name}.m4a`);
+            logSecurity(`-> gs://ott-video-bucket/${name}/${name}.srt`);
+
+            renderDirectoryExplorer();
+            input.value = '';
+        }
+
+        function selectActiveBundle(folderName) {
+            document.getElementById('assetInput').value = folderName;
+            logSecurity(`Package loaded! Asset target pointing to edge path: <span class="text-[#00df89] font-bold">/${folderName}/</span>`);
+            
+            const content = document.getElementById('configContent');
+            const chevron = document.getElementById('configChevron');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                chevron.classList.add('rotate-180');
+            }
+        }
+
+        function toggleConfig() {
+            const content = document.getElementById('configContent');
+            const chevron = document.getElementById('configChevron');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                chevron.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                chevron.classList.remove('rotate-180');
+            }
+        }
+
+        function logSecurity(message) {
+            const box = document.getElementById('logBox');
+            const time = new Date().toISOString().split('T')[1].substring(0, 12);
+            const entry = document.createElement('div');
+            entry.innerHTML = `<span class="text-gray-400 dark:text-zinc-600">[${time}]</span> ${message}`;
+            box.appendChild(entry);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function updateLockScreen(title, subtext, textColor, isError) {
+            const overlay = document.getElementById('playerOverlay');
+            const card = document.getElementById('overlayCard');
+            const icon = document.getElementById('overlayIcon');
+            
+            document.getElementById('overlayTitle').innerText = title;
+            document.getElementById('overlayErrorText').innerText = subtext;
+            
+            // Reapply base styling
+            card.className = `border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] p-6 md:p-8 flex flex-col items-center max-w-sm rounded-md shadow-2xl transition-all duration-300`;
+            document.getElementById('overlayTitle').className = `text-lg font-bold uppercase tracking-wider text-center ${textColor}`;
+            
+            if (isError) {
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>`;
+                icon.className = `w-8 h-8 mb-2 ${textColor}`;
+            } else {
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>`;
+                icon.className = `w-8 h-8 mb-2 ${textColor}`;
+            }
+            
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'auto';
+        }
+
+        async function initPlayer() {
+            const video = document.getElementById('video');
+            const videoContainer = document.querySelector('[data-shaka-player-container]');
+            
+            player = new shaka.Player();
+            await player.attach(video);
+            const ui = new shaka.ui.Overlay(player, videoContainer, video);
+
+            const uiConfig = {
+                controlPanelElements: ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
+                overflowMenuButtons: ['quality', 'language', 'captions', 'picture_in_picture']
+            };
+            ui.configure(uiConfig);
+
+            player.addEventListener('error', (e) => {
+                console.error('Shaka Error:', e.detail);
+                
+                if(e.detail && e.detail.code === 1002) {
+                    logSecurity(`<span class="text-red-500 font-bold">[FATAL 1002] NETWORK BLOCK: CORS or CDN rejected the request.</span>`);
+                    updateLockScreen("Access Denied", "CORS OR CDN SECURITY REJECTED TOKEN", "text-red-500", true);
+                } else if (e.detail && e.detail.code === 1001) {
+                    logSecurity(`<span class="text-red-500 font-bold">[FATAL 1001] FILE NOT FOUND.</span>`);
+                    updateLockScreen("404 Not Found", "VERIFY CDN DOMAIN AND ASSET PATH", "text-red-500", true);
+                } else {
+                    logSecurity(`<span class="text-red-400">[ERROR] Code: ${e.detail ? e.detail.code : 'Unknown'}</span>`);
+                    updateLockScreen("Stream Error", `CODE: ${e.detail ? e.detail.code : 'UNKNOWN'}`, "text-red-500", true);
+                }
+            });
+        }
+
+        async function handlePlaybackRequest() {
+            const cdnDomain = document.getElementById('cdnInput').value.trim();
+            let baseName = document.getElementById('assetInput').value.trim();
+            const token = document.getElementById('tokenInput').value.trim();
+            
+            if (baseName.startsWith('/')) baseName = baseName.substring(1);
+            
+            let manifestUri = '';
+            if (cdnDomain.startsWith('http://') || cdnDomain.startsWith('https://')) {
+                manifestUri = cdnDomain;
+            } else {
+                manifestUri = `https://${cdnDomain}/${baseName}/${baseName}.m3u8`;
+            }
+            
+            logSecurity(`Computing Entitlement: <span class="text-gray-500 dark:text-zinc-500 break-all">${manifestUri}</span>`);
+
+            if (token !== "allow-123") {
+                logSecurity(`<span class="text-red-500 font-bold">[403 FORBIDDEN] Edge Token Validation Failed.</span>`);
+                updateLockScreen("Access Denied", "INVALID EDGE TOKEN", "text-red-500", true);
+                return; 
+            }
+
+            logSecurity(`<span class="text-[#00df89] font-bold">[200 OK] Token validated. Installing Request Interceptor...</span>`);
+            
+            player.getNetworkingEngine().clearAllRequestFilters(); 
+            player.getNetworkingEngine().registerRequestFilter((type, request) => {
+                if (type == shaka.net.NetworkingEngine.RequestType.MANIFEST || 
+                    type == shaka.net.NetworkingEngine.RequestType.SEGMENT) {
+                    request.headers['X-OTT-Access-Token'] = token;
+                }
+            });
+
+            try {
+                updateLockScreen("Decrypting...", "NEGOTIATING WITH EDGE CDN", "text-[#00df89]", false);
+                logSecurity(`Initiating secure fetch from CDN Edge Origin...`);
+                
+                await player.load(manifestUri);
+                
+                logSecurity(`<span class="text-[#00df89] font-bold">[SUCCESS] Manifest parsed. Unlocking Stream.</span>`);
+                
+                document.getElementById('playerOverlay').style.opacity = '0';
+                document.getElementById('playerOverlay').style.pointerEvents = 'none';
+                
+                startTelemetry();
+            } catch (e) {
+                console.error("Player Load Error:", e);
+            }
+        }
+
+        function startTelemetry() {
+            if (telemetryInterval) clearInterval(telemetryInterval);
+            
+            telemetryInterval = setInterval(() => {
+                if(!player) return;
+                
+                try {
+                    const stats = player.getStats();
+                    const tracks = player.getVariantTracks();
+                    const activeTrack = tracks.find(t => t.active);
+
+                    if (activeTrack) {
+                        const width = activeTrack.width || '--';
+                        const height = activeTrack.height || '--';
+                        document.getElementById('statResolution').innerText = (width !== '--' && height !== '--') ? `${width}x${height}` : '--';
+                        
+                        if (activeTrack.videoBandwidth) {
+                            document.getElementById('statVBitrate').innerText = Math.round(activeTrack.videoBandwidth / 1000);
+                        } else if (activeTrack.bandwidth) {
+                            document.getElementById('statVBitrate').innerText = Math.round(activeTrack.bandwidth / 1000);
+                        }
+
+                        if (activeTrack.audioBandwidth) {
+                            document.getElementById('statABitrate').innerText = Math.round(activeTrack.audioBandwidth / 1000);
+                            document.getElementById('statABitrateLabel').innerText = 'kbps';
+                        } else {
+                            document.getElementById('statABitrate').innerText = 'MUX';
+                            document.getElementById('statABitrateLabel').innerText = '';
+                        }
+                    }
+                    
+                    const dropped = stats.droppedFrames || 0;
+                    document.getElementById('statDropped').innerText = dropped;
+                    if (dropped > 0) {
+                        document.getElementById('statDropped').classList.add('text-red-500', 'animate-pulse');
+                    }
+                    
+                    const bw = stats.estimatedBandwidth ? (stats.estimatedBandwidth / 1000000).toFixed(1) : '--';
+                    document.getElementById('statBandwidth').innerText = bw;
+                    
+                    const videoEl = document.getElementById('video');
+                    let bufferLength = 0;
+                    if (videoEl && videoEl.buffered) {
+                        for (let i = 0; i < videoEl.buffered.length; i++) {
+                            if (videoEl.currentTime >= videoEl.buffered.start(i) && videoEl.currentTime <= videoEl.buffered.end(i)) {
+                                bufferLength = videoEl.buffered.end(i) - videoEl.currentTime;
+                                break;
+                            }
+                        }
+                    }
+                    document.getElementById('statBuffer').innerText = bufferLength.toFixed(1);
+                } catch (err) {}
+            }, 1000);
+        }
+
+        // Theme Toggle Logic
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Initialize Theme
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            renderDirectoryExplorer();
+            if (shaka.Player.isBrowserSupported()) {
+                initPlayer();
+            } else {
+                logSecurity(`<span class="text-red-500 font-bold">[FATAL] Browser does not support MSE.</span>`);
+                updateLockScreen("Unsupported", "BROWSER LACKS MSE CAPABILITY", "text-red-500", true);
+            }
+        });
+    </script>
+</body>
+</html>
