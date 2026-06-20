@@ -42,29 +42,31 @@
       animation: data-flow 0.8s linear infinite;
     }
 
-    /* Academy Article Typography - Enhanced Legibility */
-    .academy-article h3 { font-size: 1.15rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #fff; }
-    .light .academy-article h3 { color: #111827; }
-    .academy-article p { margin-bottom: 1.25rem; line-height: 1.6; color: #a1a1aa; }
-    .light .academy-article p { color: #374151; font-weight: 400; }
+    /* Academy Article Typography - Enhanced Legibility (Default Light, .dark overrides) */
+    .academy-article h3 { font-size: 1.15rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #111827; }
+    .dark .academy-article h3 { color: #fff; }
+    
+    .academy-article p { margin-bottom: 1.25rem; line-height: 1.6; color: #374151; font-weight: 400; }
+    .dark .academy-article p { color: #a1a1aa; }
     
     /* Code block styling */
-    .academy-article pre { background: #111; border: 1px solid rgba(255,255,255,0.1); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; }
-    .light .academy-article pre { background: #f8fafc; border-color: #e2e8f0; }
+    .academy-article pre { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; color: #1f2937; }
+    .dark .academy-article pre { background: #111; border-color: rgba(255,255,255,0.1); color: #e4e4e7; }
     
     /* Inline code styling */
     .academy-article code { 
         font-family: 'Geist Mono', monospace; 
         font-size: 0.85em; 
-        color: #e4e4e7;
-        background-color: rgba(255, 255, 255, 0.1);
-        padding: 0.15rem 0.35rem;
-        border-radius: 0.25rem;
-    }
-    .light .academy-article code { 
         color: #0f172a; 
         background-color: #f1f5f9;
         border: 1px solid #e2e8f0;
+        padding: 0.15rem 0.35rem;
+        border-radius: 0.25rem;
+    }
+    .dark .academy-article code { 
+        color: #e4e4e7;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: transparent;
     }
     
     /* Strip background/borders from code inside pre tags */
@@ -74,17 +76,19 @@
         border: none;
         color: inherit;
     }
-    .light .academy-article pre code {
+    .dark .academy-article pre code {
         background-color: transparent;
         border: none;
         color: inherit;
     }
 
-    .academy-article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #a1a1aa; }
-    .light .academy-article ul { color: #374151; }
+    .academy-article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #374151; }
+    .dark .academy-article ul { color: #a1a1aa; }
+    
     .academy-article li { margin-bottom: 0.5rem; }
-    .academy-article strong { color: #f4f4f5; font-weight: 600; }
-    .light .academy-article strong { color: #111827; font-weight: 600; }
+    
+    .academy-article strong { color: #111827; font-weight: 600; }
+    .dark .academy-article strong { color: #f4f4f5; font-weight: 600; }
   </style>
 </head>
 <body class="bg-white text-black dark:bg-[#000000] dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
