@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OTT Command Center & Knowledge Base</title>
+  <title>Secure OTT Edge Pipeline | Overview</title>
   <!-- Vercel Geist Font Imports -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
@@ -17,23 +17,6 @@
           fontFamily: {
             sans: ['Geist Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             mono: ['Geist Mono', 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'monospace'],
-          },
-          colors: {
-            // Light Mode Vercel Colors
-            vercel: {
-              gray: {
-                50: '#fafafa',
-                100: '#f5f5f5',
-                200: '#eaeaea',
-                300: '#999999',
-                400: '#888888',
-                500: '#666666',
-                600: '#444444',
-                700: '#333333',
-                800: '#222222',
-                900: '#111111',
-              }
-            }
           }
         }
       }
@@ -43,7 +26,7 @@
 <body class="bg-white text-black dark:bg-black dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
 
   <!-- Header Control Nav -->
-  <header class="border-b border-gray-200 dark:border-white/10 bg-white dark:bg-[#0a0a0a] sticky top-0 z-50">
+  <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <!-- Vercel-style Triangle Logo -->
@@ -51,28 +34,28 @@
           <path d="M12 2L2 22h20L12 2z"/>
         </svg>
         <span class="text-gray-300 dark:text-gray-600 font-light text-xl">/</span>
-        <span class="font-medium text-sm tracking-wide">Docs</span>
-        <nav class="hidden md:flex items-center space-x-4 ml-4">
-            <a href="#" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">Build</a>
-            <a href="#" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">Learn</a>
-            <a href="#" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors">Getting Started</a>
-        </nav>
+        <span class="font-medium text-sm tracking-wide text-gray-500 dark:text-zinc-400">Docs</span>
+        <span class="text-gray-300 dark:text-gray-600 font-light text-xl">/</span>
+        <span class="font-medium text-sm tracking-wide text-black dark:text-white">OTT-Pipeline</span>
       </div>
-      <div class="flex items-center space-x-3">
-        <button class="hidden md:block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white border border-gray-200 dark:border-white/10 rounded-md transition-all duration-150 shadow-sm">
-          Ask AI
-        </button>
-        <button class="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md transition-all duration-150">
-          Log In
-        </button>
-        <button class="bg-black text-white dark:bg-white dark:text-black px-4 py-1.5 text-xs font-medium rounded-md shadow-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-150">
-          Sign Up
-        </button>
-         <!-- Theme Switcher -->
-         <button onclick="toggleTheme()" class="p-1.5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" title="Toggle Theme">
-            <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
-            <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
-        </button>
+      
+      <!-- Only Two Navigation Tabs -->
+      <div class="flex items-center space-x-6">
+        <nav class="flex items-center space-x-6">
+            <a href="index.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white pb-5 mt-5 transition-all">Main</a>
+            <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white pb-5 mt-5 transition-colors">Player</a>
+        </nav>
+        
+        <div class="flex items-center space-x-3 pl-4 border-l border-gray-200 dark:border-white/10">
+          <a href="player.html" class="hidden sm:inline-block px-3.5 py-1.5 text-xs font-medium text-black dark:text-white border border-gray-200 dark:border-white/10 rounded-md hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-150 shadow-sm">
+            Launch Console
+          </a>
+          <!-- Theme Switcher -->
+          <button onclick="toggleTheme()" class="p-1.5 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" title="Toggle Theme">
+              <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+              <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -81,34 +64,50 @@
   <main class="max-w-[1000px] mx-auto px-6 py-16 w-full relative">
     
     <!-- Subtle Grid Background Pattern (Vercel Style) -->
-    <div class="absolute inset-0 z-[-1] pointer-events-none" style="background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
+    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-50" style="background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
     <div class="dark:absolute dark:inset-0 dark:z-[-1] dark:pointer-events-none hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
 
     <!-- Plus icons at top corners of content area -->
-    <div class="absolute top-8 left-6 text-gray-300 dark:text-gray-700 pointer-events-none">+</div>
-    <div class="absolute top-8 right-6 text-gray-300 dark:text-gray-700 pointer-events-none">+</div>
-
+    <div class="absolute top-8 left-6 text-gray-300 dark:text-gray-700 pointer-events-none select-none">+</div>
+    <div class="absolute top-8 right-6 text-gray-300 dark:text-gray-700 pointer-events-none select-none">+</div>
 
     <!-- Hero Banner -->
-    <div class="text-center mb-16 pt-8">
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-black dark:text-white mb-4">Knowledge Base</h1>
-      <p class="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto">
-        In-depth architectural guides for our Payload CMS control plane and serverless OTT delivery pipeline.
+    <div class="text-center mb-16 pt-8 flex flex-col items-center">
+      <div class="inline-flex items-center space-x-2 mb-6 px-3 py-1 rounded-full border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#00df89] animate-pulse shadow-[0_0_8px_#00df89]"></span>
+        <span class="font-mono text-[9px] text-gray-600 dark:text-zinc-300 tracking-widest uppercase font-bold">Pipeline Active & Replicating</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">
+        Secure OTT Edge Pipeline
+      </h1>
+      <p class="text-gray-500 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+        An event-driven media orchestration system converting master mezzanines into HLS Adaptive Bitrate (ABR) ladders with client-side token interceptors.
       </p>
+
+      <!-- TRY IT / DEMO CALL TO ACTION -->
+      <a href="player.html" class="group relative inline-flex items-center justify-center px-8 py-3.5 text-xs font-semibold text-white transition-all duration-200 bg-black dark:bg-white dark:text-black border border-transparent rounded-md shadow-md dark:shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:scale-105 active:scale-95 focus:outline-none">
+        Try Interactive Player Demo
+        <svg class="w-4 h-4 ml-2 transition-transform duration-200 transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+      </a>
     </div>
 
-    <!-- Active Grid (2x2 Knowledge Base Style) -->
+    <!-- Title Divider -->
+    <div class="flex items-center space-x-4 mb-8 mt-16">
+        <h2 class="text-[10px] font-mono font-bold tracking-widest text-gray-400 dark:text-zinc-500 uppercase">Architecture & Integration Pillars</h2>
+        <div class="flex-grow h-px bg-gray-200 dark:bg-white/10"></div>
+    </div>
+
+    <!-- Active Grid (2x2 Knowledge Base Style - All backgrounds 100% uniform) -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
       <!-- Card 1: Payload CMS Orchestration -->
-      <a href="#" class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] transition-all duration-200">
-        <!-- Image Area -->
-        <div class="h-48 bg-[#fafafa] dark:bg-[#111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
-            <!-- Simulated Payload Dashboard UI -->
-             <div class="w-4/5 h-3/4 border border-gray-200 dark:border-white/10 rounded-md bg-white dark:bg-black shadow-sm flex overflow-hidden relative z-10 opacity-80 group-hover:opacity-100 transition-opacity transform group-hover:scale-105 duration-300">
+      <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
+        <!-- Image Area (Neutral Slate/Zinc - NO gradient mismatch) -->
+        <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
+             <div class="w-4/5 h-3/4 border border-gray-200 dark:border-white/10 rounded-md bg-white dark:bg-black shadow-sm flex overflow-hidden relative z-10 opacity-80 group-hover:opacity-100 transition-all transform group-hover:scale-105 duration-300">
                 <!-- Sidebar -->
-                <div class="w-12 border-r border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-[#111] flex flex-col items-center py-2 gap-2">
-                    <div class="w-4 h-4 rounded bg-blue-500 shadow-sm shadow-blue-500/20"></div>
+                <div class="w-12 border-r border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-[#0a0a0a] flex flex-col items-center py-2 gap-2">
+                    <div class="w-4 h-4 rounded bg-black dark:bg-white"></div>
                     <div class="w-4 h-1 rounded bg-gray-200 dark:bg-white/10 mt-2"></div>
                     <div class="w-4 h-1 rounded bg-gray-200 dark:bg-white/10"></div>
                 </div>
@@ -116,38 +115,37 @@
                 <div class="flex-grow p-3 flex flex-col gap-3">
                     <div class="flex justify-between items-center">
                         <div class="h-3 w-16 bg-gray-200 dark:bg-white/20 rounded"></div>
-                        <div class="h-4 w-12 bg-blue-500 text-[6px] text-white flex items-center justify-center rounded uppercase font-bold">Deploy</div>
+                        <div class="h-4 w-12 bg-black dark:bg-white text-[6px] text-white dark:text-black flex items-center justify-center rounded uppercase font-bold">Deploy</div>
                     </div>
                     <!-- Dropzone -->
-                    <div class="flex-grow border-2 border-dashed border-blue-400/50 rounded flex items-center justify-center bg-blue-50/50 dark:bg-blue-900/10">
-                        <svg class="w-6 h-6 text-blue-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    <div class="flex-grow border border-dashed border-gray-200 dark:border-white/10 rounded flex items-center justify-center bg-gray-50 dark:bg-white/5">
+                        <svg class="w-5 h-5 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                     </div>
                     <!-- Live Status Row -->
-                    <div class="h-4 border border-green-200 dark:border-green-900/50 bg-green-50 dark:bg-green-900/10 rounded flex items-center px-2 gap-1">
+                    <div class="h-4 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 rounded flex items-center px-2 gap-1">
                         <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                        <div class="h-1.5 w-12 bg-green-200 dark:bg-green-800 rounded"></div>
+                        <div class="h-1.5 w-12 bg-gray-200 dark:bg-white/20 rounded"></div>
                     </div>
                 </div>
              </div>
              <!-- Subtle background grid -->
-             <div class="absolute inset-0 z-0 opacity-50" style="background-image: linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 20px 20px;"></div>
-             <div class="dark:absolute dark:inset-0 dark:z-0 dark:opacity-50 hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 20px 20px;"></div>
+             <div class="absolute inset-0 z-0 opacity-30" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
         <!-- Content Area -->
-        <div class="p-5 flex flex-col flex-grow">
-          <h3 class="text-lg font-semibold text-black dark:text-white mb-2">MAM Orchestration (Payload CMS)</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+        <div class="p-6 flex flex-col flex-grow">
+          <div class="font-mono text-[9px] font-bold tracking-widest text-zinc-400 dark:text-zinc-500 mb-2 uppercase">// STEP 01</div>
+          <h3 class="text-base font-bold text-black dark:text-white mb-2">MAM Orchestration (Payload CMS)</h3>
+          <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">
             Headless Node.js architecture featuring a custom React ingestion canvas, DOM-hijacking for clean UX, and real-time AWS EventBridge webhook sync.
           </p>
         </div>
-      </a>
+      </div>
       
-      <!-- Card 2: Agent Stack (Raw Ingest) -->
-      <a href="#" class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] transition-all duration-200">
-        <!-- Image Area -->
-        <div class="h-48 bg-[#fafafa] dark:bg-[#111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
-            <!-- Simulated UI element from image -->
-             <div class="w-3/4 h-3/4 border border-gray-200 dark:border-white/10 rounded-md bg-white dark:bg-black shadow-sm flex flex-col p-3 gap-2 relative z-10 opacity-80 group-hover:opacity-100 transition-opacity">
+      <!-- Card 2: Cloud Ingest (GCS & Eventarc) -->
+      <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
+        <!-- Image Area (Neutral Slate/Zinc - NO gradient mismatch) -->
+        <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
+             <div class="w-3/4 h-3/4 border border-gray-200 dark:border-white/10 rounded-md bg-white dark:bg-black shadow-sm flex flex-col p-3 gap-2 relative z-10 opacity-80 group-hover:opacity-100 transition-all transform group-hover:scale-105 duration-300">
                 <div class="flex items-start gap-2">
                     <div class="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center flex-shrink-0 text-gray-400">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
@@ -166,99 +164,92 @@
                 </div>
              </div>
              <!-- Subtle background grid inside image area -->
-             <div class="absolute inset-0 z-0 opacity-50" style="background-image: linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 20px 20px;"></div>
-             <div class="dark:absolute dark:inset-0 dark:z-0 dark:opacity-50 hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 20px 20px;"></div>
+             <div class="absolute inset-0 z-0 opacity-30" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
-        <!-- Content Area -->
-        <div class="p-5 flex flex-col flex-grow">
-          <h3 class="text-lg font-semibold text-black dark:text-white mb-2">Cloud Storage & Eventarc</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+        <div class="p-6 flex flex-col flex-grow">
+          <div class="font-mono text-[9px] font-bold tracking-widest text-zinc-400 dark:text-zinc-500 mb-2 uppercase">// STEP 02</div>
+          <h3 class="text-base font-bold text-black dark:text-white mb-2">Cloud Storage & Eventarc</h3>
+          <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">
             High-res mezzanine files and sidecars are securely pushed to GCP via XHR streams, triggering autonomous serverless validation.
           </p>
         </div>
-      </a>
+      </div>
 
-      <!-- Card 3: Backend (Transcoding) -->
-      <a href="#" class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] transition-all duration-200">
-        <!-- Image Area -->
-        <div class="h-48 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-[#050b14] dark:to-[#0a0a1a] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
+      <!-- Card 3: AWS MediaConvert Transcoding -->
+      <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
+        <!-- Image Area (Neutral Slate/Zinc - NO gradient mismatch) -->
+        <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
            <!-- Simulated Nodes -->
-           <div class="grid grid-cols-3 gap-2 opacity-60 group-hover:opacity-100 transition-opacity scale-90">
-               <div class="w-10 h-10 rounded border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center justify-center shadow-sm"></div>
-               <div class="w-10 h-10 rounded border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center justify-center shadow-sm text-xs font-mono text-gray-400">ex</div>
-               <div class="w-10 h-10 rounded border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center justify-center shadow-sm"><div class="w-3 h-4 bg-orange-400 rounded-full opacity-50 blur-[2px]"></div></div>
+           <div class="grid grid-cols-3 gap-2 opacity-60 group-hover:opacity-100 transition-all transform group-hover:scale-105 scale-90 duration-300">
+               <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm"></div>
+               <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm text-xs font-mono text-gray-400">ex</div>
+               <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm"><div class="w-3 h-4 bg-gray-400 dark:bg-zinc-800 rounded-full opacity-50 blur-[1px]"></div></div>
                
-               <div class="w-10 h-10 rounded border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center justify-center shadow-sm"><div class="w-4 h-4 bg-blue-400 rounded-full flex items-center justify-center text-[8px] text-white">⚡</div></div>
-               <div class="w-12 h-12 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-md scale-110 z-10 relative">
+               <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm"><div class="w-4 h-4 bg-black dark:bg-white rounded-full flex items-center justify-center text-[8px] text-white dark:text-black">⚡</div></div>
+               <div class="w-12 h-12 rounded-lg border border-gray-300 dark:border-white/20 bg-white dark:bg-black flex items-center justify-center shadow-md scale-110 z-10 relative">
                    <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
                </div>
-               <div class="w-10 h-10 rounded border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center justify-center shadow-sm"><div class="w-4 h-4 bg-pink-500 rounded-full opacity-60"></div></div>
+               <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm"><div class="w-4 h-4 bg-gray-400 dark:bg-zinc-800 rounded-full opacity-60"></div></div>
 
-               <div class="w-10 h-10 rounded border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center justify-center shadow-sm"><svg class="w-4 h-4 text-green-500/50" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2l6 14H4z"/></svg></div>
-               <div class="w-10 h-10 rounded border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center justify-center shadow-sm"><svg class="w-4 h-4 text-blue-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg></div>
-               <div class="w-10 h-10 rounded border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-white/5 flex items-center justify-center shadow-sm"><div class="w-4 h-4 bg-teal-400 rounded-full flex items-center justify-center text-[8px] text-white">⚡</div></div>
+               <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm"><svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2l6 14H4z"/></svg></div>
+               <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg></div>
+               <div class="w-10 h-10 rounded border border-gray-200 dark:border-white/10 bg-white dark:bg-black flex items-center justify-center shadow-sm"><div class="w-4 h-4 bg-black dark:bg-white rounded-full flex items-center justify-center text-[8px] text-white dark:text-black">⚡</div></div>
            </div>
+           <div class="absolute inset-0 z-0 opacity-30 pointer-events-none" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
         <!-- Content Area -->
-        <div class="p-5 flex flex-col flex-grow">
-          <h3 class="text-lg font-semibold text-black dark:text-white mb-2">AWS MediaConvert</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+        <div class="p-6 flex flex-col flex-grow">
+          <div class="font-mono text-[9px] font-bold tracking-widest text-zinc-400 dark:text-zinc-500 mb-2 uppercase">// STEP 03</div>
+          <h3 class="text-base font-bold text-black dark:text-white mb-2">AWS MediaConvert</h3>
+          <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">
             The orchestrator signs short-lived URLs for raw assets, mapping IAM roles, and submits a distributed job to generate an adaptive H.264 ABR ladder.
           </p>
         </div>
-      </a>
+      </div>
 
       <!-- Card 4: Security (Delivery) -->
-      <a href="#" class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:shadow-md dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] transition-all duration-200">
-        <!-- Image Area -->
-        <div class="h-48 bg-[#fafafa] dark:bg-[#111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
-            <div class="relative z-10 transform transition-transform group-hover:scale-105 duration-300">
+      <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
+        <!-- Image Area (Neutral Slate/Zinc - NO gradient mismatch) -->
+        <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
+            <div class="relative z-10 transform transition-transform group-hover:scale-105 duration-300 opacity-90 group-hover:opacity-100">
                 <!-- Data Table UI -->
-                <div class="w-32 h-24 border border-gray-200 dark:border-white/10 rounded bg-white dark:bg-black shadow-sm flex flex-col overflow-hidden opacity-90">
-                    <div class="h-4 border-b border-gray-100 dark:border-white/5 flex items-center px-2 gap-1">
-                        <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                        <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                        <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                <div class="w-32 h-24 border border-gray-200 dark:border-white/10 rounded bg-white dark:bg-black shadow-sm flex flex-col overflow-hidden">
+                    <div class="h-4 border-b border-gray-100 dark:border-white/5 flex items-center px-2 gap-1 bg-gray-50 dark:bg-[#0a0a0a]">
+                        <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-zinc-700"></div>
+                        <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-zinc-700"></div>
+                        <div class="w-1 h-1 rounded-full bg-gray-300 dark:bg-zinc-700"></div>
                     </div>
-                    <div class="flex-grow bg-grid-pattern opacity-20"></div>
+                    <div class="flex-grow bg-grid-pattern opacity-10 dark:opacity-20" style="background-image: linear-gradient(to right, #888 1px, transparent 1px), linear-gradient(to bottom, #888 1px, transparent 1px); background-size: 8px 8px;"></div>
                 </div>
                 <!-- Floating Badges -->
-                <div class="absolute -left-6 top-4 w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-md">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                <div class="absolute -left-4 top-4 w-6 h-6 rounded bg-black dark:bg-white flex items-center justify-center text-white dark:text-black shadow-sm border border-gray-200 dark:border-white/10">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 </div>
-                <div class="absolute -bottom-4 -left-2 w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white shadow-md">
-                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
+                <div class="absolute -bottom-4 -left-2 w-8 h-8 rounded-full bg-gray-50 dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 flex items-center justify-center text-gray-500 dark:text-zinc-300 shadow-md">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
                 </div>
             </div>
-            
-            <style>
-                .bg-grid-pattern {
-                    background-image: linear-gradient(to right, #ccc 1px, transparent 1px), linear-gradient(to bottom, #ccc 1px, transparent 1px);
-                    background-size: 8px 8px;
-                }
-                .dark .bg-grid-pattern {
-                    background-image: linear-gradient(to right, #444 1px, transparent 1px), linear-gradient(to bottom, #444 1px, transparent 1px);
-                }
-            </style>
+            <div class="absolute inset-0 z-0 opacity-30" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
         <!-- Content Area -->
-        <div class="p-5 flex flex-col flex-grow">
-          <h3 class="text-lg font-semibold text-black dark:text-white mb-2">CloudFront Edge Delivery</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+        <div class="p-6 flex flex-col flex-grow">
+          <div class="font-mono text-[9px] font-bold tracking-widest text-zinc-400 dark:text-zinc-500 mb-2 uppercase">// STEP 04</div>
+          <h3 class="text-base font-bold text-black dark:text-white mb-2">CloudFront Edge Delivery</h3>
+          <p class="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">
             S3 OAC locked origins with global edge caching. Custom Shaka Player networking engines inject dynamic tokens to bypass strict CORS requirements.
           </p>
         </div>
-      </a>
+      </div>
 
     </div>
 
   </main>
 
-  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-600 text-sm">
-    <div class="max-w-[1000px] mx-auto px-6 flex justify-between items-center">
+  <footer class="border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-500 text-sm">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
         <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+            <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
             <span>All systems normal.</span>
         </div>
     </div>
