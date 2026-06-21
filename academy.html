@@ -500,7 +500,7 @@ aws_client.create_job(
                 <p>The processed <code>.m3u8</code> manifests and <code>.ts</code> video segments are deposited into an Amazon S3 output bucket acting as the origin server. This bucket must be strictly locked against public access to prevent bandwidth abuse and hotlinking.</p>
                 
                 <h4>Configure Origin Access Control (OAC)</h4>
-                <p>Apply a Bucket Policy enforcing that the S3 bucket will exclusively answer to `GetObject` requests routed internally from the specified CloudFront CDN distribution.</p>
+                <p>Apply a Bucket Policy enforcing that the S3 bucket will exclusively answer to <code>GetObject</code> requests routed internally from the specified CloudFront CDN distribution.</p>
 
 <pre><code class="language-json">{
   "Version": "2012-10-17",
@@ -539,7 +539,7 @@ aws_client.create_job(
                 <p><strong>AWS CloudFront</strong> acts as the Edge caching layer in front of the locked S3 origin. This absorbs playback bandwidth spikes and significantly reduces latency by serving segments from local Points of Presence (POPs).</p>
                 
                 <h4>Configure Cache Behavior</h4>
-                <p>Assign strict policies to proxy `OPTIONS` preflight requests correctly and return the `Access-Control-Allow-Origin` headers required by MSE-based web players.</p>
+                <p>Assign strict policies to proxy <code>OPTIONS</code> preflight requests correctly and return the <code>Access-Control-Allow-Origin</code> headers required by MSE-based web players.</p>
 
 <pre><code class="language-json">{
   "ViewerProtocolPolicy": "redirect-to-https",
