@@ -50,30 +50,26 @@
 </head>
 <body class="bg-white text-black dark:bg-[#000000] dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
 
-  <!-- Unified Header Control Nav (Standardized to match Main/Academy topology) -->
+  <!-- Unified Header Control Nav (Standardized & Mobile Responsive) -->
   <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center h-full space-x-8">
-        
-        <!-- Breadcrumb Logo -->
-        <div class="flex items-center space-x-3 h-full">
-          <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L2 22h20L12 2z"/>
-          </svg>
-          <span class="text-gray-300 dark:text-gray-600 font-light text-xl">/</span>
-          <span class="font-medium text-sm tracking-wide text-gray-500 dark:text-zinc-400 hidden sm:inline">Docs</span>
-          <span class="text-gray-300 dark:text-gray-600 font-light text-xl hidden sm:inline">/</span>
-          <span class="font-medium text-sm tracking-wide text-black dark:text-white hidden sm:inline">OTT-Pipeline</span>
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+      
+      <!-- Breadcrumb Logo & Aligned Navigation Tabs -->
+      <div class="flex items-center h-full flex-1 overflow-hidden">
+        <div class="flex items-center shrink-0">
+          <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
         </div>
         
-        <!-- Aligned Navigation Tabs -->
-        <nav class="hidden md:flex items-center space-x-6 h-full">
-            <a href="index.html" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Main</a>
-            <a href="player.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all">Player</a>
-            <a href="academy.html" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Academy</a>
+        <span class="text-gray-300 dark:text-gray-700 font-light text-xl mx-3 sm:mx-4 shrink-0">/</span>
+        
+        <nav class="flex items-center space-x-4 sm:space-x-6 h-full overflow-x-auto hide-scroll">
+            <a href="index.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Main</a>
+            <a href="player.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all whitespace-nowrap">Player</a>
+            <a href="academy.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Academy</a>
         </nav>
       </div>
-      <div class="flex items-center space-x-3">
+      
+      <div class="flex items-center space-x-3 pl-2 sm:pl-4 shrink-0">
         <button onclick="toggleTheme()" class="p-1.5 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
             <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
             <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
