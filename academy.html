@@ -175,12 +175,16 @@
             04. Delivery
          </button>
 
-         <button data-id="5" data-nodes="node-mediaconvert,node-eventbridge,node-payload" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-            05. Webhooks
+         <button data-id="5" data-nodes="node-payload,node-cloudfront,node-client" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+            05. Edge Security
          </button>
 
-         <button data-id="6" data-nodes="node-payload,node-gcs,node-cloudrun,node-mediaconvert,node-s3,node-cloudfront,node-client,node-eventbridge" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-            06. Post-Mortem
+         <button data-id="6" data-nodes="node-mediaconvert,node-eventbridge,node-payload" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+            06. Webhooks
+         </button>
+
+         <button data-id="7" data-nodes="node-payload,node-gcs,node-cloudrun,node-mediaconvert,node-s3,node-cloudfront,node-client,node-eventbridge" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+            07. Post-Mortem
          </button>
       </div>
 
@@ -320,8 +324,44 @@ def trigger_mediaconvert(cloud_event: CloudEvent):
           <p>A permissive CORS policy on S3 allows <code>GET</code>/<code>HEAD</code> requests from all origins (<code>*</code>) to satisfy Shaka Player's XHR requirements.</p>
       </template>
 
-      <!-- Module 5: Telemetry Loops -->
+      <!-- Module 5: Edge Security -->
       <template id="content-5">
+          <p>To prevent unauthorized CDN scraping, the pipeline implements a <strong>Zero-Trust Security Perimeter</strong> using a custom 2-part JWT logic (<code>payload.signature</code>) validated directly at the CloudFront edge.</p>
+          
+          <h4>CMS Administrative Minting (Cookie Auth)</h4>
+          <p>Token generation is strictly bounded to the Payload CMS interface. An admin uses a custom UI component to ping the internal <code>/api/media/mint-token</code> endpoint. Because this relies entirely on Payload's HTTP-only session cookies, external programmatic access (via Bearer tokens) is structurally blocked.</p>
+
+<pre><code class="language-typescript">// src/collections/Media.ts
+endpoints: [
+  {
+    path: '/mint-token',
+    method: 'get',
+    handler: async (req) => {
+      // 1. Strict session gating blocks automated scraper bots
+      if (!req.user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
+      const secret = process.env.JWT_SECRET
+      const expirationSeconds = Math.floor(Date.now() / 1000) + (15 * 60)
+
+      // 2. Microscopic Base64URL payload targeting edge bandwidth entropy
+      const payloadBase64Url = Buffer.from(JSON.stringify({ exp: expirationSeconds })).toString('base64url')
+      
+      const hmac = crypto.createHmac('sha256', secret)
+      hmac.update(payloadBase64Url)
+      
+      // 3. Output custom 2-part passport (payload.signature)
+      return Response.json({ token: `${payloadBase64Url}.${hmac.digest('base64url')}` })
+    }
+  }
+]</code></pre>
+
+          <h4>1-Millisecond Edge Firewall</h4>
+          <p>The frontend Shaka Player dynamically injects the resulting string into the <code>X-OTT-Access-Token</code> request header. A CloudFront Viewer-Request Function intercepts this header before the CDN cache is ever checked.</p>
+          <p>In roughly <code>0.08ms</code> (consuming &lt;10 compute utilization units), the ES5 engine recalculates the HMAC-SHA256 signature mathematically. If the provided signature is forged, or if the 15-minute lease (TTL) has expired, the connection is instantly severed with a <code>403 Forbidden</code>.</p>
+      </template>
+
+      <!-- Module 6: Telemetry Loops -->
+      <template id="content-6">
           <p>To securely and deterministically notify the CMS when transcoding succeeds or fails, we implement <strong>Telemetry Loops & Automated Garbage Collection</strong>.</p>
           
           <h4>Secured API Destination Routing</h4>
@@ -363,8 +403,8 @@ export const mediaconvertWebhook: Endpoint = {
 }</code></pre>
       </template>
 
-      <!-- Module 6: Post-Mortem -->
-      <template id="content-6">
+      <!-- Module 7: Post-Mortem -->
+      <template id="content-7">
           <p>The core architectural mandate of this pipeline is minimizing operational entropy—the unpredictable states, race conditions, and network failures inherent in distributed cloud systems. Rather than attempting to control systemic chaos via bloated orchestration layers or expensive polling loops, this pipeline relies on <strong>bottom-up, deterministic execution</strong>.</p>
           
           <h4>The Minimax Takeaway: Deterministic Systems Engineering</h4>
@@ -425,8 +465,6 @@ export const mediaconvertWebhook: Endpoint = {
     }
 
     // --- D3 PHYSICS ENGINE INITIALIZATION ---
-    // Note: Top-level variables use 'var' instead of 'const'/'let' to survive Canvas hot-reloads 
-    // without throwing syntax redeclaration errors.
     
     var nodesData = [
         { id: 'payload', label: 'Payload CMS', color: '#3b82f6', targetIndex: 0 },
@@ -447,13 +485,13 @@ export const mediaconvertWebhook: Endpoint = {
         { source: 's3', target: 'cloudfront' },
         { source: 'cloudfront', target: 'client' },
         { source: 'mediaconvert', target: 'eventbridge' },
-        { source: 'eventbridge', target: 'payload' }
+        { source: 'eventbridge', target: 'payload' },
+        { source: 'payload', target: 'client' }
     ];
 
     var simulation, svg, link, node;
     var activeCardId = null;
 
-    // A distinct layout calculation function so we can cleanly redraw on window resizes
     function updateForces() {
         var container = document.getElementById('d3-graph-container');
         if (!container) return;
@@ -461,8 +499,6 @@ export const mediaconvertWebhook: Endpoint = {
         var w = container.clientWidth || 1000;
         var h = container.clientHeight || 550;
         
-        // Intelligent Aspect Ratio Check: Rather than hardcoded mobile widths, 
-        // we check if the container is too tall/square.
         var isVertical = (w / h) < 1.2;
 
         svg.attr("viewBox", `0 0 ${w} ${h}`);
@@ -474,7 +510,6 @@ export const mediaconvertWebhook: Endpoint = {
         simulation.force("x", d3.forceX(d => {
             if (isVertical) {
                 if (d.id === 'eventbridge') return w * 0.75;
-                // Vertical Zig-Zag
                 return d.targetIndex % 2 === 0 ? w * 0.35 : w * 0.55; 
             } else {
                 var stageNorm = d.targetIndex / 6; 
@@ -488,7 +523,6 @@ export const mediaconvertWebhook: Endpoint = {
                 return h * (0.15 + stageNorm * 0.7);
             } else {
                 if (d.id === 'eventbridge') return h * 0.25;
-                // Horizontal Zig-Zag
                 return d.targetIndex % 2 === 0 ? h * 0.55 : h * 0.75;
             }
         }).strength(0.8));
@@ -497,14 +531,12 @@ export const mediaconvertWebhook: Endpoint = {
     }
 
     function initD3() {
-        // Clear existing SVG if Canvas hot-reloads
         d3.select("#d3-graph-container").selectAll("*").remove();
 
         svg = d3.select("#d3-graph-container").append("svg")
             .attr("width", "100%")
             .attr("height", "100%");
 
-        // Define SVG Markers (Sharp, Concave Chevrons)
         var defs = svg.append("defs");
         var markers = [
             { id: "arrow-light", color: "rgba(0,0,0,0.15)" },
@@ -518,21 +550,19 @@ export const mediaconvertWebhook: Endpoint = {
             .enter().append("marker")
             .attr("id", d => d.id)
             .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 26) // Sits cleanly on the edge of the 20px radius node
+            .attr("refX", 26) 
             .attr("refY", 0)
             .attr("markerWidth", 5)
             .attr("markerHeight", 5)
             .attr("orient", "auto")
             .append("path")
-            .attr("d", "M 0,-4 L 10,0 L 0,4 L 3,0 Z") // Aggressive concave wedge
+            .attr("d", "M 0,-4 L 10,0 L 0,4 L 3,0 Z") 
             .attr("fill", d => d.color);
 
-        // Core Physics Simulation setup
         simulation = d3.forceSimulation(nodesData)
             .force("link", d3.forceLink(linksData).id(d => d.id).strength(0.5))
             .force("charge", d3.forceManyBody().strength(-1000));
 
-        // Draw Links
         link = svg.append("g")
             .attr("class", "links")
             .selectAll("path")
@@ -542,7 +572,6 @@ export const mediaconvertWebhook: Endpoint = {
             .attr("fill", "none")
             .attr("stroke-width", 2);
 
-        // Draw Nodes
         node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("g")
@@ -574,7 +603,6 @@ export const mediaconvertWebhook: Endpoint = {
             .attr("class", "node-text font-mono text-[11px] pointer-events-none")
             .text(d => d.label);
 
-        // Physics Tick Rendering Loop
         simulation.on("tick", () => {
             link.attr("d", d => {
                 if (!d.source || !d.target || d.source.x === undefined) return "";
@@ -583,17 +611,14 @@ export const mediaconvertWebhook: Endpoint = {
                 var sourceId = d.source.id || d.source;
                 var targetId = d.target.id || d.target;
 
-                // EventBridge feedback loops use a concave arc (sweep-flag 0 bows inward)
                 if (sourceId === 'eventbridge' || targetId === 'eventbridge') {
                     var dr = Math.sqrt(dx * dx + dy * dy) * 1.5; 
                     return `M${d.source.x},${d.source.y} A${dr},${dr} 0 0,0 ${d.target.x},${d.target.y}`;
                 }
                 
-                // Primary pipeline uses precise, straight lines
                 return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`;
             });
 
-            // Prevent nodes from being flung out of the viewport entirely
             node.attr("transform", d => {
                 var container = document.getElementById('d3-graph-container');
                 var w = container ? container.clientWidth : 1000;
@@ -605,7 +630,6 @@ export const mediaconvertWebhook: Endpoint = {
             });
         });
 
-        // Trigger dynamic sizing calculations immediately
         updateForces();
         updateD3Theme(document.documentElement.classList.contains('dark'));
     }
@@ -638,7 +662,7 @@ export const mediaconvertWebhook: Endpoint = {
                 var sourceId = d.source.id || d.source;
                 var targetId = d.target.id || d.target;
                 var isActive = targetNodes.includes(`node-${sourceId}`) && targetNodes.includes(`node-${targetId}`);
-                if (activeCardId === "6") return isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)";
+                if (activeCardId === "7") return isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)";
                 if (isActive) return isDark ? "#fff" : "#000";
                 return isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.1)";
             })
@@ -646,21 +670,21 @@ export const mediaconvertWebhook: Endpoint = {
                 var sourceId = d.source.id || d.source;
                 var targetId = d.target.id || d.target;
                 var isActive = targetNodes.includes(`node-${sourceId}`) && targetNodes.includes(`node-${targetId}`);
-                if (activeCardId === "6") return isDark ? "url(#arrow-dark)" : "url(#arrow-light)";
+                if (activeCardId === "7") return isDark ? "url(#arrow-dark)" : "url(#arrow-light)";
                 if (isActive) return isDark ? "url(#arrow-active-dark)" : "url(#arrow-active-light)";
                 return isDark ? "url(#arrow-dark)" : "url(#arrow-light)";
             });
 
         d3.selectAll('.node-bg')
             .attr("class", d => {
-                var isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "6";
+                var isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "7";
                 if (isActive) return isDark ? "node-bg fill-black stroke-white stroke-[2px]" : "node-bg fill-white stroke-black stroke-[2px]";
                 return isDark ? "node-bg fill-[#0a0a0a] stroke-white/10 stroke-[1px]" : "node-bg fill-white stroke-gray-200 stroke-[1.5px]";
             });
 
         d3.selectAll('.node-text')
             .attr("class", d => {
-                var isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "6";
+                var isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "7";
                 if (isActive) return isDark ? "node-text font-mono text-[11px] font-bold fill-white pointer-events-none" : "node-text font-mono text-[11px] font-bold fill-black pointer-events-none";
                 return isDark ? "node-text font-mono text-[11px] font-medium fill-zinc-500 pointer-events-none" : "node-text font-mono text-[11px] font-medium fill-gray-400 pointer-events-none";
             });
@@ -672,8 +696,9 @@ export const mediaconvertWebhook: Endpoint = {
         "2": "Serverless Orchestration & Pacifier Pattern",
         "3": "Compute Transcoding Engine",
         "4": "Global CDN Distribution & Caching",
-        "5": "Telemetry Loops & Garbage Collection",
-        "6": "Deterministic Systems Engineering"
+        "5": "Zero-Trust Edge Security Perimeter",
+        "6": "Telemetry Loops & Garbage Collection",
+        "7": "Deterministic Systems Engineering"
     };
 
     function selectModule(tabElement) {
@@ -707,7 +732,7 @@ export const mediaconvertWebhook: Endpoint = {
 
         // Instruct D3 Engine to Highlight Focus Areas
         d3.selectAll('.node-group').transition().duration(400)
-            .style("opacity", d => (targetNodes.includes(`node-${d.id}`) || id === "6") ? 1 : 0.35);
+            .style("opacity", d => (targetNodes.includes(`node-${d.id}`) || id === "7") ? 1 : 0.35);
             
         d3.selectAll('.flow-link').transition().duration(400)
             .attr("class", d => {
@@ -731,7 +756,6 @@ export const mediaconvertWebhook: Endpoint = {
         if(firstModule) selectModule(firstModule);
         
         window.addEventListener('resize', () => {
-            // Debounce resize to prevent physics math thrashing
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
                 if(simulation) updateForces();
