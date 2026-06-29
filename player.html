@@ -50,13 +50,23 @@
 </head>
 <body class="bg-white text-black dark:bg-[#000000] dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
 
-  <!-- Header Control Nav -->
+  <!-- Unified Header Control Nav (Standardized to match Main/Academy topology) -->
   <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-16">
-      <div class="flex items-center h-full">
-        <div class="flex items-center mr-6">
-          <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
+    <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center h-full space-x-8">
+        
+        <!-- Breadcrumb Logo -->
+        <div class="flex items-center space-x-3 h-full">
+          <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 22h20L12 2z"/>
+          </svg>
+          <span class="text-gray-300 dark:text-gray-600 font-light text-xl">/</span>
+          <span class="font-medium text-sm tracking-wide text-gray-500 dark:text-zinc-400 hidden sm:inline">Docs</span>
+          <span class="text-gray-300 dark:text-gray-600 font-light text-xl hidden sm:inline">/</span>
+          <span class="font-medium text-sm tracking-wide text-black dark:text-white hidden sm:inline">OTT-Pipeline</span>
         </div>
+        
+        <!-- Aligned Navigation Tabs -->
         <nav class="hidden md:flex items-center space-x-6 h-full">
             <a href="index.html" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Main</a>
             <a href="player.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all">Player</a>
@@ -134,7 +144,7 @@
             <div class="bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col h-[300px]">
                 <div class="bg-gray-50 dark:bg-[#111] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between shrink-0">
                     <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-700 dark:text-zinc-300">XHR Network Interceptor</span>
                     </div>
                     <span class="text-[10px] font-mono text-gray-500 dark:text-zinc-500">Live Traffic</span>
