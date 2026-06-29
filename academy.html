@@ -710,9 +710,9 @@ export const mediaconvertWebhook: Endpoint = {
 
         activeCardId = id;
 
-        // Reset all tabs
+        // Reset all tabs - EXPLICITLY REMOVE ALL BORDER UTILITIES TO PREVENT CSS CLASS LEAK
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
+            btn.classList.remove('active', 'border-black', 'border-white', 'dark:border-white', 'text-black', 'dark:text-white');
             btn.classList.add('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
         });
 
