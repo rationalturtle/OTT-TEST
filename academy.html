@@ -388,7 +388,7 @@ export const mediaconvertWebhook: Endpoint = {
   <script>
     // --- Global Theme & Utilities ---
     function toggleTheme() {
-        const isDark = document.documentElement.classList.toggle('dark');
+        var isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         updateHighlightTheme(isDark);
         updateActiveTabBorder(isDark);
@@ -396,9 +396,9 @@ export const mediaconvertWebhook: Endpoint = {
     }
     
     function initTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+        var savedTheme = localStorage.getItem('theme');
+        var systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
         
         if (isDark) {
             document.documentElement.classList.add('dark');
@@ -410,14 +410,14 @@ export const mediaconvertWebhook: Endpoint = {
     }
 
     function updateHighlightTheme(isDark) {
-        const link = document.getElementById('hljs-theme');
+        var link = document.getElementById('hljs-theme');
         link.href = isDark 
             ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" 
             : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
     }
 
     function updateActiveTabBorder(isDark) {
-        const activeTab = document.querySelector('.tab-btn.active');
+        var activeTab = document.querySelector('.tab-btn.active');
         if (activeTab) {
             activeTab.classList.remove('border-black', 'border-white');
             activeTab.classList.add(isDark ? 'border-white' : 'border-black');
@@ -425,8 +425,10 @@ export const mediaconvertWebhook: Endpoint = {
     }
 
     // --- D3 PHYSICS ENGINE INITIALIZATION ---
+    // Note: Top-level variables use 'var' instead of 'const'/'let' to survive Canvas hot-reloads 
+    // without throwing syntax redeclaration errors.
     
-    const nodesData = [
+    var nodesData = [
         { id: 'payload', label: 'Payload CMS', color: '#3b82f6', targetIndex: 0 },
         { id: 'gcs', label: 'GCS EventArc', color: '#f97316', targetIndex: 1 },
         { id: 'cloudrun', label: 'Cloud Run', color: '#f97316', targetIndex: 2 },
@@ -437,7 +439,7 @@ export const mediaconvertWebhook: Endpoint = {
         { id: 'eventbridge', label: 'EventBridge', color: '#3b82f6', targetIndex: 2.5 }
     ];
 
-    const linksData = [
+    var linksData = [
         { source: 'payload', target: 'gcs' },
         { source: 'gcs', target: 'cloudrun' },
         { source: 'cloudrun', target: 'mediaconvert' },
@@ -448,23 +450,63 @@ export const mediaconvertWebhook: Endpoint = {
         { source: 'eventbridge', target: 'payload' }
     ];
 
-    let simulation, svg, link, node;
-    let activeCardId = null;
+    var simulation, svg, link, node;
+    var activeCardId = null;
+
+    // A distinct layout calculation function so we can cleanly redraw on window resizes
+    function updateForces() {
+        var container = document.getElementById('d3-graph-container');
+        if (!container) return;
+        
+        var w = container.clientWidth || 1000;
+        var h = container.clientHeight || 550;
+        
+        // Intelligent Aspect Ratio Check: Rather than hardcoded mobile widths, 
+        // we check if the container is too tall/square.
+        var isVertical = (w / h) < 1.2;
+
+        svg.attr("viewBox", `0 0 ${w} ${h}`);
+
+        simulation.force("center", d3.forceCenter(w / 2, h / 2))
+                  .force("collide", d3.forceCollide().radius(isVertical ? 35 : 45))
+                  .force("link").distance(isVertical ? 60 : 100);
+
+        simulation.force("x", d3.forceX(d => {
+            if (isVertical) {
+                if (d.id === 'eventbridge') return w * 0.75;
+                // Vertical Zig-Zag
+                return d.targetIndex % 2 === 0 ? w * 0.35 : w * 0.55; 
+            } else {
+                var stageNorm = d.targetIndex / 6; 
+                return w * (0.1 + stageNorm * 0.8); 
+            }
+        }).strength(0.8));
+
+        simulation.force("y", d3.forceY(d => {
+            if (isVertical) {
+                var stageNorm = d.targetIndex / 6;
+                return h * (0.15 + stageNorm * 0.7);
+            } else {
+                if (d.id === 'eventbridge') return h * 0.25;
+                // Horizontal Zig-Zag
+                return d.targetIndex % 2 === 0 ? h * 0.55 : h * 0.75;
+            }
+        }).strength(0.8));
+
+        simulation.alpha(0.3).restart();
+    }
 
     function initD3() {
-        const container = document.getElementById('d3-graph-container');
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-        const isMobile = window.innerWidth < 768; 
+        // Clear existing SVG if Canvas hot-reloads
+        d3.select("#d3-graph-container").selectAll("*").remove();
 
         svg = d3.select("#d3-graph-container").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("viewBox", [0, 0, width, height]);
+            .attr("width", "100%")
+            .attr("height", "100%");
 
-        // Define SVG Markers (Sharp, Angular Arrowheads)
-        const defs = svg.append("defs");
-        const markers = [
+        // Define SVG Markers (Sharp, Concave Chevrons)
+        var defs = svg.append("defs");
+        var markers = [
             { id: "arrow-light", color: "rgba(0,0,0,0.15)" },
             { id: "arrow-dark", color: "rgba(255,255,255,0.15)" },
             { id: "arrow-active-light", color: "#000000" },
@@ -476,36 +518,19 @@ export const mediaconvertWebhook: Endpoint = {
             .enter().append("marker")
             .attr("id", d => d.id)
             .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 28) // Offset slightly to account for the node radius
+            .attr("refX", 26) // Sits cleanly on the edge of the 20px radius node
             .attr("refY", 0)
             .attr("markerWidth", 5)
             .attr("markerHeight", 5)
             .attr("orient", "auto")
             .append("path")
-            .attr("d", "M 0,-4 L 8,0 L 0,4 Z") // Sharper geometric point
+            .attr("d", "M 0,-4 L 10,0 L 0,4 L 3,0 Z") // Aggressive concave wedge
             .attr("fill", d => d.color);
 
-        // Force Simulation Configuration
+        // Core Physics Simulation setup
         simulation = d3.forceSimulation(nodesData)
-            .force("link", d3.forceLink(linksData).id(d => d.id).distance(isMobile ? 70 : 120))
-            .force("charge", d3.forceManyBody().strength(-800))
-            .force("collide", d3.forceCollide().radius(40))
-            .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("x", d3.forceX(d => {
-                if (isMobile) return width / 2;
-                const stageNorm = d.targetIndex / 6; 
-                return width * (0.15 + stageNorm * 0.7); 
-            }).strength(0.8))
-            .force("y", d3.forceY(d => {
-                if (isMobile) {
-                    const stageNorm = d.targetIndex / 6;
-                    return height * (0.1 + stageNorm * 0.8);
-                } else {
-                    // Pull EventBridge to the top, and alternate the rest in a structured Zig-Zag
-                    if (d.id === 'eventbridge') return height * 0.25;
-                    return d.targetIndex % 2 === 0 ? height * 0.55 : height * 0.75;
-                }
-            }).strength(0.8));
+            .force("link", d3.forceLink(linksData).id(d => d.id).strength(0.5))
+            .force("charge", d3.forceManyBody().strength(-1000));
 
         // Draw Links
         link = svg.append("g")
@@ -530,52 +555,58 @@ export const mediaconvertWebhook: Endpoint = {
                 .on("drag", dragged)
                 .on("end", dragended))
             .on("click", (event, d) => {
-                const tab = document.querySelector(`.tab-btn[data-nodes*="node-${d.id}"]`);
+                var tab = document.querySelector(`.tab-btn[data-nodes*="node-${d.id}"]`);
                 if(tab) selectModule(tab);
             });
 
-        // Node Background Circle
         node.append("circle")
             .attr("r", 20)
             .attr("class", "node-bg");
 
-        // Node Inner Glowing Dot
         node.append("circle")
             .attr("r", 5)
             .attr("fill", d => d.color)
             .attr("class", "shadow-sm");
 
-        // Node Label
         node.append("text")
             .attr("dy", 38)
             .attr("text-anchor", "middle")
             .attr("class", "node-text font-mono text-[11px] pointer-events-none")
             .text(d => d.label);
 
-        // Physics Tick function
+        // Physics Tick Rendering Loop
         simulation.on("tick", () => {
             link.attr("d", d => {
-                const dx = d.target.x - d.source.x,
-                      dy = d.target.y - d.source.y;
+                if (!d.source || !d.target || d.source.x === undefined) return "";
+                var dx = d.target.x - d.source.x,
+                    dy = d.target.y - d.source.y;
+                var sourceId = d.source.id || d.source;
+                var targetId = d.target.id || d.target;
 
                 // EventBridge feedback loops use a concave arc (sweep-flag 0 bows inward)
-                if (d.source.id === 'eventbridge' || d.target.id === 'eventbridge') {
-                    const dr = Math.sqrt(dx * dx + dy * dy) * 1.2; 
+                if (sourceId === 'eventbridge' || targetId === 'eventbridge') {
+                    var dr = Math.sqrt(dx * dx + dy * dy) * 1.5; 
                     return `M${d.source.x},${d.source.y} A${dr},${dr} 0 0,0 ${d.target.x},${d.target.y}`;
                 }
                 
-                // Primary pipeline uses precise, angular straight lines
+                // Primary pipeline uses precise, straight lines
                 return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`;
             });
 
-            // Boundary constraints
+            // Prevent nodes from being flung out of the viewport entirely
             node.attr("transform", d => {
-                d.x = Math.max(25, Math.min(width - 25, d.x));
-                d.y = Math.max(25, Math.min(height - 25, d.y));
+                var container = document.getElementById('d3-graph-container');
+                var w = container ? container.clientWidth : 1000;
+                var h = container ? container.clientHeight : 550;
+                if (d.x === undefined || d.y === undefined) return "";
+                d.x = Math.max(25, Math.min(w - 25, d.x));
+                d.y = Math.max(25, Math.min(h - 25, d.y));
                 return `translate(${d.x},${d.y})`;
             });
         });
 
+        // Trigger dynamic sizing calculations immediately
+        updateForces();
         updateD3Theme(document.documentElement.classList.contains('dark'));
     }
 
@@ -599,19 +630,22 @@ export const mediaconvertWebhook: Endpoint = {
     function updateD3Theme(isDark) {
         if(!svg) return;
         
-        const targetNodes = activeCardId 
-            ? document.querySelector(`.tab-btn[data-id="${activeCardId}"]`).dataset.nodes.split(',') 
-            : [];
+        var activeTab = activeCardId ? document.querySelector(`.tab-btn[data-id="${activeCardId}"]`) : null;
+        var targetNodes = activeTab && activeTab.dataset.nodes ? activeTab.dataset.nodes.split(',') : [];
 
         d3.selectAll('.flow-link')
             .attr("stroke", d => {
-                const isActive = targetNodes.includes(`node-${d.source.id}`) && targetNodes.includes(`node-${d.target.id}`);
+                var sourceId = d.source.id || d.source;
+                var targetId = d.target.id || d.target;
+                var isActive = targetNodes.includes(`node-${sourceId}`) && targetNodes.includes(`node-${targetId}`);
                 if (activeCardId === "6") return isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)";
                 if (isActive) return isDark ? "#fff" : "#000";
                 return isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.1)";
             })
             .attr("marker-end", d => {
-                const isActive = targetNodes.includes(`node-${d.source.id}`) && targetNodes.includes(`node-${d.target.id}`);
+                var sourceId = d.source.id || d.source;
+                var targetId = d.target.id || d.target;
+                var isActive = targetNodes.includes(`node-${sourceId}`) && targetNodes.includes(`node-${targetId}`);
                 if (activeCardId === "6") return isDark ? "url(#arrow-dark)" : "url(#arrow-light)";
                 if (isActive) return isDark ? "url(#arrow-active-dark)" : "url(#arrow-active-light)";
                 return isDark ? "url(#arrow-dark)" : "url(#arrow-light)";
@@ -619,21 +653,21 @@ export const mediaconvertWebhook: Endpoint = {
 
         d3.selectAll('.node-bg')
             .attr("class", d => {
-                const isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "6";
+                var isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "6";
                 if (isActive) return isDark ? "node-bg fill-black stroke-white stroke-[2px]" : "node-bg fill-white stroke-black stroke-[2px]";
                 return isDark ? "node-bg fill-[#0a0a0a] stroke-white/10 stroke-[1px]" : "node-bg fill-white stroke-gray-200 stroke-[1.5px]";
             });
 
         d3.selectAll('.node-text')
             .attr("class", d => {
-                const isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "6";
+                var isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "6";
                 if (isActive) return isDark ? "node-text font-mono text-[11px] font-bold fill-white pointer-events-none" : "node-text font-mono text-[11px] font-bold fill-black pointer-events-none";
                 return isDark ? "node-text font-mono text-[11px] font-medium fill-zinc-500 pointer-events-none" : "node-text font-mono text-[11px] font-medium fill-gray-400 pointer-events-none";
             });
     }
 
     // --- CMS MODULE BINDING ---
-    const playbookTitles = {
+    var playbookTitles = {
         "1": "CMS Ingestion & Namespace Optimization",
         "2": "Serverless Orchestration & Pacifier Pattern",
         "3": "Compute Transcoding Engine",
@@ -642,59 +676,66 @@ export const mediaconvertWebhook: Endpoint = {
         "6": "Deterministic Systems Engineering"
     };
 
-    let activeCardId = null;
-
     function selectModule(tabElement) {
-        const id = tabElement.dataset.id;
-        const targetNodes = tabElement.dataset.nodes.split(',');
-        const isDark = document.documentElement.classList.contains('dark');
+        var id = tabElement.dataset.id;
+        var targetNodes = tabElement.dataset.nodes.split(',');
+        var isDark = document.documentElement.classList.contains('dark');
 
         if (activeCardId === id) return; 
+
         activeCardId = id;
 
+        // Reset all tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
             btn.classList.add('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
         });
 
+        // Highlight active tab
         tabElement.classList.add('active', 'text-black', 'dark:text-white');
         tabElement.classList.remove('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
         tabElement.classList.add(isDark ? 'border-white' : 'border-black');
 
-        const paneTitle = document.getElementById('pane-title');
-        const paneContent = document.getElementById('reading-pane');
+        // Update Reading Pane
+        var paneTitle = document.getElementById('pane-title');
+        var paneContent = document.getElementById('reading-pane');
         
         paneTitle.innerText = playbookTitles[id];
         paneContent.innerHTML = document.getElementById('content-' + id).innerHTML;
 
         document.querySelectorAll('#reading-pane pre code').forEach((block) => hljs.highlightElement(block));
 
+        // Instruct D3 Engine to Highlight Focus Areas
         d3.selectAll('.node-group').transition().duration(400)
             .style("opacity", d => (targetNodes.includes(`node-${d.id}`) || id === "6") ? 1 : 0.35);
             
         d3.selectAll('.flow-link').transition().duration(400)
             .attr("class", d => {
-                const isActive = targetNodes.includes(`node-${d.source.id}`) && targetNodes.includes(`node-${d.target.id}`);
+                var sourceId = d.source.id || d.source;
+                var targetId = d.target.id || d.target;
+                var isActive = targetNodes.includes(`node-${sourceId}`) && targetNodes.includes(`node-${targetId}`);
                 return isActive ? "flow-link flow-line active-link" : "flow-link flow-line";
             });
 
         updateD3Theme(isDark);
     }
 
-    // --- BOOTSTRAP ---
-    document.addEventListener('DOMContentLoaded', () => {
-        const isDark = initTheme();
+    // --- BOOTSTRAP & RESIZE HANDLING ---
+    var resizeTimer;
+
+    window.addEventListener('load', () => {
+        var isDark = initTheme();
         initD3();
         
-        const firstModule = document.querySelector('.tab-btn');
+        var firstModule = document.querySelector('.tab-btn');
         if(firstModule) selectModule(firstModule);
         
         window.addEventListener('resize', () => {
-            if(simulation) {
-                const container = document.getElementById('d3-graph-container');
-                simulation.force("center", d3.forceCenter(container.clientWidth / 2, container.clientHeight / 2));
-                simulation.alpha(0.3).restart();
-            }
+            // Debounce resize to prevent physics math thrashing
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if(simulation) updateForces();
+            }, 150);
         });
     });
 
