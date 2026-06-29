@@ -134,7 +134,7 @@
             <div class="bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col h-[300px]">
                 <div class="bg-gray-50 dark:bg-[#111] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between shrink-0">
                     <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-700 dark:text-zinc-300">XHR Network Interceptor</span>
                     </div>
                     <span class="text-[10px] font-mono text-gray-500 dark:text-zinc-500">Live Traffic</span>
@@ -165,7 +165,7 @@
                             <label class="block text-[10px] font-mono font-bold tracking-widest text-gray-500 dark:text-zinc-500 uppercase">Edge Token (JWT)</label>
                             <span class="text-[9px] font-mono text-purple-500 bg-purple-50 dark:bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-500/20">HEADER INJECT</span>
                         </div>
-                        <input type="password" id="tokenInput" value="allow-123" class="w-full bg-gray-50 dark:bg-[#111] border border-gray-300 dark:border-white/10 text-xs p-2.5 rounded focus:outline-none focus:border-black dark:focus:border-white/30 text-gray-900 dark:text-white code-font transition-colors" placeholder="Enter secure token...">
+                        <input type="password" id="tokenInput" class="w-full bg-gray-50 dark:bg-[#111] border border-gray-300 dark:border-white/10 text-xs p-2.5 rounded focus:outline-none focus:border-black dark:focus:border-white/30 text-gray-900 dark:text-white code-font transition-colors" placeholder="Paste custom edge token...">
                     </div>
                     <button onclick="handlePlaybackRequest()" class="w-full mt-2 bg-black text-white dark:bg-white dark:text-black hover:scale-[1.02] active:scale-95 transition-all duration-200 font-sans font-semibold py-2.5 text-sm rounded shadow-sm">
                         Authenticate & Load Stream
@@ -407,9 +407,10 @@
         
         logNetwork("AUTH", "Evaluating JWT Entitlement", "PENDING", "text-purple-500");
 
-        if (token !== "allow-123") {
+        // Decouple old hardcoded string and perform standard JWT structural parsing
+        if (!token || token.split('.').length !== 2) {
             logNetwork("AUTH", "Token Validation", "REJECTED", "text-red-500");
-            updateLockScreen("Access Denied", "INVALID EDGE TOKEN", true);
+            updateLockScreen("Access Denied", "INVALID EDGE TOKEN FORMAT", true);
             return; 
         }
 
@@ -420,6 +421,7 @@
         player.getNetworkingEngine().registerRequestFilter((type, request) => {
             if (type == shaka.net.NetworkingEngine.RequestType.MANIFEST || 
                 type == shaka.net.NetworkingEngine.RequestType.SEGMENT) {
+                // Securely append token to the outgoing request headers
                 request.headers['X-OTT-Access-Token'] = token;
             }
         });
