@@ -149,88 +149,105 @@
       </p>
     </div>
 
-    <!-- The Flow Diagram (Seamless & Borderless) -->
-    <div class="w-full mb-10 relative overflow-x-auto hide-scroll flex justify-start lg:justify-center">
-        <div class="relative w-[1100px] h-[200px] flex-shrink-0 select-none mx-auto mt-2">
+    <!-- The Flow Diagram (Relational DAG Topology) -->
+    <div class="w-full mb-10 relative overflow-x-auto hide-scroll flex justify-start lg:justify-center py-4">
+        <div class="relative w-[1300px] h-[360px] flex-shrink-0 select-none mt-2">
             
             <svg id="pipeline-svg" class="absolute inset-0 w-full h-full pointer-events-none text-gray-500 dark:text-white/20 transition-all duration-500 ease-out" stroke-width="2.5" fill="none" stroke-linecap="round">
                 <defs>
-                    <marker id="arrow-base" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <marker id="arrow-base" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                         <path d="M 0 0 L 10 5 L 0 10 z" class="fill-gray-400 dark:fill-[#333333]" />
                     </marker>
-                    <marker id="arrow-active-light" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <marker id="arrow-active-light" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                         <path d="M 0 0 L 10 5 L 0 10 z" class="fill-black" />
                     </marker>
-                    <marker id="arrow-active-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <marker id="arrow-active-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                         <path d="M 0 0 L 10 5 L 0 10 z" class="fill-white" />
                     </marker>
                 </defs>
 
-                <!-- Static Background Paths (Compressed Height) -->
+                <!-- Static Background Paths -->
                 <g class="text-gray-300 dark:text-white/10" marker-end="url(#arrow-base)">
-                    <path d="M 180 100 C 220 100, 220 40, 280 40" stroke="currentColor" />
-                    <path d="M 180 100 C 220 100, 220 160, 280 160" stroke="currentColor" />
-                    <path d="M 440 160 L 520 160" stroke="currentColor" />
-                    <path d="M 680 160 L 760 160" stroke="currentColor" />
-                    <path d="M 180 100 C 350 100, 350 40, 520 40" stroke="currentColor" />
-                    <path d="M 680 40 L 760 40" stroke="currentColor" />
-                    <path d="M 920 160 C 960 160, 960 100, 1000 100" stroke="currentColor" />
-                    <path d="M 920 40 C 960 40, 960 100, 1000 100" stroke="currentColor" />
+                    <!-- payload -> gcs -->
+                    <path d="M 180 182 L 280 182" stroke="currentColor" />
+                    <!-- gcs -> cloudrun -->
+                    <path d="M 350 204 L 350 280" stroke="currentColor" />
+                    <!-- cloudrun -> mediaconvert -->
+                    <path d="M 420 302 L 560 302" stroke="currentColor" />
+                    <!-- mediaconvert -> s3 -->
+                    <path d="M 670 280 C 670 182, 750 182, 840 182" stroke="currentColor" />
+                    <!-- s3 -> cloudfront -->
+                    <path d="M 910 204 L 910 280" stroke="currentColor" />
+                    <!-- cloudfront -> client -->
+                    <path d="M 980 302 L 1120 302" stroke="currentColor" />
+                    
+                    <!-- Control Plane (Webhook Feedback Loop) -->
+                    <!-- mediaconvert -> eventbridge -->
+                    <path d="M 590 280 L 590 84" stroke="currentColor" />
+                    <!-- eventbridge -> payload -->
+                    <path d="M 560 62 C 250 62, 110 80, 110 160" stroke="currentColor" />
                 </g>
 
-                <!-- Animated Data Flow Paths (Overlay, hidden by default) -->
+                <!-- Animated Data Flow Paths (Overlay) -->
                 <g id="flow-overlay" class="opacity-0 transition-opacity duration-300">
-                    <path id="path-gcp" data-source="node-payload-cms" data-target="node-gcp-validation" d="M 180 100 C 220 100, 220 40, 280 40" class="flow-line" />
-                    <path id="path-aws" data-source="node-payload-cms" data-target="node-aws-transcode" d="M 180 100 C 220 100, 220 160, 280 160" class="flow-line" />
-                    <path id="path-s3" data-source="node-aws-transcode" data-target="node-s3-origin" d="M 440 160 L 520 160" class="flow-line" />
-                    <path id="path-cdn" data-source="node-s3-origin" data-target="node-cloudfront-cdn" d="M 680 160 L 760 160" class="flow-line" />
-                    <path id="path-jwt" data-source="node-payload-cms" data-target="node-jwt-auth-service" d="M 180 100 C 350 100, 350 40, 520 40" class="flow-line" />
-                    <path id="path-edge" data-source="node-jwt-auth-service" data-target="node-edge-token-auth" d="M 680 40 L 760 40" class="flow-line" />
-                    <path id="path-play1" data-source="node-cloudfront-cdn" data-target="node-client-playback" d="M 920 160 C 960 160, 960 100, 1000 100" class="flow-line" />
-                    <path id="path-play2" data-source="node-edge-token-auth" data-target="node-client-playback" d="M 920 40 C 960 40, 960 100, 1000 100" class="flow-line" />
+                    <path id="path-gcs" data-source="node-payload" data-target="node-gcs" d="M 180 182 L 280 182" class="flow-line" />
+                    <path id="path-cloudrun" data-source="node-gcs" data-target="node-cloudrun" d="M 350 204 L 350 280" class="flow-line" />
+                    <path id="path-mediaconvert" data-source="node-cloudrun" data-target="node-mediaconvert" d="M 420 302 L 560 302" class="flow-line" />
+                    <path id="path-s3" data-source="node-mediaconvert" data-target="node-s3" d="M 670 280 C 670 182, 750 182, 840 182" class="flow-line" />
+                    <path id="path-cloudfront" data-source="node-s3" data-target="node-cloudfront" d="M 910 204 L 910 280" class="flow-line" />
+                    <path id="path-client" data-source="node-cloudfront" data-target="node-client" d="M 980 302 L 1120 302" class="flow-line" />
+                    
+                    <path id="path-eventbridge-in" data-source="node-mediaconvert" data-target="node-eventbridge" d="M 590 280 L 590 84" class="flow-line" />
+                    <path id="path-eventbridge-out" data-source="node-eventbridge" data-target="node-payload" d="M 560 62 C 250 62, 110 80, 110 160" class="flow-line" />
                 </g>
             </svg>
 
-            <!-- NODES (Monochrome Clean Brutalism, Compressed Y-Axis) -->
-            <div id="node-payload-cms" class="pipeline-node absolute left-[20px] top-[80px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+            <!-- NODES (Width: 140px, Height: 44px) -->
+            <!-- Ingest Layer (Left) -->
+            <div id="node-payload" class="pipeline-node absolute left-[40px] top-[160px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
                 <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">payload-cms</span>
+                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">payload-cms</span>
             </div>
 
-            <div id="node-gcp-validation" class="pipeline-node absolute left-[280px] top-[20px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+            <!-- GCP Validation Layer -->
+            <div id="node-gcs" class="pipeline-node absolute left-[280px] top-[160px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
                 <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">gcp-validation</span>
+                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">gcs-eventarc</span>
             </div>
 
-            <div id="node-aws-transcode" class="pipeline-node absolute left-[280px] top-[140px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+            <div id="node-cloudrun" class="pipeline-node absolute left-[280px] top-[280px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
                 <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">aws-transcode</span>
+                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">cloud-run</span>
             </div>
 
-            <div id="node-s3-origin" class="pipeline-node absolute left-[520px] top-[140px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+            <!-- AWS Processing Layer -->
+            <div id="node-mediaconvert" class="pipeline-node absolute left-[560px] top-[280px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
                 <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">s3-origin</span>
+                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">mediaconvert</span>
             </div>
 
-            <div id="node-cloudfront-cdn" class="pipeline-node absolute left-[760px] top-[140px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+            <div id="node-s3" class="pipeline-node absolute left-[840px] top-[160px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
                 <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">cloudfront-cdn</span>
+                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">s3-origin</span>
             </div>
 
-            <div id="node-jwt-auth-service" class="pipeline-node absolute left-[520px] top-[20px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+            <!-- Delivery Layer (Right) -->
+            <div id="node-cloudfront" class="pipeline-node absolute left-[840px] top-[280px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
                 <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">jwt-auth-service</span>
+                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">cloudfront-cdn</span>
             </div>
 
-            <div id="node-edge-token-auth" class="pipeline-node absolute left-[760px] top-[20px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
-                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">edge-token-auth</span>
-            </div>
-
-            <div id="node-client-playback" class="pipeline-node absolute left-[1000px] top-[80px] w-[160px] h-[40px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2.5 px-3 z-10 transition-all duration-300">
+            <div id="node-client" class="pipeline-node absolute left-[1120px] top-[280px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
                 <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors flex items-center justify-center"></div>
-                <span class="node-label font-sans font-medium text-xs tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">client-playback</span>
+                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">client-playback</span>
             </div>
+
+            <!-- Control Plane (Top Center) -->
+            <div id="node-eventbridge" class="pipeline-node absolute left-[560px] top-[40px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
+                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
+                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">eventbridge</span>
+            </div>
+
         </div>
     </div>
 
@@ -240,34 +257,34 @@
       <!-- Binder Tabs Header -->
       <div class="flex flex-nowrap overflow-x-auto hide-scroll pt-2 gap-1 relative z-10 -mb-[1px]">
          
-         <button data-id="1" data-nodes="node-payload-cms,node-gcp-validation" onclick="selectModule(this)" class="tab-btn active shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-white dark:bg-[#0a0a0a] border-gray-300 dark:border-white/10 border-b-white dark:border-b-[#0a0a0a] text-black dark:text-white z-10 translate-y-[1px]">
+         <button data-id="1" data-nodes="node-payload,node-gcs" onclick="selectModule(this)" class="tab-btn active shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-white dark:bg-[#0a0a0a] border-gray-300 dark:border-white/10 border-b-white dark:border-b-[#0a0a0a] text-black dark:text-white z-10 translate-y-[1px]">
             <span class="w-2 h-2 rounded-full bg-blue-500"></span>
             <span class="font-semibold text-sm whitespace-nowrap">01. CMS Ingestion</span>
          </button>
 
-         <button data-id="2" data-nodes="node-aws-transcode" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
+         <button data-id="2" data-nodes="node-gcs,node-cloudrun,node-mediaconvert" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
             <span class="w-2 h-2 rounded-full bg-orange-500 opacity-80"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">02. Transcoding</span>
+            <span class="font-semibold text-sm whitespace-nowrap">02. Orchestration</span>
          </button>
 
-         <button data-id="3" data-nodes="node-s3-origin" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
+         <button data-id="3" data-nodes="node-cloudrun,node-mediaconvert,node-s3" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
             <span class="w-2 h-2 rounded-full bg-emerald-500 opacity-80"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">03. Origin Storage</span>
+            <span class="font-semibold text-sm whitespace-nowrap">03. Transcoding</span>
          </button>
 
-         <button data-id="4" data-nodes="node-cloudfront-cdn" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
+         <button data-id="4" data-nodes="node-s3,node-cloudfront,node-client" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
             <span class="w-2 h-2 rounded-full bg-purple-500 opacity-80"></span>
             <span class="font-semibold text-sm whitespace-nowrap">04. CDN Distribution</span>
          </button>
 
-         <button data-id="5" data-nodes="node-payload-cms,node-jwt-auth-service,node-edge-token-auth" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
-            <span class="w-2 h-2 rounded-full bg-purple-500 opacity-80"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">05. Edge Auth</span>
+         <button data-id="5" data-nodes="node-mediaconvert,node-eventbridge,node-payload" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
+            <span class="w-2 h-2 rounded-full bg-[#3b82f6] opacity-80"></span>
+            <span class="font-semibold text-sm whitespace-nowrap">05. Telemetry & Webhooks</span>
          </button>
 
-         <button data-id="6" data-nodes="node-client-playback" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
+         <button data-id="6" data-nodes="node-payload,node-gcs,node-cloudrun,node-mediaconvert,node-s3,node-cloudfront,node-client,node-eventbridge" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
             <span class="w-2 h-2 rounded-full bg-[#f43f5e] opacity-80"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">06. Client Playback</span>
+            <span class="font-semibold text-sm whitespace-nowrap">06. Post-Mortem</span>
          </button>
 
       </div>
@@ -289,7 +306,7 @@
     </div>
   </main>
 
-  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-600 dark:text-zinc-500 text-sm font-mono tracking-wider">
+  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-600 dark:text-zinc-500 text-sm font-mono tracking-wider mt-12">
     <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
         <div class="flex items-center gap-2">
@@ -302,278 +319,199 @@
   <!-- HTML Templates for Content (Prevents Javascript String Escaping Errors) -->
   <div id="content-templates" style="display: none;">
       
-      <!-- Module 1 -->
+      <!-- Module 1: Ingestion -->
       <template id="icon-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
       </template>
       <template id="content-1">
-          <p>Routing multi-gigabyte mezzanine video files through a traditional Node.js backend introduces severe memory bottlenecks, upload timeouts, and high compute costs. This setup utilizes <strong>Direct-to-Cloud (D2C)</strong> ingestion alongside GCP Eventarc to completely bypass the CMS runtime during media uploads.</p>
+          <p>Routing multi-gigabyte mezzanine video files through a traditional Node.js backend introduces severe memory bottlenecks, upload timeouts, and high compute costs. This setup utilizes <strong>Direct-to-Cloud (D2C)</strong> ingestion alongside Payload CMS and PostgreSQL to handle relational data modeling and client content management.</p>
           
-          <h4>Configure Payload CMS Collection</h4>
-          <p>Implement the official GCS plugin and configure the target collection to disable local storage. This exposes the secure, time-limited cryptographic URL endpoint required for D2C.</p>
-<pre><code class="language-typescript">// src/collections/Media.ts
-import { CollectionConfig } from 'payload'
+          <h4>Unified Admin Panel & Relational Topology</h4>
+          <p>Content operators upload media packages directly through the tailored Payload collection dashboard. Uploads partition into clean parent-child relational mappings powered by the underlying <code>@payloadcms/db-postgres</code> adapter:</p>
+          <ul>
+              <li><strong>Media Collection:</strong> Stores primary high-resolution video tracks (<code>.mp4</code>), pipeline statuses, and final master playlist paths.</li>
+              <li><strong>Files Collection:</strong> Captures parallel sidecar assets (<code>.wav</code> / <code>.m4a</code> audio stems, <code>.srt</code> / <code>.vtt</code> subtitles) bound explicitly to their parent ID.</li>
+          </ul>
 
-export const Media: CollectionConfig = {
-  slug: 'media',
-  upload: {
-    disableLocalStorage: true,
+          <h4>Flat Namespace Optimization</h4>
+          <p>To eliminate pseudo-directory overhead in cloud storage buckets, Payload hooks intercept creations and split file identifiers using a secure <code>clean_title__random_hash.ext</code> token.</p>
+<pre><code class="language-typescript">// src/collections/Files.ts
+beforeOperation: [
+  ({ args, operation }: any) => {
+    if (operation === 'create' && file) {
+      const baseName = data.base_name || file.name.split('.')[0]
+      const originalName = file.name
+      const ext = originalName.split('.').pop()?.toLowerCase()
+      const hash = crypto.randomBytes(4).toString('hex')
+      const cleanFolder = baseName.toLowerCase().replace(/[^a-z0-9_]/g, '_')
+
+      // Clean, single-prefix namespace token (no double prefix)
+      file.name = `${cleanFolder}__${hash}.${ext}`
+    }
+    return args
   }
-}</code></pre>
-
-          <h4>Frontend XHR Implementation</h4>
-          <p>Construct a client-side <code>XMLHttpRequest</code> to push the file data directly to the generated Google Cloud Storage bucket URL, utilizing native browser event listeners to track upload percentage.</p>
-<pre><code class="language-typescript">// src/components/uploadHandler.ts
-const uploadWithProgress = (url: string, data: FormData) => {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', url, true);
-    
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
-        const pct = Math.round((event.loaded / event.total) * 100);
-        console.log('Upload Progress: ' + pct + '%');
-      }
-    };
-    
-    xhr.onload = () => resolve(JSON.parse(xhr.responseText));
-    xhr.onerror = () => reject(new Error('Network Failed'));
-    xhr.send(data);
-  });
-};</code></pre>
-          
-          <h4>Event-Driven Directory Validation</h4>
-          <p>Once the file physically lands in the GCP bucket, a configured <strong>Eventarc</strong> webhook fires instantly. A serverless Cloud Run orchestrator must scan the bucket prefix to ensure the associated sidecars (alternate audio tracks, VTT subtitles) are present.</p>
-
-<pre><code class="language-python"># src/orchestrator/validation.py
-def check_asset_bundle_complete(bucket_name, folder_prefix):
-    blobs = list(bucket.list_blobs(prefix=f"{folder_prefix}/"))
-    
-    found_video, found_audio, found_captions = None, None, None
-    
-    for blob in blobs:
-        if blob.name.endswith('.mp4'): found_video = blob.name
-        elif blob.name.endswith('.m4a'): found_audio = blob.name
-        elif blob.name.endswith('.srt'): found_captions = blob.name
-            
-    if found_video and found_audio and found_captions:
-        return True
-    
-    return False
-</code></pre>
+]</code></pre>
       </template>
 
-      <!-- Module 2 -->
+      <!-- Module 2: Orchestration -->
       <template id="icon-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
       </template>
       <template id="content-2">
-          <p>Following successful validation of the asset bundle, the orchestrator generates temporary IAM signed URLs for the master files and securely triggers an <strong>AWS Elemental MediaConvert</strong> job.</p>
+          <p>The Multi-File Orchestration Edge is powered by <strong>GCP EventArc & Cloud Run</strong>. When files hit the input Google Cloud Storage bucket, GCP Eventarc captures distinct object finalization signals and fires parallel webhooks.</p>
           
-          <h4>Cross-Cloud Signed URL Generation</h4>
-          <p>To authorize AWS to pull objects from a private GCP bucket, cryptographic signatures must be generated via the IAM Credentials API.</p>
+          <h4>The Self-Healing Guardrail (Pacifier Pattern)</h4>
+          <p>The cached, elevated Python <code>vod-trigger-function</code> intercepts the multi-file wave. If sidecar tracks finish uploading ahead of the primary heavy <code>.mp4</code>, the instance safely logs the imbalance and bails with a standard 200 OK without throwing errors or locking the pipeline.</p>
 
-<pre><code class="language-python"># src/orchestrator/auth.py
-import google.auth
-from google.auth.transport.requests import Request
-import urllib.parse
-import requests
-
-def generate_iam_signed_url(bucket_name, object_name, sa_email, payload):
-    credentials, _ = google.auth.default()
-    credentials.refresh(Request())
+<pre><code class="language-python"># main.py
+def trigger_mediaconvert(cloud_event: CloudEvent):
+    # ... setup and namespace extraction ...
     
-    iam_url = f"https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/{sa_email}:signBlob"
-    headers = {"Authorization": f"Bearer {credentials.token}"}
+    # --- RACE CONDITION PROTECTION & ORDER ORDINATION ---
+    bundle_files = check_asset_bundle_complete(bucket_name, folder_prefix)
     
-    response = requests.post(iam_url, headers=headers, json=payload)
-    signature = urllib.parse.quote(response.json().get("signedBlob"), safe='')
-    
-    return f"https://storage.googleapis.com/{bucket_name}/{object_name}?Signature={signature}"
-</code></pre>
+    if bundle_files == "LOCKED": 
+        print(f"🔒 Job is actively locked and processing for token '{folder_prefix}'. Exiting cleanly.")
+        return "Job Already Locked", 200
+        
+    if not bundle_files: 
+        print(f"⏳ Bundle package '{folder_prefix}' incomplete. Awaiting remaining sibling tracks...")
+        return "Awaiting Remaining Sibling Files", 200</code></pre>
 
-          <h4>Boto3 HLS ABR Ladder Submission</h4>
-          <p>Initialize the Boto3 client and define the <code>OutputGroups</code> configuration to generate Apple HLS format. Dynamically set <code>CodecLevel: AUTO</code> to prevent Error 1040 when handling varied source framerates.</p>
-          
-<pre><code class="language-python"># src/orchestrator/mediaconvert.py
-import boto3
-import os
-
-aws_client = boto3.client(
-    'mediaconvert',
-    aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-    aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
-    region_name='us-east-1'
-)
-
-aws_client.create_job(
-    Role=os.environ.get('AWS_MEDIACONVERT_ROLE_ARN'),
-    Settings={
-        "Inputs": [{"FileInput": gcp_video_signed_url}],
-        "OutputGroups": [{
-            "Name": "Apple HLS",
-            "OutputGroupSettings": {
-                "Type": "HLS_GROUP_SETTINGS",
-                "HlsGroupSettings": { 
-                    "SegmentLength": 6, 
-                    "Destination": s3_destination_url 
-                }
-            },
-            "Outputs": [
-                { 
-                    "VideoDescription": { 
-                        "CodecSettings": { 
-                            "Codec": "H_264",
-                            "H264Settings": { "CodecLevel": "AUTO" }
-                        } 
-                    }, 
-                    "NameModifier": "_1080p" 
-                }
-            ]
-        }]
-    }
-)</code></pre>
+          <h4>Deterministic Concurrency Control</h4>
+          <p>When all sibling files are validated, the highest-velocity thread attempts an atomic metadata operation via <code>if_generation_match=0</code> to claim the unique tracking lock (<code>___mediaconvert.lock</code>). The winner uses ambient compute credentials to sign secure time-delimited v4 URLs and forwards the settings schema to AWS.</p>
       </template>
 
-      <!-- Module 3 -->
+      <!-- Module 3: Transcoding -->
       <template id="icon-3">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
       </template>
       <template id="content-3">
-          <p>The processed <code>.m3u8</code> manifests and <code>.ts</code> video segments are deposited into an Amazon S3 output bucket acting as the origin server. This bucket must be strictly locked against public access to prevent bandwidth abuse and hotlinking.</p>
+          <p>AWS serves as the heavy transcoding factory via the <strong>AWS Elemental MediaConvert</strong> Compute Transcoding Engine. The incoming JSON job definition defines the processing parameters dynamically, mapping out adaptive bitrate rules, audio selector inclusions, and subtitle sidecar injection.</p>
           
-          <h4>Configure Origin Access Control (OAC)</h4>
-          <p>Apply a Bucket Policy enforcing that the S3 bucket will exclusively answer to <code>GetObject</code> requests routed internally from the specified CloudFront CDN distribution.</p>
+          <h4>Clean HLS Pathing & Schema</h4>
+          <p>MediaConvert reads the inputs via the signed GCP URLs and transcodes them into HLS fragments, rendering the outputs directly to your outbound S3 bucket under an identical nested subdirectory structure.</p>
+          <p><strong>Critical Guardrail:</strong> The API requires explicit <code>ContainerSettings: { Container: "M3U8" }</code> within the Output Group JSON to successfully map the H.264 codec to an Apple HLS playlist.</p>
 
-<pre><code class="language-json">{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": { "Service": "cloudfront.amazonaws.com" },
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::ott-video-origin/*",
-      "Condition": {
-        "StringEquals": {
-          "AWS:SourceArn": "arn:aws:cloudfront::12345:distribution/E1A2B3C"
+<pre><code class="language-python"># main.py
+"OutputGroups": [{
+    "Name": "Apple HLS",
+    "OutputGroupSettings": {
+        "Type": "HLS_GROUP_SETTINGS",
+        "HlsGroupSettings": {
+            "Destination": f"{clean_dest}/{folder_prefix}/{folder_prefix}",
+            "MinSegmentLength": 2, 
+            "SegmentLength": 6
         }
-      }
-    }
-  ]
-}</code></pre>
-
-          <h4>Define Cross-Origin Resource Sharing (CORS)</h4>
-          <p>To permit an external domain running the web player to fetch the manifests and segments, append a CORS configuration to the S3 bucket.</p>
-
-<pre><code class="language-json">[
-    {
-        "AllowedHeaders": ["*"],
-        "AllowedMethods": ["GET", "HEAD"],
-        "AllowedOrigins": ["*"],
-        "ExposeHeaders": ["Access-Control-Allow-Origin"]
-    }
-]</code></pre>
+    },
+    "Outputs": [{
+        # Explicit Container Settings mapping to M3U8
+        "ContainerSettings": {
+            "Container": "M3U8",
+            "M3u8Settings": {}
+        },
+        "VideoDescription": {
+            "CodecSettings": {
+                "Codec": "H_264", 
+                "H264Settings": {
+                    "MaxBitrate": 5000000,
+                    "RateControlMode": "QVBR", 
+                    "SceneChangeDetect": "ENABLED"
+                }
+            }
+        },
+        "NameModifier": "_1080p" 
+    }]
+}]</code></pre>
       </template>
 
-      <!-- Module 4 -->
+      <!-- Module 4: CDN Distribution -->
       <template id="icon-4">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
       </template>
       <template id="content-4">
-          <p><strong>AWS CloudFront</strong> acts as the Edge caching layer in front of the locked S3 origin. This absorbs playback bandwidth spikes and significantly reduces latency by serving segments from local Points of Presence (POPs).</p>
+          <p><strong>AWS CloudFront & S3</strong> establish the Content Delivery Edge. Rather than serving directly from the S3 output bucket, AWS CloudFront acts as the CDN layer, retrieving the transcoded assets and distributing them to edge nodes globally to minimize latency and origin load.</p>
           
-          <h4>Configure Cache Behavior</h4>
-          <p>Assign strict policies to proxy <code>OPTIONS</code> preflight requests correctly and return the <code>Access-Control-Allow-Origin</code> headers required by MSE-based web players.</p>
-
-<pre><code class="language-json">{
-  "ViewerProtocolPolicy": "redirect-to-https",
-  "AllowedMethods": ["GET", "HEAD", "OPTIONS"],
-  "CachePolicyId": "CachingOptimized",
-  "OriginRequestPolicyId": "CORS-S3Origin",
-  "ResponseHeadersPolicyId": "CORS-With-Preflight"
-}</code></pre>
+          <h4>Secured Origin Storage & OAC</h4>
+          <p>The output S3 bucket employs strict security perimeters. "Block All Public Access" is <strong>ON</strong>, and an S3 Bucket Policy (Origin Access Control) enforces that the bucket only accepts requests routed through the designated CloudFront distribution.</p>
           
-          <h4>Configure Error Response Overrides</h4>
-          <p>HLS stream manifests (particularly for live broadcasts) may experience temporary 404 responses if a segment is delayed. Configure CloudFront to cache 403/404 errors for a minimal duration to prevent caching a dead state indefinitely.</p>
-
-<pre><code class="language-json">{
-  "ErrorCachingMinTTL": 1,
-  "ErrorCode": 403,
-  "ResponseCode": "",
-  "ResponsePagePath": ""
-}</code></pre>
+          <h4>Differential Caching & CORS</h4>
+          <p>The CDN implements strict path-pattern routing to apply optimized caching rules tailored specifically for HTTP Live Streaming (HLS):</p>
+          <ul>
+              <li><strong>Media Fragments (<code>.ts</code> / <code>.m4s</code>):</strong> Aggressive cache policies with a high TTL. Immutable video chunks remain cached at the edge for maximum offload.</li>
+              <li><strong>VOD Manifests (<code>.m3u8</code>):</strong> Moderate TTLs and strict Cache-Control headers prevent edge nodes from serving stale index data.</li>
+          </ul>
+          <p>A permissive CORS policy on S3 allows <code>GET</code>/<code>HEAD</code> requests from all origins (<code>*</code>) to satisfy Shaka Player's XHR requirements.</p>
       </template>
 
-      <!-- Module 5 -->
+      <!-- Module 5: Telemetry Loops -->
       <template id="icon-5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
       </template>
       <template id="content-5">
-          <p>Verify user entitlement in sub-millisecond timeframes by deploying JavaScript execution environments directly to the edge nodes via <strong>CloudFront Functions</strong>.</p>
+          <p>To securely and deterministically notify the CMS when transcoding succeeds or fails, we implement <strong>Telemetry Loops & Automated Garbage Collection</strong>.</p>
           
-          <h4>Identity Provider Integration (Payload CMS)</h4>
-          <p>Establish a secure API route within the backend to generate mathematically verifiable JSON Web Tokens (JWTs) utilizing an exact expiration timestamp.</p>
+          <h4>Secured API Destination Routing</h4>
+          <p><strong>AWS EventBridge</strong> filters out non-actionable job phase changes, isolating the exact moment a transcode hits <code>COMPLETE</code> or <code>ERROR</code>. It bypasses the noise of messaging queues by utilizing an authenticated EventBridge Connection to securely manage and inject a Bearer credential, POSTing the payload straight back to the Payload CMS API Destination.</p>
 
-<pre><code class="language-typescript">// src/app/api/auth/jwt/route.ts
-import jwt from 'jsonwebtoken';
-import { NextResponse } from 'next/server';
+          <h4>State Updates & Cleanup</h4>
+          <p>The custom Next.js endpoint <code>/api/webhooks/mediaconvert</code> updates the document state, logs time-stamped telemetry data, and immediately triggers garbage collection to delete the initial lock file from Google Cloud Storage.</p>
 
-export async function GET(req: Request) {
-    const payload = {
-        asset_id: "complexity",
-        exp: Math.floor(Date.now() / 1000) + (60 * 15)
-    };
-    
-    const token = jwt.sign(payload, process.env.JWT_SECRET);
-    return NextResponse.json({ token });
-}</code></pre>
-
-          <h4>Deploy Edge Interceptor</h4>
-          <p>Attach a <code>Viewer request</code> CloudFront Function to intercept the HTTP headers prior to cache evaluation. Decode the payload and explicitly reject expired requests.</p>
-
-<pre><code class="language-javascript">// edge/token-validator.js
-function handler(event) {
-    var req = event.request;
-    if (req.method === 'OPTIONS') return req;
-
-    var tokenStr = req.headers['x-ott-access-token'];
-    if (!tokenStr) return { statusCode: 403, body: 'Missing Token' };
-
-    var payload = JSON.parse(atob(tokenStr.value.split('.')[1]));
-    
-    if (Date.now()/1000 > payload.exp) {
-        return { statusCode: 403, body: 'Token Expired' };
+<pre><code class="language-typescript">// src/endpoints/mediaconvert.ts
+export const mediaconvertWebhook: Endpoint = {
+  path: '/webhooks/mediaconvert',
+  method: 'post',
+  handler: async (req) => {
+    // ... EventBridge processing ...
+      
+    // Unlock the GCS Bundle (Garbage Collection)
+    try {
+      console.log(`🔓 [Garbage Collection] Removing lock file for: ${folderPrefix}`)
+      await gcpBucket.file(`${folderPrefix}___mediaconvert.lock`).delete({ ignoreNotFound: true })
+    } catch (err) {
+      console.error(`⚠️ [Garbage Collection] Failed to delete lock for ${folderPrefix}:`, err)
     }
-    
-    return req;
+
+    // Update the Document State
+    if (jobStatus === 'COMPLETE') {
+      const manifestUrl = `https://${cdnDomain}/${folderPrefix}/${folderPrefix}.m3u8`
+
+      await req.payload.update({
+        collection: 'media',
+        id: mediaId,
+        data: {
+          status: 'ready',
+          manifest_url: manifestUrl,
+          logs: `${mediaDoc.logs || ''}\n[${new Date().toISOString()}] AWS Webhook COMPLETE: Transcode finished.`,
+        },
+      })
+    }
+    // ... Error handling ...
+  }
 }</code></pre>
       </template>
 
-      <!-- Module 6 -->
+      <!-- Module 6: Post-Mortem -->
       <template id="icon-6">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
       </template>
       <template id="content-6">
-          <p>Standard HTML5 <code>&lt;video&gt;</code> elements lack native support for attaching custom authorization headers. Utilize <strong>Shaka Player</strong> and MediaSource Extensions (MSE) to intercept requests and construct segments dynamically.</p>
+          <p>The core architectural mandate of this pipeline is minimizing operational entropy—the unpredictable states, race conditions, and network failures inherent in distributed cloud systems. Rather than attempting to control systemic chaos via bloated orchestration layers or expensive polling loops, this pipeline relies on <strong>bottom-up, deterministic execution</strong>.</p>
           
-          <h4>Configure Dynamic Header Injection</h4>
-          <p>Register a network filter immediately after player initialization to append the JWT to all outbound manifest and segment fetches.</p>
+          <h4>The Minimax Takeaway: Deterministic Systems Engineering</h4>
+          <ul>
+              <li><strong>State Deflection via Atomic Operations:</strong> In distributed systems, concurrency is guaranteed, but execution order is not. By leveraging atomic metadata locks (<code>if_generation_match=0</code>) directly at the GCS layer, the system inherently prevents state collisions.</li>
+              <li><strong>Bounded Substrate Responsibilities:</strong> Cloud boundaries are utilized as deliberate constraints to isolate failure domains. Payload CMS and PostgreSQL are strictly bounded to relational data modeling; GCP Eventarc handles high-throughput ingestion; and AWS is dedicated exclusively to heavy compute and delivery.</li>
+              <li><strong>Structural Guardrails over Network Chance:</strong> The self-healing guardrails—such as verifying the complete presence of sibling files before attempting to claim a lock—ensure that processing only begins when the environment reaches a mathematically complete state.</li>
+          </ul>
 
-<pre><code class="language-javascript">// src/player/init.js
-player.getNetworkingEngine().registerRequestFilter((type, request) => {
-    
-    if (type == shaka.net.NetworkingEngine.RequestType.MANIFEST || 
-        type == shaka.net.NetworkingEngine.RequestType.SEGMENT) {
-        
-        request.headers['X-OTT-Access-Token'] = sessionJwtToken;
-    }
-});
+          <h4>Enterprise-Grade Resiliency Patterns</h4>
+          <ul>
+              <li><strong>Idempotent Pipeline Design:</strong> The GCP Pacifier Pattern guarantees that multi-file asset bundles (e.g., video, audio stems, subtitle sidecars) can be ingested sequentially or out-of-order without triggering race conditions or runaway compute billing.</li>
+              <li><strong>Strict Payload Sanitization:</strong> Inter-cloud API handoffs (such as passing signed URLs and destination parameters from GCP to AWS MediaConvert) incorporate strict regex validation and whitespace sanitization to ensure zero-defect infrastructure-as-code deployments.</li>
+          </ul>
 
-await player.load(manifestUri);
-</code></pre>
-
-          <h4>Handle MSE Execution Blocks</h4>
-          <p>Catch <code>MEDIA_ERR_SRC_NOT_SUPPORTED</code> (Error code 3016). This frequently occurs within Safari environments running off local <code>file://</code> protocols due to strict sandbox security models evaluating complex XHR stitching. Mitigate this by ensuring the player is deployed to an HTTPS origin.</p>
+          <p class="mt-8 italic text-center font-medium">This pipeline demonstrates that true resilience is not achieved by building heavier error-handling mechanisms, but by designing an architecture where invalid states are structurally impossible to process.</p>
       </template>
 
   </div>
@@ -639,14 +577,14 @@ await player.load(manifestUri);
         });
     }
 
-    // Titles mapping (Content is now safely in HTML templates to prevent parsing errors)
+    // Titles matching the architectural structure
     const playbookTitles = {
-        "1": "CMS Ingestion & Validation",
-        "2": "Serverless Video Transcoding",
-        "3": "Origin Storage Configuration",
-        "4": "Global CDN Distribution",
-        "5": "Stateless Edge Authorization",
-        "6": "Secure Client Playback"
+        "1": "CMS Ingestion & Namespace Optimization",
+        "2": "Serverless Orchestration & Pacifier Pattern",
+        "3": "Compute Transcoding Engine",
+        "4": "Global CDN Distribution & Caching",
+        "5": "Telemetry Loops & Garbage Collection",
+        "6": "Deterministic Systems Engineering"
     };
 
     let activeCardId = null;
@@ -679,7 +617,7 @@ await player.load(manifestUri);
         const dot = tabElement.querySelector('.rounded-full');
         if (dot) dot.classList.remove('opacity-80');
 
-        // Update Reading Pane using HTML Templates (Prevents JS String Parsing Errors)
+        // Update Reading Pane using HTML Templates
         const paneTitle = document.getElementById('pane-title');
         const paneContent = document.getElementById('reading-pane');
         const paneIcon = document.getElementById('pane-icon');
