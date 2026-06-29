@@ -4,15 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Secure OTT Edge Pipeline | Academy</title>
+  
   <!-- Vercel Geist Font Imports -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Highlight.js for Syntax Highlighting -->
   <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- D3.js for Physics-Based Relational Graph -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 
   <script>
     tailwind.config = {
@@ -33,33 +38,35 @@
         transition: background-color 0.2s, color 0.2s;
     }
     
-    .hide-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-    .hide-scroll::-webkit-scrollbar-track { background: transparent; }
-    .hide-scroll::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.4); border-radius: 2px; }
-    .hide-scroll { scrollbar-width: thin; scrollbar-color: rgba(150, 150, 150, 0.4) transparent; }
+    .hide-scroll::-webkit-scrollbar { width: 0px; height: 0px; display: none; }
+    .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Explicit Data Flow Animation */
-    @keyframes data-flow {
-      to { stroke-dashoffset: -40; }
+    /* Vercel-style subtle dashed flow animation */
+    @keyframes flow {
+      from { stroke-dashoffset: 24; }
+      to { stroke-dashoffset: 0; }
     }
     .flow-line {
-      stroke-dasharray: 8 12;
-      animation: data-flow 0.8s linear infinite;
+      stroke-dasharray: 4 6;
+      animation: flow 1.5s linear infinite;
+    }
+    .flow-line.active-link {
+      animation: flow 0.8s linear infinite;
     }
 
-    /* Academy Article Typography - Enhanced Legibility */
-    .academy-article h3 { font-size: 1.15rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #111827; }
-    .dark .academy-article h3 { color: #fff; }
+    /* Academy Article Typography */
+    .academy-article h3 { font-size: 1.15rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: #111827; letter-spacing: -0.01em; }
+    .dark .academy-article h3 { color: #ededed; }
     
-    .academy-article h4 { font-size: 0.95rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #374151; }
-    .dark .academy-article h4 { color: #d4d4d8; }
+    .academy-article h4 { font-size: 0.95rem; font-weight: 500; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #475569; letter-spacing: -0.01em; }
+    .dark .academy-article h4 { color: #a1a1aa; }
     
-    .academy-article p { margin-bottom: 1.25rem; line-height: 1.6; color: #374151; font-weight: 400; }
+    .academy-article p { margin-bottom: 1.25rem; line-height: 1.6; color: #475569; font-weight: 400; font-size: 0.95rem; }
     .dark .academy-article p { color: #a1a1aa; }
     
-    /* Code block styling (Synced with Highlight.js Themes) */
+    /* Code Blocks */
     .academy-article pre { 
-        background: #f6f8fa; 
+        background: #f8fafc; 
         border: 1px solid #e2e8f0; 
         padding: 1rem; 
         border-radius: 0.5rem; 
@@ -67,16 +74,12 @@
         margin-bottom: 1.5rem; 
     }
     .dark .academy-article pre { 
-        background: #0d1117; 
+        background: #0a0a0a; 
         border-color: rgba(255,255,255,0.1); 
     }
+    .academy-article pre code.hljs { background: transparent; padding: 0; }
     
-    .academy-article pre code.hljs {
-        background: transparent;
-        padding: 0;
-    }
-    
-    /* Inline code styling */
+    /* Inline code */
     .academy-article code:not(.hljs) { 
         font-family: 'Geist Mono', monospace; 
         font-size: 0.85em; 
@@ -84,7 +87,7 @@
         background-color: #f1f5f9;
         border: 1px solid #e2e8f0;
         padding: 0.15rem 0.35rem;
-        border-radius: 0.25rem;
+        border-radius: 0.375rem;
     }
     .dark .academy-article code:not(.hljs) { 
         color: #e4e4e7;
@@ -92,44 +95,34 @@
         border-color: transparent;
     }
 
-    .academy-article pre code {
-        background-color: transparent;
-        padding: 0;
-        border: none;
-        color: inherit;
-    }
-    .dark .academy-article pre code {
-        background-color: transparent;
-        border: none;
-        color: inherit;
-    }
-
-    .academy-article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #374151; }
+    .academy-article ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #475569; font-size: 0.95rem; }
     .dark .academy-article ul { color: #a1a1aa; }
-    
     .academy-article li { margin-bottom: 0.5rem; }
-    
-    .academy-article strong { color: #111827; font-weight: 600; }
-    .dark .academy-article strong { color: #f4f4f5; font-weight: 600; }
+    .academy-article strong { color: #0f172a; font-weight: 600; }
+    .dark .academy-article strong { color: #f8fafc; font-weight: 600; }
+
+    /* D3 Canvas Grabbing Cursors */
+    #d3-graph-container { cursor: grab; }
+    #d3-graph-container:active { cursor: grabbing; }
   </style>
 </head>
-<body class="bg-white text-black dark:bg-[#000000] dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
+<body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
 
-  <!-- Header Control Nav -->
-  <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-16">
+  <!-- Header -->
+  <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#000000]/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-[1200px] mx-auto px-6 flex items-center justify-between h-14">
       <div class="flex items-center h-full">
-        <div class="flex items-center mr-6">
+        <div class="flex items-center mr-8">
           <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
         </div>
         <nav class="hidden md:flex items-center space-x-6 h-full">
-            <a href="index.html" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Main</a>
-            <a href="player.html" class="text-sm text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors">Player</a>
-            <a href="academy.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all">Academy</a>
+            <a href="index.html" class="text-[13px] font-medium text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors">Main</a>
+            <a href="player.html" class="text-[13px] font-medium text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors">Player</a>
+            <a href="academy.html" class="text-[13px] font-medium text-black dark:text-white transition-all">Academy</a>
         </nav>
       </div>
       <div class="flex items-center space-x-3">
-        <button onclick="toggleTheme()" class="p-1.5 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+        <button onclick="toggleTheme()" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
             <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
             <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
         </button>
@@ -139,165 +132,61 @@
 
   <main class="max-w-[1200px] mx-auto px-6 py-12 w-full relative">
     
-    <!-- Background Grid -->
-    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-40 dark:opacity-40" style="background-image: linear-gradient(to right, rgba(150,150,150,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(150,150,150,0.15) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
-
-    <div class="mb-4">
-      <h1 class="text-3xl font-extrabold tracking-tight text-black dark:text-white mb-2">Platform Academy</h1>
-      <p class="text-gray-700 dark:text-zinc-400 text-sm max-w-3xl leading-relaxed">
-        Select a module below to explore the technical implementation of each architectural stage, and observe its exact position within our serverless pipeline flow.
+    <div class="mb-8 text-center md:text-left">
+      <h1 class="text-[32px] font-bold tracking-tight text-black dark:text-white mb-3">Platform Academy</h1>
+      <p class="text-gray-500 dark:text-zinc-400 text-sm max-w-2xl leading-relaxed mx-auto md:mx-0">
+        Explore the technical implementation of each architectural stage. Select a module below to inspect the deterministic pipeline logic.
       </p>
     </div>
 
-    <!-- The Flow Diagram (Relational DAG Topology) -->
-    <div class="w-full mb-10 relative overflow-x-auto hide-scroll flex justify-start lg:justify-center py-4">
-        <div class="relative w-[1300px] h-[360px] flex-shrink-0 select-none mt-2">
-            
-            <svg id="pipeline-svg" class="absolute inset-0 w-full h-full pointer-events-none text-gray-500 dark:text-white/20 transition-all duration-500 ease-out" stroke-width="2.5" fill="none" stroke-linecap="round">
-                <defs>
-                    <marker id="arrow-base" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-gray-400 dark:fill-[#333333]" />
-                    </marker>
-                    <marker id="arrow-active-light" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-black" />
-                    </marker>
-                    <marker id="arrow-active-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-white" />
-                    </marker>
-                </defs>
-
-                <!-- Static Background Paths -->
-                <g class="text-gray-300 dark:text-white/10" marker-end="url(#arrow-base)">
-                    <!-- payload -> gcs -->
-                    <path d="M 180 182 L 280 182" stroke="currentColor" />
-                    <!-- gcs -> cloudrun -->
-                    <path d="M 350 204 L 350 280" stroke="currentColor" />
-                    <!-- cloudrun -> mediaconvert -->
-                    <path d="M 420 302 L 560 302" stroke="currentColor" />
-                    <!-- mediaconvert -> s3 -->
-                    <path d="M 670 280 C 670 182, 750 182, 840 182" stroke="currentColor" />
-                    <!-- s3 -> cloudfront -->
-                    <path d="M 910 204 L 910 280" stroke="currentColor" />
-                    <!-- cloudfront -> client -->
-                    <path d="M 980 302 L 1120 302" stroke="currentColor" />
-                    
-                    <!-- Control Plane (Webhook Feedback Loop) -->
-                    <!-- mediaconvert -> eventbridge -->
-                    <path d="M 590 280 L 590 84" stroke="currentColor" />
-                    <!-- eventbridge -> payload -->
-                    <path d="M 560 62 C 250 62, 110 80, 110 160" stroke="currentColor" />
-                </g>
-
-                <!-- Animated Data Flow Paths (Overlay) -->
-                <g id="flow-overlay" class="opacity-0 transition-opacity duration-300">
-                    <path id="path-gcs" data-source="node-payload" data-target="node-gcs" d="M 180 182 L 280 182" class="flow-line" />
-                    <path id="path-cloudrun" data-source="node-gcs" data-target="node-cloudrun" d="M 350 204 L 350 280" class="flow-line" />
-                    <path id="path-mediaconvert" data-source="node-cloudrun" data-target="node-mediaconvert" d="M 420 302 L 560 302" class="flow-line" />
-                    <path id="path-s3" data-source="node-mediaconvert" data-target="node-s3" d="M 670 280 C 670 182, 750 182, 840 182" class="flow-line" />
-                    <path id="path-cloudfront" data-source="node-s3" data-target="node-cloudfront" d="M 910 204 L 910 280" class="flow-line" />
-                    <path id="path-client" data-source="node-cloudfront" data-target="node-client" d="M 980 302 L 1120 302" class="flow-line" />
-                    
-                    <path id="path-eventbridge-in" data-source="node-mediaconvert" data-target="node-eventbridge" d="M 590 280 L 590 84" class="flow-line" />
-                    <path id="path-eventbridge-out" data-source="node-eventbridge" data-target="node-payload" d="M 560 62 C 250 62, 110 80, 110 160" class="flow-line" />
-                </g>
-            </svg>
-
-            <!-- NODES (Width: 140px, Height: 44px) -->
-            <!-- Ingest Layer (Left) -->
-            <div id="node-payload" class="pipeline-node absolute left-[40px] top-[160px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
-                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">payload-cms</span>
-            </div>
-
-            <!-- GCP Validation Layer -->
-            <div id="node-gcs" class="pipeline-node absolute left-[280px] top-[160px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
-                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">gcs-eventarc</span>
-            </div>
-
-            <div id="node-cloudrun" class="pipeline-node absolute left-[280px] top-[280px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
-                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">cloud-run</span>
-            </div>
-
-            <!-- AWS Processing Layer -->
-            <div id="node-mediaconvert" class="pipeline-node absolute left-[560px] top-[280px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
-                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">mediaconvert</span>
-            </div>
-
-            <div id="node-s3" class="pipeline-node absolute left-[840px] top-[160px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
-                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">s3-origin</span>
-            </div>
-
-            <!-- Delivery Layer (Right) -->
-            <div id="node-cloudfront" class="pipeline-node absolute left-[840px] top-[280px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
-                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">cloudfront-cdn</span>
-            </div>
-
-            <div id="node-client" class="pipeline-node absolute left-[1120px] top-[280px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
-                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors flex items-center justify-center"></div>
-                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">client-playback</span>
-            </div>
-
-            <!-- Control Plane (Top Center) -->
-            <div id="node-eventbridge" class="pipeline-node absolute left-[560px] top-[40px] w-[140px] h-[44px] bg-white dark:bg-[#111111] border border-gray-300 dark:border-white/10 rounded-lg shadow-sm flex items-center gap-2 px-3 z-10 transition-all duration-300">
-                <div class="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-zinc-600 shrink-0 indicator transition-colors"></div>
-                <span class="node-label font-sans font-medium text-[11px] tracking-tight text-gray-700 dark:text-zinc-300 transition-colors">eventbridge</span>
-            </div>
-
+    <!-- D3 Physics Graph Container -->
+    <div class="relative w-full h-[550px] md:h-[400px] mb-12 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm overflow-hidden" style="background-image: radial-gradient(rgba(150, 150, 150, 0.2) 1px, transparent 1px); background-size: 24px 24px;">
+        
+        <div class="absolute top-4 left-5 flex items-center gap-2.5 z-10 pointer-events-none">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]"></span>
+            <span class="text-[10px] font-mono font-bold text-gray-800 dark:text-zinc-200 uppercase tracking-widest">Live Relational Topology</span>
         </div>
+        
+        <div class="absolute top-4 right-5 z-10 pointer-events-none">
+            <span class="text-[9px] font-mono font-medium text-gray-500 dark:text-zinc-500 uppercase tracking-widest border border-gray-200 dark:border-white/10 px-2.5 py-1.5 rounded bg-white/80 dark:bg-black/80 backdrop-blur">Physics Active: Drag Nodes</span>
+        </div>
+
+        <div id="d3-graph-container" class="absolute inset-0 w-full h-full"></div>
     </div>
 
-    <!-- Master-Detail Binder Tab Layout -->
-    <div class="w-full pb-20">
+    <!-- Vercel-Style Reading Pane Binder -->
+    <div class="w-full max-w-4xl mx-auto pb-20">
       
-      <!-- Binder Tabs Header -->
-      <div class="flex flex-nowrap overflow-x-auto hide-scroll pt-2 gap-1 relative z-10 -mb-[1px]">
-         
-         <button data-id="1" data-nodes="node-payload,node-gcs" onclick="selectModule(this)" class="tab-btn active shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-white dark:bg-[#0a0a0a] border-gray-300 dark:border-white/10 border-b-white dark:border-b-[#0a0a0a] text-black dark:text-white z-10 translate-y-[1px]">
-            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">01. CMS Ingestion</span>
+      <!-- Flat Tab Headers -->
+      <div class="flex flex-nowrap overflow-x-auto hide-scroll gap-6 border-b border-gray-200 dark:border-white/10 relative z-10 mb-8">
+         <button data-id="1" data-nodes="node-payload,node-gcs" onclick="selectModule(this)" class="tab-btn active shrink-0 pb-3 border-b-2 border-black dark:border-white text-black dark:text-white font-medium text-[13px] transition-colors cursor-pointer select-none">
+            01. Ingestion
          </button>
 
-         <button data-id="2" data-nodes="node-gcs,node-cloudrun,node-mediaconvert" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
-            <span class="w-2 h-2 rounded-full bg-orange-500 opacity-80"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">02. Orchestration</span>
+         <button data-id="2" data-nodes="node-gcs,node-cloudrun,node-mediaconvert" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+            02. Orchestration
          </button>
 
-         <button data-id="3" data-nodes="node-cloudrun,node-mediaconvert,node-s3" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 opacity-80"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">03. Transcoding</span>
+         <button data-id="3" data-nodes="node-cloudrun,node-mediaconvert,node-s3" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+            03. Transcoding
          </button>
 
-         <button data-id="4" data-nodes="node-s3,node-cloudfront,node-client" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
-            <span class="w-2 h-2 rounded-full bg-purple-500 opacity-80"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">04. CDN Distribution</span>
+         <button data-id="4" data-nodes="node-s3,node-cloudfront,node-client" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+            04. Delivery
          </button>
 
-         <button data-id="5" data-nodes="node-mediaconvert,node-eventbridge,node-payload" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
-            <span class="w-2 h-2 rounded-full bg-[#3b82f6] opacity-80"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">05. Telemetry & Webhooks</span>
+         <button data-id="5" data-nodes="node-mediaconvert,node-eventbridge,node-payload" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+            05. Webhooks
          </button>
 
-         <button data-id="6" data-nodes="node-payload,node-gcs,node-cloudrun,node-mediaconvert,node-s3,node-cloudfront,node-client,node-eventbridge" onclick="selectModule(this)" class="tab-btn shrink-0 px-5 py-3 border border-b-0 rounded-t-lg transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none bg-gray-50 dark:bg-[#111111] border-gray-200 dark:border-white/5 border-b-gray-300 dark:border-b-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-gray-200">
-            <span class="w-2 h-2 rounded-full bg-[#f43f5e] opacity-80"></span>
-            <span class="font-semibold text-sm whitespace-nowrap">06. Post-Mortem</span>
+         <button data-id="6" data-nodes="node-payload,node-gcs,node-cloudrun,node-mediaconvert,node-s3,node-cloudfront,node-client,node-eventbridge" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+            06. Post-Mortem
          </button>
-
       </div>
 
-      <!-- Permanent Reading Pane Binder -->
-      <div class="bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-b-xl rounded-tr-xl p-8 md:p-12 shadow-sm min-h-[500px] relative z-0">
-          <div class="flex items-center space-x-3 mb-8 pb-6 border-b border-gray-200 dark:border-white/10">
-              <div id="pane-icon" class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-gray-300 dark:border-white/20 bg-black text-white dark:bg-white dark:text-black shadow-sm">
-                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-              </div>
-              <h2 id="pane-title" class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">CMS Ingestion & Validation</h2>
-          </div>
-          
+      <!-- Detail Pane -->
+      <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl p-8 shadow-sm min-h-[400px]">
+          <h2 id="pane-title" class="text-[20px] font-semibold text-gray-900 dark:text-white tracking-tight mb-8">CMS Ingestion & Validation</h2>
           <article id="reading-pane" class="text-sm academy-article">
               <!-- Content injected here via JS -->
           </article>
@@ -306,23 +195,20 @@
     </div>
   </main>
 
-  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-600 dark:text-zinc-500 text-sm font-mono tracking-wider mt-12">
+  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#000] py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider mt-12">
     <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
         <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-black dark:bg-white"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-black dark:bg-white"></span>
             <span>SYSTEM_READY</span>
         </div>
     </div>
   </footer>
 
-  <!-- HTML Templates for Content (Prevents Javascript String Escaping Errors) -->
+  <!-- HTML Templates for Content -->
   <div id="content-templates" style="display: none;">
       
       <!-- Module 1: Ingestion -->
-      <template id="icon-1">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-      </template>
       <template id="content-1">
           <p>Routing multi-gigabyte mezzanine video files through a traditional Node.js backend introduces severe memory bottlenecks, upload timeouts, and high compute costs. This setup utilizes <strong>Direct-to-Cloud (D2C)</strong> ingestion alongside Payload CMS and PostgreSQL to handle relational data modeling and client content management.</p>
           
@@ -354,9 +240,6 @@ beforeOperation: [
       </template>
 
       <!-- Module 2: Orchestration -->
-      <template id="icon-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-      </template>
       <template id="content-2">
           <p>The Multi-File Orchestration Edge is powered by <strong>GCP EventArc & Cloud Run</strong>. When files hit the input Google Cloud Storage bucket, GCP Eventarc captures distinct object finalization signals and fires parallel webhooks.</p>
           
@@ -383,9 +266,6 @@ def trigger_mediaconvert(cloud_event: CloudEvent):
       </template>
 
       <!-- Module 3: Transcoding -->
-      <template id="icon-3">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      </template>
       <template id="content-3">
           <p>AWS serves as the heavy transcoding factory via the <strong>AWS Elemental MediaConvert</strong> Compute Transcoding Engine. The incoming JSON job definition defines the processing parameters dynamically, mapping out adaptive bitrate rules, audio selector inclusions, and subtitle sidecar injection.</p>
           
@@ -393,8 +273,7 @@ def trigger_mediaconvert(cloud_event: CloudEvent):
           <p>MediaConvert reads the inputs via the signed GCP URLs and transcodes them into HLS fragments, rendering the outputs directly to your outbound S3 bucket under an identical nested subdirectory structure.</p>
           <p><strong>Critical Guardrail:</strong> The API requires explicit <code>ContainerSettings: { Container: "M3U8" }</code> within the Output Group JSON to successfully map the H.264 codec to an Apple HLS playlist.</p>
 
-<pre><code class="language-python"># main.py
-"OutputGroups": [{
+<pre><code class="language-json">"OutputGroups": [{
     "Name": "Apple HLS",
     "OutputGroupSettings": {
         "Type": "HLS_GROUP_SETTINGS",
@@ -405,7 +284,7 @@ def trigger_mediaconvert(cloud_event: CloudEvent):
         }
     },
     "Outputs": [{
-        # Explicit Container Settings mapping to M3U8
+        // Explicit Container Settings mapping to M3U8
         "ContainerSettings": {
             "Container": "M3U8",
             "M3u8Settings": {}
@@ -426,9 +305,6 @@ def trigger_mediaconvert(cloud_event: CloudEvent):
       </template>
 
       <!-- Module 4: CDN Distribution -->
-      <template id="icon-4">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-      </template>
       <template id="content-4">
           <p><strong>AWS CloudFront & S3</strong> establish the Content Delivery Edge. Rather than serving directly from the S3 output bucket, AWS CloudFront acts as the CDN layer, retrieving the transcoded assets and distributing them to edge nodes globally to minimize latency and origin load.</p>
           
@@ -445,9 +321,6 @@ def trigger_mediaconvert(cloud_event: CloudEvent):
       </template>
 
       <!-- Module 5: Telemetry Loops -->
-      <template id="icon-5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-      </template>
       <template id="content-5">
           <p>To securely and deterministically notify the CMS when transcoding succeeds or fails, we implement <strong>Telemetry Loops & Automated Garbage Collection</strong>.</p>
           
@@ -482,19 +355,15 @@ export const mediaconvertWebhook: Endpoint = {
         data: {
           status: 'ready',
           manifest_url: manifestUrl,
-          logs: `${mediaDoc.logs || ''}\n[${new Date().toISOString()}] AWS Webhook COMPLETE: Transcode finished.`,
+          logs: `AWS Webhook COMPLETE: Transcode finished.`,
         },
       })
     }
-    // ... Error handling ...
   }
 }</code></pre>
       </template>
 
       <!-- Module 6: Post-Mortem -->
-      <template id="icon-6">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-      </template>
       <template id="content-6">
           <p>The core architectural mandate of this pipeline is minimizing operational entropy—the unpredictable states, race conditions, and network failures inherent in distributed cloud systems. Rather than attempting to control systemic chaos via bloated orchestration layers or expensive polling loops, this pipeline relies on <strong>bottom-up, deterministic execution</strong>.</p>
           
@@ -507,8 +376,8 @@ export const mediaconvertWebhook: Endpoint = {
 
           <h4>Enterprise-Grade Resiliency Patterns</h4>
           <ul>
-              <li><strong>Idempotent Pipeline Design:</strong> The GCP Pacifier Pattern guarantees that multi-file asset bundles (e.g., video, audio stems, subtitle sidecars) can be ingested sequentially or out-of-order without triggering race conditions or runaway compute billing.</li>
-              <li><strong>Strict Payload Sanitization:</strong> Inter-cloud API handoffs (such as passing signed URLs and destination parameters from GCP to AWS MediaConvert) incorporate strict regex validation and whitespace sanitization to ensure zero-defect infrastructure-as-code deployments.</li>
+              <li><strong>Idempotent Pipeline Design:</strong> Asynchronous file ingestion pipelines guarantee that multi-file asset bundles (e.g., video, audio stems, subtitle sidecars) can be processed sequentially or out-of-order without triggering race conditions or runaway compute billing.</li>
+              <li><strong>Zero-Trust Handoffs:</strong> Inter-cloud API handoffs incorporate cryptographic signatures and strict schema validation to ensure zero-defect infrastructure-as-code deployments across boundaries.</li>
           </ul>
 
           <p class="mt-8 italic text-center font-medium">This pipeline demonstrates that true resilience is not achieved by building heavier error-handling mechanisms, but by designing an architecture where invalid states are structurally impossible to process.</p>
@@ -517,12 +386,13 @@ export const mediaconvertWebhook: Endpoint = {
   </div>
 
   <script>
+    // --- Global Theme & Utilities ---
     function toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        updateActiveSVGMarker();
         updateHighlightTheme(isDark);
         updateActiveTabBorder(isDark);
+        updateD3Theme(isDark); // Inform physics engine
     }
     
     function initTheme() {
@@ -536,48 +406,240 @@ export const mediaconvertWebhook: Endpoint = {
             document.documentElement.classList.remove('dark');
         }
         updateHighlightTheme(isDark);
+        return isDark;
     }
 
     function updateHighlightTheme(isDark) {
         const link = document.getElementById('hljs-theme');
-        if (isDark) {
-            link.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css";
-        } else {
-            link.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
-        }
+        link.href = isDark 
+            ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" 
+            : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
     }
 
     function updateActiveTabBorder(isDark) {
         const activeTab = document.querySelector('.tab-btn.active');
         if (activeTab) {
-            activeTab.classList.remove('border-b-white', 'border-b-[#0a0a0a]');
-            activeTab.classList.add(isDark ? 'border-b-[#0a0a0a]' : 'border-b-white');
+            activeTab.classList.remove('border-black', 'border-white');
+            activeTab.classList.add(isDark ? 'border-white' : 'border-black');
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        initTheme();
-        const firstModule = document.querySelector('.tab-btn');
-        if(firstModule) selectModule(firstModule);
-    });
+    // --- D3 PHYSICS ENGINE INITIALIZATION ---
+    
+    const nodesData = [
+        { id: 'payload', label: 'Payload CMS', color: '#3b82f6', targetIndex: 0 },
+        { id: 'gcs', label: 'GCS EventArc', color: '#f97316', targetIndex: 1 },
+        { id: 'cloudrun', label: 'Cloud Run', color: '#f97316', targetIndex: 2 },
+        { id: 'mediaconvert', label: 'MediaConvert', color: '#10b981', targetIndex: 3 },
+        { id: 's3', label: 'S3 Origin', color: '#a855f7', targetIndex: 4 },
+        { id: 'cloudfront', label: 'CloudFront CDN', color: '#a855f7', targetIndex: 5 },
+        { id: 'client', label: 'Client Playback', color: '#f43f5e', targetIndex: 6 },
+        { id: 'eventbridge', label: 'EventBridge', color: '#3b82f6', targetIndex: 2.5 } // Positioned structurally above
+    ];
 
-    function getActiveMarkerUrl() {
-        return document.documentElement.classList.contains('dark') 
-            ? 'url(#arrow-active-dark)' 
-            : 'url(#arrow-active-light)';
-    }
+    const linksData = [
+        { source: 'payload', target: 'gcs' },
+        { source: 'gcs', target: 'cloudrun' },
+        { source: 'cloudrun', target: 'mediaconvert' },
+        { source: 'mediaconvert', target: 's3' },
+        { source: 's3', target: 'cloudfront' },
+        { source: 'cloudfront', target: 'client' },
+        { source: 'mediaconvert', target: 'eventbridge' },
+        { source: 'eventbridge', target: 'payload' }
+    ];
 
-    function updateActiveSVGMarker() {
-        if (!activeCardId) return;
-        const overlayGroup = document.getElementById('flow-overlay');
-        overlayGroup.querySelectorAll('path').forEach(path => {
-            if(path.style.opacity === '1') {
-                path.setAttribute('marker-end', getActiveMarkerUrl());
-            }
+    let simulation, svg, link, node;
+    let activeCardId = null;
+
+    function initD3() {
+        const container = document.getElementById('d3-graph-container');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        const isMobile = window.innerWidth < 768; // Tailwind md breakpoint
+
+        svg = d3.select("#d3-graph-container").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height]);
+
+        // Define SVG Markers (Arrowheads)
+        const defs = svg.append("defs");
+        const markers = [
+            { id: "arrow-light", color: "rgba(0,0,0,0.15)" },
+            { id: "arrow-dark", color: "rgba(255,255,255,0.15)" },
+            { id: "arrow-active-light", color: "#000000" },
+            { id: "arrow-active-dark", color: "#ffffff" }
+        ];
+
+        defs.selectAll("marker")
+            .data(markers)
+            .enter().append("marker")
+            .attr("id", d => d.id)
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 26) // Radius (20) + padding (6)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", d => d.color);
+
+        // Force Simulation Configuration
+        // Automatically flows horizontally on Desktop, Vertically on Mobile
+        simulation = d3.forceSimulation(nodesData)
+            .force("link", d3.forceLink(linksData).id(d => d.id).distance(isMobile ? 80 : 100))
+            .force("charge", d3.forceManyBody().strength(isMobile ? -1000 : -1500))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("x", d3.forceX(d => {
+                if (isMobile) {
+                    // Mobile: Align roughly in the center, EventBridge slightly right
+                    return d.id === 'eventbridge' ? width * 0.7 : width * 0.4;
+                } else {
+                    // Desktop: Spread left to right based on pipeline stage
+                    const stageNorm = d.targetIndex / 6; // 0 to 1
+                    return width * (0.15 + stageNorm * 0.7); 
+                }
+            }).strength(0.8))
+            .force("y", d3.forceY(d => {
+                if (isMobile) {
+                    // Mobile: Spread top to bottom based on pipeline stage
+                    const stageNorm = d.targetIndex / 6;
+                    return height * (0.1 + stageNorm * 0.8);
+                } else {
+                    // Desktop: Align horizontally, EventBridge floats above
+                    return d.id === 'eventbridge' ? height * 0.25 : height * 0.65;
+                }
+            }).strength(0.8));
+
+        // Draw Links
+        link = svg.append("g")
+            .attr("class", "links")
+            .selectAll("path")
+            .data(linksData)
+            .enter().append("path")
+            .attr("class", "flow-link flow-line")
+            .attr("fill", "none")
+            .attr("stroke-width", 2);
+
+        // Draw Nodes
+        node = svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("g")
+            .data(nodesData)
+            .enter().append("g")
+            .attr("class", "node-group cursor-pointer")
+            .attr("id", d => `node-${d.id}`)
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", (event, d) => {
+                // Find and click the tab that governs this node
+                const tab = document.querySelector(`.tab-btn[data-nodes*="node-${d.id}"]`);
+                if(tab) selectModule(tab);
+            });
+
+        // Node Background Circle
+        node.append("circle")
+            .attr("r", 20)
+            .attr("class", "node-bg");
+
+        // Node Inner Glowing Dot
+        node.append("circle")
+            .attr("r", 5)
+            .attr("fill", d => d.color)
+            .attr("class", "shadow-sm");
+
+        // Node Label
+        node.append("text")
+            .attr("dy", 38)
+            .attr("text-anchor", "middle")
+            .attr("class", "node-text font-mono text-[11px] pointer-events-none")
+            .text(d => d.label);
+
+        // Physics Tick function
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                // Curved loop for the webhook (Eventbridge -> Payload)
+                if (d.source.id === 'eventbridge' && d.target.id === 'payload') {
+                    const dx = d.target.x - d.source.x,
+                          dy = d.target.y - d.source.y,
+                          dr = Math.sqrt(dx * dx + dy * dy) * 0.8; 
+                    return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+                }
+                // Straight precise arrows for pipeline flow
+                return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`;
+            });
+
+            // Boundary constraints
+            node.attr("transform", d => {
+                d.x = Math.max(25, Math.min(width - 25, d.x));
+                d.y = Math.max(25, Math.min(height - 25, d.y));
+                return `translate(${d.x},${d.y})`;
+            });
         });
+
+        // Initialize default theme styling for D3
+        updateD3Theme(document.documentElement.classList.contains('dark'));
     }
 
-    // Titles matching the architectural structure
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    function updateD3Theme(isDark) {
+        if(!svg) return;
+        
+        // Refresh active link states and markers based on theme
+        const targetNodes = activeCardId 
+            ? document.querySelector(`.tab-btn[data-id="${activeCardId}"]`).dataset.nodes.split(',') 
+            : [];
+
+        d3.selectAll('.flow-link')
+            .attr("stroke", d => {
+                const isActive = targetNodes.includes(`node-${d.source.id}`) && targetNodes.includes(`node-${d.target.id}`);
+                if (activeCardId === "6") return isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)"; // Post-mortem view shows all
+                if (isActive) return isDark ? "#fff" : "#000";
+                return isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.1)";
+            })
+            .attr("marker-end", d => {
+                const isActive = targetNodes.includes(`node-${d.source.id}`) && targetNodes.includes(`node-${d.target.id}`);
+                if (activeCardId === "6") return isDark ? "url(#arrow-dark)" : "url(#arrow-light)";
+                if (isActive) return isDark ? "url(#arrow-active-dark)" : "url(#arrow-active-light)";
+                return isDark ? "url(#arrow-dark)" : "url(#arrow-light)";
+            });
+
+        // Refresh Node styling
+        d3.selectAll('.node-bg')
+            .attr("class", d => {
+                const isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "6";
+                if (isActive) return isDark ? "node-bg fill-black stroke-white stroke-[2px]" : "node-bg fill-white stroke-black stroke-[2px]";
+                return isDark ? "node-bg fill-[#0a0a0a] stroke-white/10 stroke-[1px]" : "node-bg fill-white stroke-gray-200 stroke-[1.5px]";
+            });
+
+        d3.selectAll('.node-text')
+            .attr("class", d => {
+                const isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "6";
+                if (isActive) return isDark ? "node-text font-mono text-[11px] font-bold fill-white pointer-events-none" : "node-text font-mono text-[11px] font-bold fill-black pointer-events-none";
+                return isDark ? "node-text font-mono text-[11px] font-medium fill-zinc-500 pointer-events-none" : "node-text font-mono text-[11px] font-medium fill-gray-400 pointer-events-none";
+            });
+    }
+
+    // --- CMS MODULE BINDING ---
     const playbookTitles = {
         "1": "CMS Ingestion & Namespace Optimization",
         "2": "Serverless Orchestration & Pacifier Pattern",
@@ -587,111 +649,65 @@ export const mediaconvertWebhook: Endpoint = {
         "6": "Deterministic Systems Engineering"
     };
 
-    let activeCardId = null;
-
     function selectModule(tabElement) {
         const id = tabElement.dataset.id;
         const targetNodes = tabElement.dataset.nodes.split(',');
         const isDark = document.documentElement.classList.contains('dark');
 
         if (activeCardId === id) return; 
-
         activeCardId = id;
 
-        // Reset all tabs
+        // 1. Reset all tabs (Vercel Style)
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active', 'bg-white', 'dark:bg-[#0a0a0a]', 'border-gray-300', 'dark:border-white/10', 'border-b-white', 'dark:border-b-[#0a0a0a]', 'text-black', 'dark:text-white', 'z-10', 'translate-y-[1px]');
-            btn.classList.add('bg-gray-50', 'dark:bg-[#111111]', 'border-gray-200', 'dark:border-white/5', 'border-b-gray-300', 'dark:border-b-white/10', 'text-gray-500', 'dark:text-zinc-400');
-            
-            const dot = btn.querySelector('.rounded-full');
-            if (dot) dot.classList.add('opacity-80');
+            btn.classList.remove('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
+            btn.classList.add('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
         });
 
-        // Highlight active tab
-        tabElement.classList.add('active');
-        tabElement.classList.remove('bg-gray-50', 'dark:bg-[#111111]', 'border-gray-200', 'dark:border-white/5', 'border-b-gray-300', 'dark:border-b-white/10', 'text-gray-500', 'dark:text-zinc-400');
-        tabElement.classList.add('bg-white', 'dark:bg-[#0a0a0a]', 'border-gray-300', 'dark:border-white/10', 'text-black', 'dark:text-white', 'z-10', 'translate-y-[1px]');
-        
-        tabElement.classList.add(isDark ? 'border-b-[#0a0a0a]' : 'border-b-white');
-        
-        const dot = tabElement.querySelector('.rounded-full');
-        if (dot) dot.classList.remove('opacity-80');
+        // 2. Highlight active tab
+        tabElement.classList.add('active', 'text-black', 'dark:text-white');
+        tabElement.classList.remove('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
+        tabElement.classList.add(isDark ? 'border-white' : 'border-black');
 
-        // Update Reading Pane using HTML Templates
+        // 3. Update Reading Pane Content
         const paneTitle = document.getElementById('pane-title');
         const paneContent = document.getElementById('reading-pane');
-        const paneIcon = document.getElementById('pane-icon');
         
         paneTitle.innerText = playbookTitles[id];
         paneContent.innerHTML = document.getElementById('content-' + id).innerHTML;
-        
-        paneIcon.className = `w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-gray-300 dark:border-white/20 bg-black text-white dark:bg-white dark:text-black shadow-sm`;
-        paneIcon.innerHTML = document.getElementById('icon-' + id).innerHTML;
 
-        // Trigger Syntax Highlighting
-        document.querySelectorAll('#reading-pane pre code').forEach((block) => {
-            hljs.highlightElement(block);
-        });
+        document.querySelectorAll('#reading-pane pre code').forEach((block) => hljs.highlightElement(block));
 
-        // Animate SVG Diagram
-        const svgContainer = document.getElementById('pipeline-svg');
-        const overlayGroup = document.getElementById('flow-overlay');
-        
-        overlayGroup.classList.remove('opacity-0');
-        overlayGroup.classList.add('opacity-100');
-
-        document.querySelectorAll('.pipeline-node').forEach(node => {
-            node.classList.remove('scale-105', 'z-30', 'border-black', 'dark:border-white', 'shadow-md');
-            node.classList.add('opacity-40', 'grayscale', 'scale-95', 'border-gray-300', 'dark:border-white/10');
+        // 4. Instruct D3 Engine to Highlight Focus Areas
+        d3.selectAll('.node-group').transition().duration(400)
+            .style("opacity", d => (targetNodes.includes(`node-${d.id}`) || id === "6") ? 1 : 0.35);
             
-            const indicator = node.querySelector('.indicator');
-            if(indicator) {
-                indicator.classList.remove('bg-black', 'dark:bg-white', 'shadow-[0_0_8px_currentColor]');
-                indicator.classList.add('bg-gray-400', 'dark:bg-zinc-600');
-            }
-            
-            const label = node.querySelector('.node-label');
-            if(label) {
-                label.classList.remove('text-black', 'dark:text-white', 'font-bold');
-                label.classList.add('text-gray-700', 'dark:text-zinc-300', 'font-medium');
-            }
-        });
+        d3.selectAll('.flow-link').transition().duration(400)
+            .attr("class", d => {
+                const isActive = targetNodes.includes(`node-${d.source.id}`) && targetNodes.includes(`node-${d.target.id}`);
+                return isActive ? "flow-link flow-line active-link" : "flow-link flow-line";
+            });
 
-        document.querySelectorAll('.pipeline-node').forEach(node => {
-            if (targetNodes.includes(node.id)) {
-                node.classList.remove('opacity-40', 'grayscale', 'scale-95', 'border-gray-300', 'dark:border-white/10');
-                node.classList.add('scale-105', 'z-30', 'border-black', 'dark:border-white', 'shadow-md');
-                
-                const indicator = node.querySelector('.indicator');
-                if(indicator) {
-                    indicator.classList.remove('bg-gray-400', 'dark:bg-zinc-600');
-                    indicator.classList.add('bg-black', 'dark:bg-white', 'shadow-[0_0_8px_currentColor]');
-                }
-                
-                const label = node.querySelector('.node-label');
-                if(label) {
-                    label.classList.remove('text-gray-700', 'dark:text-zinc-300', 'font-medium');
-                    label.classList.add('text-black', 'dark:text-white', 'font-bold');
-                }
-            }
-        });
-
-        overlayGroup.querySelectorAll('path').forEach(path => {
-            const source = "node-" + path.dataset.source.replace('node-','');
-            const target = "node-" + path.dataset.target.replace('node-','');
-            
-            if (targetNodes.includes(source) && targetNodes.includes(target)) {
-                path.classList.add('text-black', 'dark:text-white');
-                path.style.stroke = 'currentColor';
-                path.style.opacity = '1';
-                path.setAttribute('marker-end', getActiveMarkerUrl());
-            } else {
-                path.style.opacity = '0';
-                path.classList.remove('text-black', 'dark:text-white');
-                path.removeAttribute('marker-end');
-            }
-        });
+        updateD3Theme(isDark);
     }
+
+    // --- BOOTSTRAP ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const isDark = initTheme();
+        initD3();
+        
+        // Select first module to start
+        const firstModule = document.querySelector('.tab-btn');
+        if(firstModule) selectModule(firstModule);
+        
+        // Handle screen resizing for Physics engine constraints
+        window.addEventListener('resize', () => {
+            if(simulation) {
+                const container = document.getElementById('d3-graph-container');
+                simulation.force("center", d3.forceCenter(container.clientWidth / 2, container.clientHeight / 2));
+                simulation.alpha(0.3).restart();
+            }
+        });
+    });
 
   </script>
 </body>
