@@ -392,7 +392,7 @@ export const mediaconvertWebhook: Endpoint = {
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         updateHighlightTheme(isDark);
         updateActiveTabBorder(isDark);
-        updateD3Theme(isDark); // Inform physics engine
+        updateD3Theme(isDark); 
     }
     
     function initTheme() {
@@ -434,7 +434,7 @@ export const mediaconvertWebhook: Endpoint = {
         { id: 's3', label: 'S3 Origin', color: '#a855f7', targetIndex: 4 },
         { id: 'cloudfront', label: 'CloudFront CDN', color: '#a855f7', targetIndex: 5 },
         { id: 'client', label: 'Client Playback', color: '#f43f5e', targetIndex: 6 },
-        { id: 'eventbridge', label: 'EventBridge', color: '#3b82f6', targetIndex: 2.5 } // Positioned structurally above
+        { id: 'eventbridge', label: 'EventBridge', color: '#3b82f6', targetIndex: 2.5 }
     ];
 
     const linksData = [
@@ -455,14 +455,14 @@ export const mediaconvertWebhook: Endpoint = {
         const container = document.getElementById('d3-graph-container');
         const width = container.clientWidth;
         const height = container.clientHeight;
-        const isMobile = window.innerWidth < 768; // Tailwind md breakpoint
+        const isMobile = window.innerWidth < 768; 
 
         svg = d3.select("#d3-graph-container").append("svg")
             .attr("width", width)
             .attr("height", height)
             .attr("viewBox", [0, 0, width, height]);
 
-        // Define SVG Markers (Arrowheads)
+        // Define SVG Markers (Sharp, Angular Arrowheads)
         const defs = svg.append("defs");
         const markers = [
             { id: "arrow-light", color: "rgba(0,0,0,0.15)" },
@@ -476,39 +476,34 @@ export const mediaconvertWebhook: Endpoint = {
             .enter().append("marker")
             .attr("id", d => d.id)
             .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 26) // Radius (20) + padding (6)
+            .attr("refX", 28) // Offset slightly to account for the node radius
             .attr("refY", 0)
-            .attr("markerWidth", 6)
-            .attr("markerHeight", 6)
+            .attr("markerWidth", 5)
+            .attr("markerHeight", 5)
             .attr("orient", "auto")
             .append("path")
-            .attr("d", "M0,-5L10,0L0,5")
+            .attr("d", "M 0,-4 L 8,0 L 0,4 Z") // Sharper geometric point
             .attr("fill", d => d.color);
 
         // Force Simulation Configuration
-        // Automatically flows horizontally on Desktop, Vertically on Mobile
         simulation = d3.forceSimulation(nodesData)
-            .force("link", d3.forceLink(linksData).id(d => d.id).distance(isMobile ? 80 : 100))
-            .force("charge", d3.forceManyBody().strength(isMobile ? -1000 : -1500))
+            .force("link", d3.forceLink(linksData).id(d => d.id).distance(isMobile ? 70 : 120))
+            .force("charge", d3.forceManyBody().strength(-800))
+            .force("collide", d3.forceCollide().radius(40))
             .force("center", d3.forceCenter(width / 2, height / 2))
             .force("x", d3.forceX(d => {
-                if (isMobile) {
-                    // Mobile: Align roughly in the center, EventBridge slightly right
-                    return d.id === 'eventbridge' ? width * 0.7 : width * 0.4;
-                } else {
-                    // Desktop: Spread left to right based on pipeline stage
-                    const stageNorm = d.targetIndex / 6; // 0 to 1
-                    return width * (0.15 + stageNorm * 0.7); 
-                }
+                if (isMobile) return width / 2;
+                const stageNorm = d.targetIndex / 6; 
+                return width * (0.15 + stageNorm * 0.7); 
             }).strength(0.8))
             .force("y", d3.forceY(d => {
                 if (isMobile) {
-                    // Mobile: Spread top to bottom based on pipeline stage
                     const stageNorm = d.targetIndex / 6;
                     return height * (0.1 + stageNorm * 0.8);
                 } else {
-                    // Desktop: Align horizontally, EventBridge floats above
-                    return d.id === 'eventbridge' ? height * 0.25 : height * 0.65;
+                    // Pull EventBridge to the top, and alternate the rest in a structured Zig-Zag
+                    if (d.id === 'eventbridge') return height * 0.25;
+                    return d.targetIndex % 2 === 0 ? height * 0.55 : height * 0.75;
                 }
             }).strength(0.8));
 
@@ -535,7 +530,6 @@ export const mediaconvertWebhook: Endpoint = {
                 .on("drag", dragged)
                 .on("end", dragended))
             .on("click", (event, d) => {
-                // Find and click the tab that governs this node
                 const tab = document.querySelector(`.tab-btn[data-nodes*="node-${d.id}"]`);
                 if(tab) selectModule(tab);
             });
@@ -561,14 +555,16 @@ export const mediaconvertWebhook: Endpoint = {
         // Physics Tick function
         simulation.on("tick", () => {
             link.attr("d", d => {
-                // Curved loop for the webhook (Eventbridge -> Payload)
-                if (d.source.id === 'eventbridge' && d.target.id === 'payload') {
-                    const dx = d.target.x - d.source.x,
-                          dy = d.target.y - d.source.y,
-                          dr = Math.sqrt(dx * dx + dy * dy) * 0.8; 
-                    return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+                const dx = d.target.x - d.source.x,
+                      dy = d.target.y - d.source.y;
+
+                // EventBridge feedback loops use a concave arc (sweep-flag 0 bows inward)
+                if (d.source.id === 'eventbridge' || d.target.id === 'eventbridge') {
+                    const dr = Math.sqrt(dx * dx + dy * dy) * 1.2; 
+                    return `M${d.source.x},${d.source.y} A${dr},${dr} 0 0,0 ${d.target.x},${d.target.y}`;
                 }
-                // Straight precise arrows for pipeline flow
+                
+                // Primary pipeline uses precise, angular straight lines
                 return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`;
             });
 
@@ -580,7 +576,6 @@ export const mediaconvertWebhook: Endpoint = {
             });
         });
 
-        // Initialize default theme styling for D3
         updateD3Theme(document.documentElement.classList.contains('dark'));
     }
 
@@ -604,7 +599,6 @@ export const mediaconvertWebhook: Endpoint = {
     function updateD3Theme(isDark) {
         if(!svg) return;
         
-        // Refresh active link states and markers based on theme
         const targetNodes = activeCardId 
             ? document.querySelector(`.tab-btn[data-id="${activeCardId}"]`).dataset.nodes.split(',') 
             : [];
@@ -612,7 +606,7 @@ export const mediaconvertWebhook: Endpoint = {
         d3.selectAll('.flow-link')
             .attr("stroke", d => {
                 const isActive = targetNodes.includes(`node-${d.source.id}`) && targetNodes.includes(`node-${d.target.id}`);
-                if (activeCardId === "6") return isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)"; // Post-mortem view shows all
+                if (activeCardId === "6") return isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)";
                 if (isActive) return isDark ? "#fff" : "#000";
                 return isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.1)";
             })
@@ -623,7 +617,6 @@ export const mediaconvertWebhook: Endpoint = {
                 return isDark ? "url(#arrow-dark)" : "url(#arrow-light)";
             });
 
-        // Refresh Node styling
         d3.selectAll('.node-bg')
             .attr("class", d => {
                 const isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "6";
@@ -649,6 +642,8 @@ export const mediaconvertWebhook: Endpoint = {
         "6": "Deterministic Systems Engineering"
     };
 
+    let activeCardId = null;
+
     function selectModule(tabElement) {
         const id = tabElement.dataset.id;
         const targetNodes = tabElement.dataset.nodes.split(',');
@@ -657,18 +652,15 @@ export const mediaconvertWebhook: Endpoint = {
         if (activeCardId === id) return; 
         activeCardId = id;
 
-        // 1. Reset all tabs (Vercel Style)
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
             btn.classList.add('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
         });
 
-        // 2. Highlight active tab
         tabElement.classList.add('active', 'text-black', 'dark:text-white');
         tabElement.classList.remove('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
         tabElement.classList.add(isDark ? 'border-white' : 'border-black');
 
-        // 3. Update Reading Pane Content
         const paneTitle = document.getElementById('pane-title');
         const paneContent = document.getElementById('reading-pane');
         
@@ -677,7 +669,6 @@ export const mediaconvertWebhook: Endpoint = {
 
         document.querySelectorAll('#reading-pane pre code').forEach((block) => hljs.highlightElement(block));
 
-        // 4. Instruct D3 Engine to Highlight Focus Areas
         d3.selectAll('.node-group').transition().duration(400)
             .style("opacity", d => (targetNodes.includes(`node-${d.id}`) || id === "6") ? 1 : 0.35);
             
@@ -695,11 +686,9 @@ export const mediaconvertWebhook: Endpoint = {
         const isDark = initTheme();
         initD3();
         
-        // Select first module to start
         const firstModule = document.querySelector('.tab-btn');
         if(firstModule) selectModule(firstModule);
         
-        // Handle screen resizing for Physics engine constraints
         window.addEventListener('resize', () => {
             if(simulation) {
                 const container = document.getElementById('d3-graph-container');
