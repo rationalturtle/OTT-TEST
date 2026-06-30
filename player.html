@@ -5,14 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Secure OTT Edge Pipeline | Deterministic Console</title>
   
-  <!-- Vercel Geist Font Imports -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
   
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Shaka Player -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/shaka-player.ui.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/controls.min.css">
   
@@ -92,7 +89,6 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
-        <!-- LEFT COLUMN -->
         <div id="playerColumn" class="lg:col-span-8 flex flex-col gap-6">
             <div id="videoPlayerCard" class="bg-black dark:bg-[#030303] border border-gray-300 dark:border-white/10 rounded-2xl overflow-hidden shadow-md relative group">
                 <div class="absolute top-0 left-0 w-full h-10 bg-gradient-to-b from-black/80 to-transparent z-30 flex items-center px-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -125,7 +121,6 @@
                 </div>
             </div>
 
-            <!-- Enhanced XHR Interceptor -->
             <div id="networkLogsCard" class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm flex flex-col h-[300px]">
                 <div class="px-5 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between shrink-0 bg-[#fafafa] dark:bg-[#0a0a0a]">
                     <div class="flex items-center gap-2">
@@ -143,7 +138,6 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN -->
         <div id="sidebarColumn" class="lg:col-span-4 flex flex-col gap-6">
             
             <div id="edgeAuthCard" class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm transition-all duration-200 relative">
@@ -159,7 +153,6 @@
                     </div>
                 </div>
                 
-                <!-- Cryptographic Payload Visualizer -->
                 <div id="jwtVisualizer" class="hidden px-5 pt-4">
                     <div class="text-[9px] font-mono text-gray-400 dark:text-zinc-500 uppercase mb-1">Decoded Payload Claims:</div>
                     <pre class="text-[10px] bg-gray-50 dark:bg-[#111] p-2 rounded border border-gray-200 dark:border-white/5 font-mono text-purple-600 dark:text-purple-400 overflow-x-auto"><code id="jwtPayloadCode">{}</code></pre>
@@ -168,14 +161,14 @@
                 <div class="p-5 space-y-4">
                     <div>
                         <label class="block text-[10px] font-mono font-medium text-gray-500 dark:text-zinc-500 uppercase mb-2">Manifest Origin URI</label>
-                        <input type="text" id="manifestInput" value="https://d12345abcdef.cloudfront.net/complexity_hdr/complexity_hdr.m3u8" class="w-full bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs p-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white text-gray-900 dark:text-white font-mono transition-shadow">
+                        <input type="text" id="manifestInput" value="" placeholder="https://your-perimeter.cloudfront.net/folder/manifest.m3u8" class="w-full bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs p-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white text-gray-900 dark:text-white font-mono transition-shadow">
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <label class="block text-[10px] font-mono font-medium text-gray-500 dark:text-zinc-500 uppercase">Edge Token (JWT)</label>
                             <span class="text-[9px] font-mono text-gray-400 dark:text-zinc-500">X-OTT-ACCESS-TOKEN</span>
                         </div>
-                        <input type="password" id="tokenInput" class="w-full bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs p-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white text-gray-900 dark:text-white font-mono transition-shadow placeholder-gray-300 dark:placeholder-zinc-700" placeholder="Paste structural token...">
+                        <input type="text" id="tokenInput" class="w-full bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs p-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white text-gray-900 dark:text-white font-mono transition-shadow placeholder-gray-300 dark:placeholder-zinc-700 select-all" placeholder="Paste structural token...">
                     </div>
                     <button onclick="handlePlaybackRequest()" class="w-full mt-2 bg-black text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 active:scale-[0.98] transition-all duration-200 font-sans font-semibold py-2.5 text-sm rounded-lg shadow-sm">
                         Execute State Authorization
@@ -183,7 +176,6 @@
                 </div>
             </div>
 
-            <!-- Buffer State Machine & Telemetry -->
             <div id="qosTelemetryCard" class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
                 <div class="px-5 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-[#fafafa] dark:bg-[#0a0a0a]">
                     <div class="flex items-center gap-2">
@@ -231,7 +223,6 @@
                 </div>
             </div>
 
-            <!-- ABR Ladder Matrix -->
             <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
                 <div class="px-5 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-[#fafafa] dark:bg-[#0a0a0a]">
                     <div class="flex items-center gap-2">
@@ -248,6 +239,16 @@
         </div>
     </div>
   </main>
+
+  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-600 dark:text-zinc-500 text-sm font-mono tracking-wider mt-12">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-black dark:bg-white"></span>
+            <span>SYSTEM_READY</span>
+        </div>
+    </div>
+  </footer>
 
   <script>
     let player;
@@ -274,8 +275,6 @@
     }
     window.addEventListener('resize', adjustLayoutForMobile);
 
-    // SECURITY MUTATION: Deterministic DOM Sanitization 
-    // Prevents XSS via rogue manifest URIs executing in innerHTML injection
     function escapeHTML(str) {
         return String(str).replace(/[&<>'"]/g, match => ({
             '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -290,7 +289,6 @@
         let displayUri = rawUri.split('/').pop() || rawUri;
         if (displayUri.length > 45) displayUri = displayUri.substring(0, 42) + '...';
 
-        // Apply cryptographic sanitization before DOM injection
         const safeUri = escapeHTML(rawUri);
         const safeDisplayUri = escapeHTML(displayUri);
 
@@ -336,8 +334,6 @@
         const visualizer = document.getElementById('jwtVisualizer');
         const payloadCode = document.getElementById('jwtPayloadCode');
         try {
-            // RELIABILITY MUTATION: Base64URL Padding normalization.
-            // Guarantees atob() deterministic execution regardless of JWT payload length entropy.
             let base64 = tokenStr.split('.')[0].replace(/-/g, '+').replace(/_/g, '/');
             const pad = base64.length % 4;
             if (pad) {
@@ -469,7 +465,6 @@
     }
 
     async function handlePlaybackRequest() {
-        // STATE MUTATION: Defend against CloudFront HMAC structural invalidation due to invisible space entropy
         const manifestUri = document.getElementById('manifestInput').value.trim();
         const token = document.getElementById('tokenInput').value.trim();
         
