@@ -5,18 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Secure OTT Edge Pipeline | Academy</title>
   
-  <!-- Vercel Geist Font Imports -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
   
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Highlight.js for Syntax Highlighting -->
   <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
-  <!-- D3.js for Physics-Based Relational Graph -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
 
   <script>
@@ -108,11 +104,9 @@
 </head>
 <body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
 
-  <!-- Unified Header Control Nav (Standardized & Mobile Responsive) -->
   <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
       
-      <!-- Breadcrumb Logo & Aligned Navigation Tabs -->
       <div class="flex items-center h-full flex-1 overflow-hidden">
         <div class="flex items-center shrink-0">
           <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
@@ -145,7 +139,6 @@
       </p>
     </div>
 
-    <!-- D3 Physics Graph Container -->
     <div class="relative w-full h-[550px] md:h-[400px] mb-12 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm overflow-hidden" style="background-image: radial-gradient(rgba(150, 150, 150, 0.2) 1px, transparent 1px); background-size: 24px 24px;">
         
         <div class="absolute top-4 left-5 flex items-center gap-2.5 z-10 pointer-events-none">
@@ -160,10 +153,8 @@
         <div id="d3-graph-container" class="absolute inset-0 w-full h-full"></div>
     </div>
 
-    <!-- Vercel-Style Reading Pane Binder -->
     <div class="w-full max-w-4xl mx-auto pb-20">
       
-      <!-- Flat Tab Headers -->
       <div class="flex flex-nowrap overflow-x-auto hide-scroll gap-6 border-b border-gray-200 dark:border-white/10 relative z-10 mb-8">
          <button data-id="1" data-nodes="node-payload,node-gcs" onclick="selectModule(this)" class="tab-btn active shrink-0 pb-3 border-b-2 border-black dark:border-white text-black dark:text-white font-medium text-[13px] transition-colors cursor-pointer select-none">
             01. Ingestion
@@ -194,12 +185,10 @@
          </button>
       </div>
 
-      <!-- Detail Pane -->
       <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl p-8 shadow-sm min-h-[400px]">
           <h2 id="pane-title" class="text-[20px] font-semibold text-gray-900 dark:text-white tracking-tight mb-8">CMS Ingestion & Validation</h2>
           <article id="reading-pane" class="text-sm academy-article">
-              <!-- Content injected here via JS -->
-          </article>
+              </article>
       </div>
 
     </div>
@@ -215,10 +204,8 @@
     </div>
   </footer>
 
-  <!-- HTML Templates for Content -->
   <div id="content-templates" style="display: none;">
       
-      <!-- Module 1: Ingestion -->
       <template id="content-1">
           <p>Routing multi-gigabyte mezzanine video files through a traditional Node.js backend introduces severe memory bottlenecks, upload timeouts, and high compute costs. This setup utilizes <strong>Direct-to-Cloud (D2C)</strong> ingestion alongside Payload CMS and PostgreSQL to handle relational data modeling and client content management.</p>
           
@@ -249,7 +236,6 @@ beforeOperation: [
 ]</code></pre>
       </template>
 
-      <!-- Module 2: Orchestration -->
       <template id="content-2">
           <p>The Multi-File Orchestration Edge is powered by <strong>GCP EventArc & Cloud Run</strong>. When files hit the input Google Cloud Storage bucket, GCP Eventarc captures distinct object finalization signals and fires parallel webhooks.</p>
           
@@ -275,7 +261,6 @@ def trigger_mediaconvert(cloud_event: CloudEvent):
           <p>When all sibling files are validated, the highest-velocity thread attempts an atomic metadata operation via <code>if_generation_match=0</code> to claim the unique tracking lock (<code>___mediaconvert.lock</code>). The winner uses ambient compute credentials to sign secure time-delimited v4 URLs and forwards the settings schema to AWS.</p>
       </template>
 
-      <!-- Module 3: Transcoding -->
       <template id="content-3">
           <p>AWS serves as the heavy transcoding factory via the <strong>AWS Elemental MediaConvert</strong> Compute Transcoding Engine. The incoming JSON job definition defines the processing parameters dynamically, mapping out adaptive bitrate rules, audio selector inclusions, and subtitle sidecar injection.</p>
           
@@ -314,7 +299,6 @@ def trigger_mediaconvert(cloud_event: CloudEvent):
 }]</code></pre>
       </template>
 
-      <!-- Module 4: CDN Distribution -->
       <template id="content-4">
           <p><strong>AWS CloudFront & S3</strong> establish the Content Delivery Edge. Rather than serving directly from the S3 output bucket, AWS CloudFront acts as the CDN layer, retrieving the transcoded assets and distributing them to edge nodes globally to minimize latency and origin load.</p>
           
@@ -330,9 +314,8 @@ def trigger_mediaconvert(cloud_event: CloudEvent):
           <p>A permissive CORS policy on S3 allows <code>GET</code>/<code>HEAD</code> requests from all origins (<code>*</code>) to satisfy Shaka Player's XHR requirements.</p>
       </template>
 
-      <!-- Module 5: Edge Security -->
       <template id="content-5">
-          <p>To prevent unauthorized CDN scraping, the pipeline implements a <strong>Zero-Trust Security Perimeter</strong> using a custom 2-part JWT logic (<code>payload.signature</code>) validated directly at the CloudFront edge.</p>
+          <p>To prevent unauthorized CDN scraping, the pipeline implements a <strong>Zero-Trust Security Perimeter</strong> using short-lived cryptographic tokens validated directly at the CloudFront distribution edge.</p>
           
           <h4>CMS Administrative Minting (Cookie Auth)</h4>
           <p>Token generation is strictly bounded to the Payload CMS interface. An admin uses a custom UI component to ping the internal <code>/api/media/mint-token</code> endpoint. Because this relies entirely on Payload's HTTP-only session cookies, external programmatic access (via Bearer tokens) is structurally blocked.</p>
@@ -343,30 +326,48 @@ endpoints: [
     path: '/mint-token',
     method: 'get',
     handler: async (req) => {
-      // 1. Strict session gating blocks automated scraper bots
       if (!req.user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
       const secret = process.env.JWT_SECRET
       const expirationSeconds = Math.floor(Date.now() / 1000) + (15 * 60)
 
-      // 2. Microscopic Base64URL payload targeting edge bandwidth entropy
       const payloadBase64Url = Buffer.from(JSON.stringify({ exp: expirationSeconds })).toString('base64url')
       
       const hmac = crypto.createHmac('sha256', secret)
       hmac.update(payloadBase64Url)
       
-      // 3. Output custom 2-part passport (payload.signature)
       return Response.json({ token: `${payloadBase64Url}.${hmac.digest('base64url')}` })
     }
   }
 ]</code></pre>
 
-          <h4>1-Millisecond Edge Firewall</h4>
-          <p>The frontend Shaka Player dynamically injects the resulting string into the <code>X-OTT-Access-Token</code> request header. A CloudFront Viewer-Request Function intercepts this header before the CDN cache is ever checked.</p>
-          <p>In roughly <code>0.08ms</code> (consuming &lt;10 compute utilization units), the ES5 engine recalculates the HMAC-SHA256 signature mathematically. If the provided signature is forged, or if the 15-minute lease (TTL) has expired, the connection is instantly severed with a <code>403 Forbidden</code>.</p>
+          <h4>Decoupled Edge KeyValueStore Storage Plane</h4>
+          <p>Hardcoding cryptographic keys directly within the deployment source string introduces severe operational risks regarding git-repository leaks. Instead, the symmetric 256-bit key is injected inside a globally distributed <strong>CloudFront KeyValueStore (KVS)</strong> data instance named <code>EdgeSecrets</code>.</p>
+
+          <h4>Asynchronous Edge Interception (cloudfront-js-2.0)</h4>
+          <p>The client player intercepts network traffic to attach the token string into the <code>X-OTT-Access-Token</code> header. A high-performance viewer-request edge worker running the <code>cloudfront-js-2.0</code> execution profile handles the traffic, querying edge storage memory via dynamic async lookups to assert authorization state within <code>0.08ms</code> before checking the cache matrix.</p>
+
+<pre><code class="language-javascript">// CloudFront Edge Token Validator Function
+import crypto from 'crypto';
+import cf from 'cloudfront';
+
+const kvsHandle = cf.kvs();
+
+async function handler(event) {
+    var request = event.request;
+    let JWT_SECRET;
+    try {
+        // Safe asynchronous lookup out of the global AWS edge data plane
+        JWT_SECRET = await kvsHandle.get('JWT_SECRET');
+    } catch (err) {
+        return { statusCode: 500, statusDescription: 'Crypto Substrate Error' };
+    }
+    
+    // ... extract headers, validate token structure, match HMAC, and check TTL
+    return request;
+}</code></pre>
       </template>
 
-      <!-- Module 6: Telemetry Loops -->
       <template id="content-6">
           <p>To securely and deterministically notify the CMS when transcoding succeeds or fails, we implement <strong>Telemetry Loops & Automated Garbage Collection</strong>.</p>
           
@@ -409,7 +410,6 @@ export const mediaconvertWebhook: Endpoint = {
 }</code></pre>
       </template>
 
-      <!-- Module 7: Post-Mortem -->
       <template id="content-7">
           <p>The core architectural mandate of this pipeline is minimizing operational entropy—the unpredictable states, race conditions, and network failures inherent in distributed cloud systems. Rather than attempting to control systemic chaos via bloated orchestration layers or expensive polling loops, this pipeline relies on <strong>bottom-up, deterministic execution</strong>.</p>
           
@@ -625,7 +625,7 @@ export const mediaconvertWebhook: Endpoint = {
                 return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`;
             });
 
-            node.attr("transform", d => {
+        	node.attr("transform", d => {
                 var container = document.getElementById('d3-graph-container');
                 var w = container ? container.clientWidth : 1000;
                 var h = container ? container.clientHeight : 550;
