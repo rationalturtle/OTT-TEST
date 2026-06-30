@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Secure OTT Edge Pipeline | Player</title>
+  <title>Secure OTT Edge Pipeline | Player Console</title>
   
-  <!-- Vercel Geist Font Imports -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
   
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Shaka Player -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/shaka-player.ui.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.1/controls.min.css">
   
@@ -34,9 +31,6 @@
         font-family: 'Geist Sans', -apple-system, sans-serif;
         transition: background-color 0.2s, color 0.2s;
     }
-    .code-font {
-        font-family: 'Geist Mono', monospace;
-    }
     
     .hide-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
     .hide-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -46,15 +40,22 @@
     [data-shaka-player-container] { pointer-events: none; }
     [data-shaka-player-container] .shaka-controls-container,
     [data-shaka-player-container] .shaka-controls-container * { pointer-events: auto; }
+
+    /* Academy-style animated data flow */
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+    .animate-scan {
+      animation: scanline 2.5s linear infinite;
+    }
   </style>
 </head>
-<body class="bg-white text-black dark:bg-[#000000] dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
+<body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
 
-  <!-- Unified Header Control Nav (Standardized & Mobile Responsive) -->
   <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
       
-      <!-- Breadcrumb Logo & Aligned Navigation Tabs -->
       <div class="flex items-center h-full flex-1 overflow-hidden">
         <div class="flex items-center shrink-0">
           <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
@@ -80,31 +81,26 @@
 
   <main class="max-w-[1400px] mx-auto px-6 py-12 w-full relative">
     
-    <!-- Background Grid -->
-    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-40 dark:opacity-40" style="background-image: linear-gradient(to right, rgba(150,150,150,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(150,150,150,0.15) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
+    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-40 dark:opacity-40" style="background-image: radial-gradient(rgba(150, 150, 150, 0.2) 1px, transparent 1px); background-size: 24px 24px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
 
     <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-extrabold tracking-tight text-black dark:text-white mb-2">Interactive Player Console</h1>
-        <p class="text-gray-700 dark:text-zinc-400 text-sm max-w-2xl leading-relaxed">
-          Real-time Edge delivery and HLS stream diagnostics. Securely verify adaptive bitrate (ABR) processing and token interception logic.
+        <h1 class="text-[32px] font-bold tracking-tight text-black dark:text-white mb-2">Diagnostic Console</h1>
+        <p class="text-gray-500 dark:text-zinc-400 text-sm max-w-2xl leading-relaxed">
+          Verify Edge Phase 4 & 5 execution. Monitor JWT injection, CDN cache hits, and active Shaka ABR buffer metrics in real-time.
         </p>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/50 backdrop-blur-sm">
         <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
-        <span class="font-mono text-[10px] font-bold text-gray-600 dark:text-zinc-400 tracking-widest uppercase">System Online</span>
+        <span class="font-mono text-[10px] font-bold text-gray-800 dark:text-zinc-200 tracking-widest uppercase">System Online</span>
       </div>
     </div>
 
-    <!-- Main Grid Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
         
-        <!-- LEFT COLUMN (Player & Logs) -->
-        <div class="lg:col-span-8 flex flex-col gap-6">
+        <div id="playerColumn" class="lg:col-span-8 flex flex-col gap-6">
             
-            <!-- Video Player Component -->
-            <div class="bg-black dark:bg-[#030303] border border-gray-300 dark:border-white/10 rounded-xl overflow-hidden shadow-md relative group">
-                <!-- Mac-style Window Header -->
+            <div id="videoPlayerCard" class="bg-black dark:bg-[#030303] border border-gray-300 dark:border-white/10 rounded-2xl overflow-hidden shadow-md relative group">
                 <div class="absolute top-0 left-0 w-full h-10 bg-gradient-to-b from-black/80 to-transparent z-30 flex items-center px-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                     <div class="flex gap-1.5">
                         <div class="w-2.5 h-2.5 rounded-full bg-red-500/80 border border-red-500/50"></div>
@@ -113,13 +109,14 @@
                     </div>
                 </div>
 
-                <!-- Aspect Ratio Container -->
-                <div class="relative w-full aspect-video flex items-center justify-center bg-[#050505]">
+                <div class="relative w-full aspect-video flex items-center justify-center bg-[#050505] overflow-hidden">
                     
-                    <!-- Secure Enclave Lock Screen (Default State) -->
+                    <div class="absolute inset-0 w-full h-[20%] bg-gradient-to-b from-transparent via-white/5 to-transparent z-10 pointer-events-none animate-scan opacity-0 group-hover:opacity-100"></div>
+
                     <div id="playerOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 backdrop-blur-md z-20 transition-opacity duration-500">
                         <div id="overlayCard" class="bg-[#111] border border-white/10 p-8 flex flex-col items-center max-w-sm rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-300 transform scale-100">
-                            <div class="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center mb-4 relative">
+                                <div class="absolute inset-0 rounded-full border border-gray-500 animate-ping opacity-20"></div>
                                 <svg id="overlayIcon" class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                             </div>
                             <h3 id="overlayTitle" class="text-base font-bold text-white uppercase tracking-widest text-center mb-2">Stream Locked</h3>
@@ -127,7 +124,6 @@
                         </div>
                     </div>
                     
-                    <!-- Background Grid Pattern for empty state -->
                     <div class="absolute inset-0 z-0 opacity-[0.05] pointer-events-none" style="background-image: linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
                     
                     <div data-shaka-player-container class="w-full h-full z-10">
@@ -136,114 +132,127 @@
                 </div>
             </div>
 
-            <!-- Network Interceptor Console -->
-            <div class="bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-xl overflow-hidden shadow-sm flex flex-col h-[300px]">
-                <div class="bg-gray-50 dark:bg-[#111] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between shrink-0">
+            <div id="networkLogsCard" class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm flex flex-col h-[300px]">
+                <div class="px-5 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between shrink-0 bg-[#fafafa] dark:bg-[#0a0a0a]">
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-700 dark:text-zinc-300">XHR Network Interceptor</span>
+                        <span class="text-[11px] font-sans font-semibold text-gray-900 dark:text-white">XHR Network Interceptor</span>
                     </div>
-                    <span class="text-[10px] font-mono text-gray-500 dark:text-zinc-500">Live Traffic</span>
+                    <span class="text-[10px] font-mono text-gray-500 dark:text-zinc-500 uppercase tracking-widest">Live Traffic</span>
                 </div>
-                <div id="networkLogs" class="flex-grow p-4 text-[11px] font-mono text-gray-600 dark:text-zinc-400 flex flex-col gap-1.5 overflow-y-auto hide-scroll bg-[#f8fafc] dark:bg-[#050505]">
-                    <div class="text-blue-600 dark:text-blue-500 font-bold mb-2">&gt; SHAKA_PLAYER_ENGINE INITIALIZED...</div>
+                <div id="networkLogs" class="flex-grow p-5 text-[11px] font-mono text-gray-600 dark:text-zinc-400 flex flex-col gap-2 overflow-y-auto hide-scroll">
+                    <div class="text-blue-600 dark:text-blue-500 font-bold mb-2 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                        > SHAKA_PLAYER_ENGINE INITIALIZED...
+                    </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- RIGHT COLUMN (Controls & Telemetry) -->
-        <div class="lg:col-span-4 flex flex-col gap-6">
+        <div id="sidebarColumn" class="lg:col-span-4 flex flex-col gap-6">
             
-            <!-- Edge Authentication Config -->
-            <div class="bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
-                <div class="bg-gray-50 dark:bg-[#111] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-700 dark:text-zinc-300">Edge Authorization</span>
+            <div id="edgeAuthCard" class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm transition-all duration-200 relative">
+                <div id="authStatusTopBar" class="absolute top-0 left-0 w-full h-1 bg-gray-200 dark:bg-white/10 transition-colors duration-300"></div>
+
+                <div class="px-5 py-4 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-[#fafafa] dark:bg-[#0a0a0a]">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <span class="text-[11px] font-sans font-semibold text-gray-900 dark:text-white">Edge Authorization</span>
+                    </div>
+                    <div id="ttlBadge" class="hidden items-center gap-1.5 px-2 py-0.5 rounded bg-purple-50 border border-purple-200 dark:bg-purple-500/10 dark:border-purple-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span>
+                        <span id="ttlTimer" class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400">--:--</span>
+                    </div>
                 </div>
                 <div class="p-5 space-y-4">
                     <div>
-                        <label class="block text-[10px] font-mono font-bold tracking-widest text-gray-500 dark:text-zinc-500 uppercase mb-2">CDN Origin (Manifest URI)</label>
-                        <input type="text" id="manifestInput" value="https://d12345abcdef.cloudfront.net/complexity_hdr/complexity_hdr.m3u8" class="w-full bg-gray-50 dark:bg-[#111] border border-gray-300 dark:border-white/10 text-xs p-2.5 rounded focus:outline-none focus:border-black dark:focus:border-white/30 text-gray-900 dark:text-white code-font transition-colors">
+                        <label class="block text-[10px] font-mono font-medium text-gray-500 dark:text-zinc-500 uppercase mb-2">CDN Origin (Manifest URI)</label>
+                        <input type="text" id="manifestInput" value="https://d12345abcdef.cloudfront.net/complexity_hdr/complexity_hdr.m3u8" class="w-full bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs p-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white text-gray-900 dark:text-white font-mono transition-shadow">
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <label class="block text-[10px] font-mono font-bold tracking-widest text-gray-500 dark:text-zinc-500 uppercase">Edge Token (JWT)</label>
-                            <span class="text-[9px] font-mono text-purple-500 bg-purple-50 dark:bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-200 dark:border-purple-500/20">HEADER INJECT</span>
+                            <label class="block text-[10px] font-mono font-medium text-gray-500 dark:text-zinc-500 uppercase">Edge Token (JWT)</label>
+                            <span class="text-[9px] font-mono text-gray-400 dark:text-zinc-500">HEADER INJECT</span>
                         </div>
-                        <input type="password" id="tokenInput" class="w-full bg-gray-50 dark:bg-[#111] border border-gray-300 dark:border-white/10 text-xs p-2.5 rounded focus:outline-none focus:border-black dark:focus:border-white/30 text-gray-900 dark:text-white code-font transition-colors" placeholder="Paste custom edge token...">
+                        <input type="password" id="tokenInput" class="w-full bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs p-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white text-gray-900 dark:text-white font-mono transition-shadow placeholder-gray-300 dark:placeholder-zinc-700" placeholder="Paste custom edge token...">
                     </div>
-                    <button onclick="handlePlaybackRequest()" class="w-full mt-2 bg-black text-white dark:bg-white dark:text-black hover:scale-[1.02] active:scale-95 transition-all duration-200 font-sans font-semibold py-2.5 text-sm rounded shadow-sm">
+                    <button onclick="handlePlaybackRequest()" class="w-full mt-2 bg-black text-white dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 active:scale-[0.98] transition-all duration-200 font-sans font-semibold py-2.5 text-sm rounded-lg shadow-sm">
                         Authenticate & Load Stream
                     </button>
                 </div>
             </div>
 
-            <!-- QoS Telemetry Array -->
-            <div class="bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
-                <div class="bg-gray-50 dark:bg-[#111] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
+            <div id="qosTelemetryCard" class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
+                <div class="px-5 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-[#fafafa] dark:bg-[#0a0a0a]">
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-700 dark:text-zinc-300">QoS Telemetry Array</span>
+                        <span class="text-[11px] font-sans font-semibold text-gray-900 dark:text-white">QoS Telemetry</span>
                     </div>
-                    <div id="telemetryIndicator" class="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-zinc-600"></div>
+                    <div id="telemetryIndicator" class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-zinc-700 transition-colors"></div>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-[1px] bg-gray-200 dark:bg-white/10">
-                    <div class="bg-white dark:bg-[#0a0a0a] p-4">
-                        <div class="text-[9px] font-mono uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-1">Resolution</div>
-                        <div id="statResolution" class="text-sm font-bold code-font text-gray-900 dark:text-white">--</div>
+                <div class="p-5">
+                    <div class="mb-5">
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="text-[10px] font-mono text-gray-500 dark:text-zinc-500 uppercase">Buffer Health</span>
+                            <span class="font-mono text-xs font-bold text-gray-900 dark:text-white"><span id="statBuffer">0.0</span>s</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                            <div id="bufferBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+                        </div>
                     </div>
-                    <div class="bg-white dark:bg-[#0a0a0a] p-4">
-                        <div class="text-[9px] font-mono uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-1">Est. Bandwidth</div>
-                        <div class="text-sm font-bold code-font text-gray-900 dark:text-white"><span id="statBandwidth">--</span> <span class="text-[10px] text-gray-400">Mbps</span></div>
-                    </div>
-                    <div class="bg-white dark:bg-[#0a0a0a] p-4">
-                        <div class="text-[9px] font-mono uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-1">Buffer Health</div>
-                        <div class="text-sm font-bold code-font text-gray-900 dark:text-white"><span id="statBuffer">0.0</span> <span class="text-[10px] text-gray-400">s</span></div>
-                    </div>
-                    <div class="bg-white dark:bg-[#0a0a0a] p-4">
-                        <div class="text-[9px] font-mono uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-1">Dropped Frames</div>
-                        <div id="statDropped" class="text-sm font-bold code-font text-gray-900 dark:text-white">0</div>
-                    </div>
-                    <div class="bg-white dark:bg-[#0a0a0a] p-4 col-span-2">
-                        <div class="text-[9px] font-mono uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-1">Active Codecs</div>
-                        <div class="flex gap-2 mt-1">
-                            <span id="statVCodec" class="px-2 py-0.5 bg-gray-100 dark:bg-[#111] border border-gray-300 dark:border-white/10 rounded text-[10px] font-mono text-gray-700 dark:text-zinc-300">V: --</span>
-                            <span id="statACodec" class="px-2 py-0.5 bg-gray-100 dark:bg-[#111] border border-gray-300 dark:border-white/10 rounded text-[10px] font-mono text-gray-700 dark:text-zinc-300">A: --</span>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="text-[10px] font-mono text-gray-500 dark:text-zinc-500 uppercase mb-1">Resolution</div>
+                            <div id="statResolution" class="text-sm font-mono font-bold text-gray-900 dark:text-white">--</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-mono text-gray-500 dark:text-zinc-500 uppercase mb-1">Est. Bandwidth</div>
+                            <div class="text-sm font-mono font-bold text-blue-600 dark:text-blue-400"><span id="statBandwidth">--</span> <span class="text-[10px] font-medium text-gray-400">Mbps</span></div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-mono text-gray-500 dark:text-zinc-500 uppercase mb-1">Decoded / Dropped</div>
+                            <div class="text-sm font-mono font-bold text-gray-900 dark:text-white"><span id="statDecoded">0</span> <span class="text-gray-400 font-normal">/</span> <span id="statDropped" class="text-gray-400">0</span></div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-mono text-gray-500 dark:text-zinc-500 uppercase mb-1">Active Codecs</div>
+                            <div class="text-[11px] font-mono font-medium text-gray-700 dark:text-zinc-300 mt-1 space-y-0.5">
+                                <div id="statVCodec" class="truncate">V: --</div>
+                                <div id="statACodec" class="truncate">A: --</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ABR Ladder Matrix -->
-            <div class="bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
-                <div class="bg-gray-50 dark:bg-[#111] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
+            <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
+                <div class="px-5 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between bg-[#fafafa] dark:bg-[#0a0a0a]">
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                        <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-700 dark:text-zinc-300">ABR Ladder Matrix</span>
+                        <span class="text-[11px] font-sans font-semibold text-gray-900 dark:text-white">ABR Ladder Matrix</span>
                     </div>
-                    <span class="text-[9px] font-mono text-gray-400 dark:text-zinc-500">Auto-Switching</span>
+                    <span class="text-[9px] font-mono text-gray-400 dark:text-zinc-500 uppercase tracking-widest">Auto-Switch</span>
                 </div>
-                <div id="abrContainer" class="p-2 space-y-1 bg-[#f8fafc] dark:bg-[#050505] min-h-[100px] max-h-[150px] overflow-y-auto hide-scroll flex flex-col justify-center">
-                    <div class="text-center text-xs text-gray-400 font-mono py-4">Awaiting Manifest...</div>
+                <div id="abrContainer" class="p-3 space-y-1.5 min-h-[100px] max-h-[150px] overflow-y-auto hide-scroll flex flex-col justify-center">
+                    <div class="text-center text-[11px] text-gray-400 dark:text-zinc-600 font-mono py-4">Awaiting Manifest...</div>
                 </div>
             </div>
 
-            <!-- CDN Edge Routing -->
-            <div class="bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
-                <div class="bg-gray-50 dark:bg-[#111] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center gap-2">
+            <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
+                <div class="px-5 py-3 border-b border-gray-200 dark:border-white/10 flex items-center gap-2 bg-[#fafafa] dark:bg-[#0a0a0a]">
                     <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                    <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-700 dark:text-zinc-300">Edge Routing</span>
+                    <span class="text-[11px] font-sans font-semibold text-gray-900 dark:text-white">Edge Routing</span>
                 </div>
-                <div class="p-4 grid grid-cols-2 gap-4">
+                <div class="p-5 grid grid-cols-2 gap-4">
                     <div>
-                        <div class="text-[9px] font-mono uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-1">Active POP</div>
-                        <div id="cdnPop" class="text-sm font-bold code-font text-gray-900 dark:text-white">--</div>
+                        <div class="text-[10px] font-mono text-gray-500 dark:text-zinc-500 uppercase mb-1">Active POP</div>
+                        <div id="cdnPop" class="text-sm font-mono font-bold text-gray-900 dark:text-white">--</div>
                     </div>
                     <div>
-                        <div class="text-[9px] font-mono uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-1">Cache Policy</div>
-                        <div class="text-xs font-bold code-font text-emerald-600 dark:text-emerald-500 mt-0.5">HIT (Edge)</div>
+                        <div class="text-[10px] font-mono text-gray-500 dark:text-zinc-500 uppercase mb-1">Cache Policy</div>
+                        <div class="text-[13px] font-mono font-bold text-emerald-600 dark:text-emerald-500 mt-0.5">HIT (Edge)</div>
                     </div>
                 </div>
             </div>
@@ -253,51 +262,65 @@
 
   </main>
 
-  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-600 dark:text-zinc-500 text-sm font-mono tracking-wider mt-12">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
-        <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-black dark:bg-white"></span>
-            <span>SYSTEM_READY</span>
-        </div>
-    </div>
-  </footer>
-
   <script>
     let player;
     let telemetryInterval;
+    let ttlInterval;
     const possiblePOPs = ['IAD89-C1', 'JFK50-P2', 'LHR61-C3', 'SFO5-P1', 'FRA56-C2', 'NRT51-C1'];
 
-    // Select a random POP on load to simulate CDN routing
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('cdnPop').innerText = possiblePOPs[Math.floor(Math.random() * possiblePOPs.length)];
     });
 
-    // Network Logging
+    // --- DOM NODE REPARENTING (Mobile Flow) ---
+    // Deterministic layout mutation to force Edge Auth above Player on mobile
+    function adjustLayoutForMobile() {
+        const authCard = document.getElementById('edgeAuthCard');
+        const playerColumn = document.getElementById('playerColumn');
+        const sidebarColumn = document.getElementById('sidebarColumn');
+        const videoPlayerCard = document.getElementById('videoPlayerCard');
+
+        if (!authCard || !playerColumn || !sidebarColumn || !videoPlayerCard) return;
+
+        if (window.innerWidth < 1024) { 
+            // Move Edge Auth directly ABOVE the video player
+            if (authCard.parentElement !== playerColumn || authCard.nextSibling !== videoPlayerCard) {
+                playerColumn.insertBefore(authCard, videoPlayerCard);
+            }
+        } else {
+            // Restore Edge Auth card to the top of the right-hand sidebar
+            if (authCard.parentElement !== sidebarColumn) {
+                sidebarColumn.insertBefore(authCard, sidebarColumn.firstChild);
+            }
+        }
+    }
+    window.addEventListener('resize', adjustLayoutForMobile);
+
+    // --- LOGGING ENGINE ---
     function logNetwork(method, uri, status, colorClass) {
         const box = document.getElementById('networkLogs');
         const time = new Date().toISOString().split('T')[1].substring(0, 12);
         
-        // Truncate URI for clean display
         let displayUri = uri.split('/').pop() || uri;
         if (displayUri.length > 45) displayUri = displayUri.substring(0, 42) + '...';
 
         const entry = document.createElement('div');
-        entry.className = "flex gap-2 items-start border-b border-gray-200 dark:border-white/5 pb-1.5 last:border-0";
+        entry.className = "flex gap-3 items-start pb-2 border-b border-gray-100 dark:border-white/5 last:border-0";
         entry.innerHTML = `
             <span class="text-gray-400 dark:text-zinc-600 shrink-0">[${time}]</span> 
-            <span class="${colorClass} font-bold shrink-0">${method}</span>
-            <span class="truncate text-gray-700 dark:text-zinc-300" title="${uri}">${displayUri}</span>
-            <span class="ml-auto font-bold text-gray-500 dark:text-zinc-500 shrink-0">${status}</span>
+            <span class="${colorClass} font-bold shrink-0 w-10">${method}</span>
+            <span class="truncate text-gray-700 dark:text-zinc-300 flex-1" title="${uri}">${displayUri}</span>
+            <span class="font-bold text-gray-500 dark:text-zinc-500 shrink-0">${status}</span>
         `;
         box.appendChild(entry);
         box.scrollTop = box.scrollHeight;
     }
 
+    // --- SECURE ENCLAVE UI ---
     function updateLockScreen(title, subtext, isError) {
         const overlay = document.getElementById('playerOverlay');
-        const card = document.getElementById('overlayCard');
         const icon = document.getElementById('overlayIcon');
+        const topBar = document.getElementById('authStatusTopBar');
         
         document.getElementById('overlayTitle').innerText = title;
         document.getElementById('overlayErrorText').innerHTML = subtext;
@@ -306,16 +329,61 @@
             document.getElementById('overlayTitle').className = "text-base font-bold uppercase tracking-widest text-center mb-2 text-red-500";
             icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>`;
             icon.parentElement.className = "w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-500/50 flex items-center justify-center mb-4 text-red-500";
+            topBar.className = "absolute top-0 left-0 w-full h-1 bg-red-500 transition-colors duration-300";
         } else {
             document.getElementById('overlayTitle').className = "text-base font-bold uppercase tracking-widest text-center mb-2 text-emerald-500";
             icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>`;
             icon.parentElement.className = "w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-500/50 flex items-center justify-center mb-4 text-emerald-500";
+            topBar.className = "absolute top-0 left-0 w-full h-1 bg-emerald-500 transition-colors duration-300";
         }
         
         overlay.style.opacity = '1';
         overlay.style.pointerEvents = 'auto';
     }
 
+    // --- CRYPTOGRAPHIC STATE PARSING (TTL Countdown) ---
+    function startTTLCountdown(tokenStr) {
+        if (ttlInterval) clearInterval(ttlInterval);
+        const badge = document.getElementById('ttlBadge');
+        const timerText = document.getElementById('ttlTimer');
+        
+        try {
+            // Extract the Base64URL payload chunk and decode
+            const payloadStr = atob(tokenStr.split('.')[0].replace(/-/g, '+').replace(/_/g, '/'));
+            const payloadObj = JSON.parse(payloadStr);
+            
+            if (!payloadObj.exp) throw new Error("No expiration found");
+            
+            badge.classList.remove('hidden');
+            badge.classList.add('flex');
+
+            ttlInterval = setInterval(() => {
+                const now = Math.floor(Date.now() / 1000);
+                let diff = payloadObj.exp - now;
+                
+                if (diff <= 0) {
+                    clearInterval(ttlInterval);
+                    timerText.innerText = "EXPIRED";
+                    badge.classList.replace('bg-purple-50', 'bg-red-50');
+                    badge.classList.replace('dark:bg-purple-500/10', 'dark:bg-red-500/10');
+                    badge.classList.replace('border-purple-200', 'border-red-200');
+                    badge.classList.replace('dark:border-purple-500/20', 'dark:border-red-500/20');
+                    timerText.classList.replace('text-purple-600', 'text-red-600');
+                    timerText.classList.replace('dark:text-purple-400', 'dark:text-red-400');
+                    return;
+                }
+
+                const m = Math.floor(diff / 60).toString().padStart(2, '0');
+                const s = (diff % 60).toString().padStart(2, '0');
+                timerText.innerText = `${m}:${s}`;
+            }, 1000);
+
+        } catch(e) {
+            badge.classList.add('hidden');
+        }
+    }
+
+    // --- PLAYER INIT & INTERCEPTORS ---
     async function initPlayer() {
         const video = document.getElementById('video');
         const videoContainer = document.querySelector('[data-shaka-player-container]');
@@ -323,28 +391,20 @@
         player = new shaka.Player();
         await player.attach(video);
         const ui = new shaka.ui.Overlay(player, videoContainer, video);
-
-        const uiConfig = {
+        ui.configure({
             controlPanelElements: ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
             overflowMenuButtons: ['quality', 'language', 'captions', 'picture_in_picture']
-        };
-        ui.configure(uiConfig);
+        });
 
-        // Network Request/Response Interceptors for Logging
         player.getNetworkingEngine().registerResponseFilter((type, response) => {
-            let label = "DATA";
-            let color = "text-gray-500";
-            
+            let label = "DATA"; let color = "text-gray-500";
             if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST) { label = "M3U8"; color = "text-purple-500"; }
             if (type === shaka.net.NetworkingEngine.RequestType.SEGMENT) { label = "SEG"; color = "text-blue-500"; }
-            
             logNetwork(label, response.uri, "200 OK", color);
         });
 
         player.addEventListener('error', (e) => {
-            console.error('Shaka Error:', e.detail);
             document.getElementById('telemetryIndicator').className = "w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]";
-            
             if(e.detail && e.detail.code === 1002) {
                 logNetwork("ERR", "MANIFEST_FETCH", "403/CORS", "text-red-500");
                 updateLockScreen("Access Denied", "CORS OR CDN SECURITY REJECTED TOKEN", true);
@@ -357,7 +417,6 @@
             }
         });
         
-        // Listen for track changes to update ABR Matrix
         player.addEventListener('adaptation', updateABRMatrix);
         player.addEventListener('variantchanged', updateABRMatrix);
     }
@@ -367,7 +426,6 @@
         const tracks = player.getVariantTracks();
         const container = document.getElementById('abrContainer');
         
-        // Filter unique video tracks by height (simplification for UI)
         const uniqueHeights = new Set();
         const videoTracks = tracks.filter(t => {
             if (t.type === 'variant' && t.videoId && !uniqueHeights.has(t.height)) {
@@ -378,29 +436,29 @@
         }).sort((a, b) => b.height - a.height);
 
         if(videoTracks.length === 0) return;
-
         container.innerHTML = '';
+        
         videoTracks.forEach(track => {
             const isActive = track.active;
             const bps = (track.videoBandwidth || track.bandwidth) / 1000000;
             const row = document.createElement('div');
             
             if (isActive) {
-                row.className = "flex items-center justify-between bg-orange-100 dark:bg-orange-500/20 border border-orange-200 dark:border-orange-500/30 p-1.5 rounded";
+                row.className = "flex items-center justify-between bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 p-2 rounded-lg transition-all";
                 row.innerHTML = `
                     <div class="flex items-center gap-2">
                         <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
-                        <span class="font-mono text-[10px] font-bold text-orange-700 dark:text-orange-400">${track.width}x${track.height}</span>
+                        <span class="font-mono text-[11px] font-bold text-orange-700 dark:text-orange-400">${track.width}x${track.height}</span>
                     </div>
-                    <span class="font-mono text-[10px] font-bold text-orange-600 dark:text-orange-500">${bps.toFixed(2)} Mbps</span>
+                    <span class="font-mono text-[11px] font-bold text-orange-600 dark:text-orange-500">${bps.toFixed(2)} Mbps</span>
                 `;
             } else {
-                row.className = "flex items-center justify-between bg-transparent p-1.5 rounded border border-transparent";
+                row.className = "flex items-center justify-between bg-transparent p-2 rounded-lg border border-transparent";
                 row.innerHTML = `
-                    <div class="flex items-center gap-2 pl-3">
-                        <span class="font-mono text-[10px] text-gray-500 dark:text-zinc-500">${track.width}x${track.height}</span>
+                    <div class="flex items-center gap-2 pl-3.5">
+                        <span class="font-mono text-[11px] text-gray-500 dark:text-zinc-500">${track.width}x${track.height}</span>
                     </div>
-                    <span class="font-mono text-[10px] text-gray-400 dark:text-zinc-600">${bps.toFixed(2)} Mbps</span>
+                    <span class="font-mono text-[11px] text-gray-400 dark:text-zinc-600">${bps.toFixed(2)} Mbps</span>
                 `;
             }
             container.appendChild(row);
@@ -413,7 +471,6 @@
         
         logNetwork("AUTH", "Evaluating JWT Entitlement", "PENDING", "text-purple-500");
 
-        // Decouple old hardcoded string and perform standard JWT structural parsing
         if (!token || token.split('.').length !== 2) {
             logNetwork("AUTH", "Token Validation", "REJECTED", "text-red-500");
             updateLockScreen("Access Denied", "INVALID EDGE TOKEN FORMAT", true);
@@ -423,11 +480,12 @@
         logNetwork("AUTH", "Token Validation", "ACCEPTED", "text-emerald-500");
         document.getElementById('telemetryIndicator').className = "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]";
         
+        startTTLCountdown(token);
+
         player.getNetworkingEngine().clearAllRequestFilters(); 
         player.getNetworkingEngine().registerRequestFilter((type, request) => {
             if (type == shaka.net.NetworkingEngine.RequestType.MANIFEST || 
                 type == shaka.net.NetworkingEngine.RequestType.SEGMENT) {
-                // Securely append token to the outgoing request headers
                 request.headers['X-OTT-Access-Token'] = token;
             }
         });
@@ -446,37 +504,39 @@
         }
     }
 
+    // --- TELEMETRY OBJECT EXTRACTION ---
     function startTelemetry() {
         if (telemetryInterval) clearInterval(telemetryInterval);
         
         telemetryInterval = setInterval(() => {
             if(!player) return;
-            
             try {
                 const stats = player.getStats();
                 const tracks = player.getVariantTracks();
                 const activeTrack = tracks.find(t => t.active);
 
+                // Codec & Resolution
                 if (activeTrack) {
                     const width = activeTrack.width || '--';
                     const height = activeTrack.height || '--';
                     document.getElementById('statResolution').innerText = (width !== '--' && height !== '--') ? `${width}x${height}` : '--';
-                    
                     document.getElementById('statVCodec').innerText = `V: ${activeTrack.videoCodec || '--'}`;
                     document.getElementById('statACodec').innerText = `A: ${activeTrack.audioCodec || '--'}`;
                 }
                 
+                // Decode / Drop Ratio
+                const decoded = stats.decodedFrames || 0;
                 const dropped = stats.droppedFrames || 0;
+                document.getElementById('statDecoded').innerText = decoded;
                 const droppedEl = document.getElementById('statDropped');
                 droppedEl.innerText = dropped;
-                if (dropped > 0) {
-                    droppedEl.classList.remove('text-gray-900', 'dark:text-white');
-                    droppedEl.classList.add('text-red-500');
-                }
+                if (dropped > 0) droppedEl.classList.replace('text-gray-400', 'text-red-500');
                 
+                // Bandwidth
                 const bw = stats.estimatedBandwidth ? (stats.estimatedBandwidth / 1000000).toFixed(1) : '--';
                 document.getElementById('statBandwidth').innerText = bw;
                 
+                // Buffer Health Visualization (Max 30s for 100% width)
                 const videoEl = document.getElementById('video');
                 let bufferLength = 0;
                 if (videoEl && videoEl.buffered) {
@@ -488,17 +548,24 @@
                     }
                 }
                 document.getElementById('statBuffer').innerText = bufferLength.toFixed(1);
+                
+                const bufferPercent = Math.min((bufferLength / 30) * 100, 100);
+                const bufferBar = document.getElementById('bufferBar');
+                bufferBar.style.width = `${bufferPercent}%`;
+                
+                if(bufferLength < 5) bufferBar.className = "h-full bg-red-500 transition-all duration-300";
+                else if(bufferLength < 15) bufferBar.className = "h-full bg-yellow-500 transition-all duration-300";
+                else bufferBar.className = "h-full bg-emerald-500 transition-all duration-300";
+
             } catch (err) {}
         }, 1000);
     }
 
-    // Theme Toggle Logic
     function toggleTheme() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
 
-    // Initialize Theme
     function initTheme() {
         const savedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -511,6 +578,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         initTheme();
+        adjustLayoutForMobile(); 
         if (shaka.Player.isBrowserSupported()) {
             initPlayer();
         } else {
