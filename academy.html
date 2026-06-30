@@ -510,13 +510,17 @@ export const mediaconvertWebhook: Endpoint = {
         svg.attr("viewBox", `0 0 ${w} ${h}`);
 
         simulation.force("center", d3.forceCenter(w / 2, h / 2))
-                  .force("collide", d3.forceCollide().radius(isVertical ? 35 : 45))
-                  .force("link").distance(isVertical ? 60 : 100);
+                  // Increased collision radius slightly in vertical mode to prevent node overlap
+                  .force("collide", d3.forceCollide().radius(isVertical ? 40 : 45))
+                  // Increased link distance to let the zig-zag pattern expand
+                  .force("link").distance(isVertical ? 80 : 100);
 
         simulation.force("x", d3.forceX(d => {
             if (isVertical) {
-                if (d.id === 'eventbridge') return w * 0.75;
-                return d.targetIndex % 2 === 0 ? w * 0.35 : w * 0.55; 
+                // Shift EventBridge to the outer right edge to prevent path overlap
+                if (d.id === 'eventbridge') return w * 0.85;
+                // Widen the zig-zag spread to use 60% of the width instead of 20%
+                return d.targetIndex % 2 === 0 ? w * 0.20 : w * 0.80; 
             } else {
                 var stageNorm = d.targetIndex / 6; 
                 return w * (0.1 + stageNorm * 0.8); 
@@ -526,7 +530,8 @@ export const mediaconvertWebhook: Endpoint = {
         simulation.force("y", d3.forceY(d => {
             if (isVertical) {
                 var stageNorm = d.targetIndex / 6;
-                return h * (0.15 + stageNorm * 0.7);
+                // Expand the vertical span from 70% to 80% of the container height
+                return h * (0.10 + stageNorm * 0.80);
             } else {
                 if (d.id === 'eventbridge') return h * 0.25;
                 return d.targetIndex % 2 === 0 ? h * 0.55 : h * 0.75;
@@ -625,7 +630,7 @@ export const mediaconvertWebhook: Endpoint = {
                 return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`;
             });
 
-        	node.attr("transform", d => {
+        node.attr("transform", d => {
                 var container = document.getElementById('d3-graph-container');
                 var w = container ? container.clientWidth : 1000;
                 var h = container ? container.clientHeight : 550;
