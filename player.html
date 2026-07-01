@@ -381,12 +381,21 @@
         }, 1000);
     }
 
-    async function initPlayer() {
+   async function initPlayer() {
         const video = document.getElementById('video');
         const videoContainer = document.querySelector('[data-shaka-player-container]');
         
         player = new shaka.Player();
         await player.attach(video);
+        
+        // 👉 MUTATION: Force MSE engine on Safari to expose telemetry and headers
+        // Prevents Apple native HLS from swallowing X-OTT-Access-Token headers
+        player.configure({
+            streaming: {
+                useNativeHlsOnSafari: false
+            }
+        });
+
         const ui = new shaka.ui.Overlay(player, videoContainer, video);
         ui.configure({
             controlPanelElements: ['play_pause', 'time_and_duration', 'spacer', 'mute', 'volume', 'fullscreen', 'overflow_menu'],
