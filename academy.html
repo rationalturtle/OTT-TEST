@@ -12,8 +12,22 @@
   
   <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
+  
   <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ 
+        startOnLoad: false, 
+        theme: 'base',
+        themeVariables: {
+            fontFamily: 'Geist Mono',
+            primaryColor: 'transparent',
+            primaryTextColor: '#6b7280',
+            lineColor: '#6b7280'
+        }
+    });
+  </script>
 
   <script>
     tailwind.config = {
@@ -345,7 +359,7 @@ endpoints: [
           <p>Hardcoding cryptographic keys directly within the deployment source string introduces severe operational risks regarding git-repository leaks. Instead, the symmetric 256-bit key is injected inside a globally distributed <strong>CloudFront KeyValueStore (KVS)</strong> data instance named <code>EdgeSecrets</code>.</p>
 
           <h4>Asynchronous Edge Interception (cloudfront-js-2.0)</h4>
-          <p>The client player intercepts network traffic to attach the token string into the <code>X-OTT-Access-Token</code> header. A high-performance viewer-request edge worker running the <code>cloudfront-js-2.0</code> execution profile handles the traffic, querying edge storage memory via dynamic async lookups to assert authorization state within <code>0.08ms</code> before checking the cache matrix.</p>
+          <p>The client player intercepts network traffic to attach the token string into the <code>X-OTT-Access-Token</code> header. A high-performance viewer-request edge worker running the <code>cloudfront-js-2.0</code> execution profile handles the traffic, querying edge storage memory via dynamic async lookups to assert authorization state within <code>0.1ms</code> before checking the cache matrix.</p>
 
 <pre><code class="language-javascript">// CloudFront Edge Token Validator Function
 import crypto from 'crypto';
@@ -413,17 +427,36 @@ export const mediaconvertWebhook: Endpoint = {
       <template id="content-7">
           <p>The core architectural mandate of this pipeline is minimizing operational entropy—the unpredictable states, race conditions, and network failures inherent in distributed cloud systems. Rather than attempting to control systemic chaos via bloated orchestration layers or expensive polling loops, this pipeline relies on <strong>bottom-up, deterministic execution</strong>.</p>
           
-          <h4>The Minimax Takeaway: Deterministic Systems Engineering</h4>
+          <h4>The End-to-End Execution Sequence</h4>
+          <p>The chronological flow of state transitions maps directly across three distinct cloud environments, minimizing local compute bottlenecks:</p>
+
+          <div class="mermaid bg-gray-50 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl p-4 my-6 overflow-x-auto text-center flex justify-center">
+sequenceDiagram
+    participant UI as React Client
+    participant P as Payload CMS
+    participant GCS as GCP Bucket (Input)
+    participant CR as Cloud Run (Python)
+    participant AWS as MediaConvert
+    participant S3 as S3 Bucket (Output)
+    participant CF as CloudFront (Edge)
+    
+    UI->>P: Bulk Intent (/get-resumable-url)
+    P-->>UI: Minted GCP Resumable Sockets
+    UI->>GCS: Stream 5MB Chunks (Direct-to-Cloud)
+    GCS-->>CR: Eventarc Trigger
+    CR->>CR: Pacifier Pattern (0-byte check & Lock)
+    CR->>AWS: Submit Job (Signed URLs)
+    AWS->>S3: Write .m3u8 & .ts segments
+    AWS-->>P: EventBridge Webhook (COMPLETE)
+    P->>P: DB Status = 'ready' & Delete Lock
+    CF->>S3: Pull cached segments (OAC)
+          </div>
+
+          <h4>Enterprise-Grade Resiliency Patterns</h4>
           <ul>
               <li><strong>State Deflection via Atomic Operations:</strong> In distributed systems, concurrency is guaranteed, but execution order is not. By leveraging atomic metadata locks (<code>if_generation_match=0</code>) directly at the GCS layer, the system inherently prevents state collisions.</li>
               <li><strong>Bounded Substrate Responsibilities:</strong> Cloud boundaries are utilized as deliberate constraints to isolate failure domains. Payload CMS and PostgreSQL are strictly bounded to relational data modeling; GCP Eventarc handles high-throughput ingestion; and AWS is dedicated exclusively to heavy compute and delivery.</li>
               <li><strong>Structural Guardrails over Network Chance:</strong> The self-healing guardrails—such as verifying the complete presence of sibling files before attempting to claim a lock—ensure that processing only begins when the environment reaches a mathematically complete state.</li>
-          </ul>
-
-          <h4>Enterprise-Grade Resiliency Patterns</h4>
-          <ul>
-              <li><strong>Idempotent Pipeline Design:</strong> Asynchronous file ingestion pipelines guarantee that multi-file asset bundles (e.g., video, audio stems, subtitle sidecars) can be processed sequentially or out-of-order without triggering race conditions or runaway compute billing.</li>
-              <li><strong>Zero-Trust Handoffs:</strong> Inter-cloud API handoffs incorporate cryptographic signatures and strict schema validation to ensure zero-defect infrastructure-as-code deployments across boundaries.</li>
           </ul>
 
           <p class="mt-8 italic text-center font-medium">This pipeline demonstrates that true resilience is not achieved by building heavier error-handling mechanisms, but by designing an architecture where invalid states are structurally impossible to process.</p>
@@ -721,7 +754,7 @@ export const mediaconvertWebhook: Endpoint = {
 
         activeCardId = id;
 
-        // Reset all tabs - EXPLICITLY REMOVE ALL BORDER UTILITIES TO PREVENT CSS CLASS LEAK
+        // Reset all tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active', 'border-black', 'border-white', 'dark:border-white', 'text-black', 'dark:text-white');
             btn.classList.add('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
@@ -740,6 +773,12 @@ export const mediaconvertWebhook: Endpoint = {
         paneContent.innerHTML = document.getElementById('content-' + id).innerHTML;
 
         document.querySelectorAll('#reading-pane pre code').forEach((block) => hljs.highlightElement(block));
+
+        // 👉 TRIGGER MERMAID RENDER ON DYNAMIC CONTENT INJECTION
+        var mermaidBlocks = paneContent.querySelectorAll('.mermaid');
+        if (mermaidBlocks.length > 0) {
+            mermaid.run({ querySelector: '.mermaid' }).catch(e => console.error(e));
+        }
 
         // Instruct D3 Engine to Highlight Focus Areas
         d3.selectAll('.node-group').transition().duration(400)
