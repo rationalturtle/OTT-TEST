@@ -22,7 +22,7 @@
             showSequenceNumbers: false,
             actorMargin: 50,
             messageMargin: 40,
-            rightAngles: true // Enforces Vercel-style crisp routing lines
+            rightAngles: true 
         },
         themeVariables: {
             fontFamily: 'Geist Mono',
@@ -55,7 +55,6 @@
     .hide-scroll::-webkit-scrollbar { width: 0px; height: 0px; display: none; }
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Vercel-style subtle dashed flow animation */
     @keyframes flow {
       from { stroke-dashoffset: 24; }
       to { stroke-dashoffset: 0; }
@@ -134,7 +133,7 @@
     }
     
     .mermaid svg {
-        min-width: 800px; /* Forces horizontal scroll on mobile, preserving text scaling */
+        min-width: 800px;
         max-width: 100%;
         height: auto;
         display: block;
@@ -158,14 +157,23 @@
     .dark .mermaid marker path { fill: #52525b !important; }
     .dark .mermaid .messageText { fill: #a1a1aa !important; }
 
-    /* D3 Canvas Grabbing Cursors */
-    #d3-graph-container { cursor: grab; }
-    #d3-graph-container:active { cursor: grabbing; }
+    /* D3 Canvas Native Scroll Adjustments */
+    .academy-viewport {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .academy-viewport::-webkit-scrollbar { width: 6px; height: 6px; }
+    .academy-viewport::-webkit-scrollbar-track { background: transparent; }
+    .academy-viewport::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.2); border-radius: 3px; }
+    .academy-viewport::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.4); }
+    
+    .node-group { cursor: grab; }
+    .node-group:active { cursor: grabbing; }
   </style>
 </head>
-<body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
+<body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col">
 
-  <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
+  <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
       
       <div class="flex items-center h-full flex-1 overflow-hidden">
@@ -179,6 +187,7 @@
             <a href="index.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Main</a>
             <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Player</a>
             <a href="academy.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all whitespace-nowrap">Academy</a>
+            <a href="diagrams.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Diagrams</a>
         </nav>
       </div>
       
@@ -191,7 +200,7 @@
     </div>
   </header>
 
-  <main class="max-w-[1200px] mx-auto px-6 py-12 w-full relative">
+  <main class="max-w-[1200px] mx-auto px-6 py-12 w-full relative flex-grow">
     
     <div class="mb-8 text-center md:text-left">
       <h1 class="text-[32px] font-bold tracking-tight text-black dark:text-white mb-3">Platform Academy</h1>
@@ -200,18 +209,16 @@
       </p>
     </div>
 
-    <div class="relative w-full h-[550px] md:h-[400px] mb-12 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm overflow-hidden" style="background-image: radial-gradient(rgba(150, 150, 150, 0.2) 1px, transparent 1px); background-size: 24px 24px;">
+    <!-- The Native Scrolling Topology Viewport -->
+    <div class="academy-viewport relative w-full h-[550px] md:h-[400px] mb-12 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm" style="background-image: radial-gradient(rgba(150, 150, 150, 0.2) 1px, transparent 1px); background-size: 24px 24px;">
         
-        <div class="absolute top-4 left-5 flex items-center gap-2.5 z-10 pointer-events-none">
+        <div class="absolute top-4 left-5 flex items-center gap-2.5 z-10 pointer-events-none sticky-badge" style="position: sticky; top: 1rem; left: 1.25rem;">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]"></span>
-            <span class="text-[10px] font-mono font-bold text-gray-800 dark:text-zinc-200 uppercase tracking-widest">Live Relational Topology</span>
-        </div>
-        
-        <div class="absolute top-4 right-5 z-10 pointer-events-none">
-            <span class="text-[9px] font-mono font-medium text-gray-500 dark:text-zinc-500 uppercase tracking-widest border border-gray-200 dark:border-white/10 px-2.5 py-1.5 rounded bg-white/80 dark:bg-black/80 backdrop-blur">Physics Active: Drag Nodes</span>
+            <span class="text-[10px] font-mono font-bold text-gray-800 dark:text-zinc-200 uppercase tracking-widest bg-white/80 dark:bg-black/80 px-2 py-0.5 rounded backdrop-blur">Live Relational Topology</span>
         </div>
 
-        <div id="d3-graph-container" class="absolute inset-0 w-full h-full"></div>
+        <!-- Inner Wrapper that enforces a minimum coordinate space for the D3 physics -->
+        <div id="d3-graph-container" style="min-width: 900px; min-height: 400px; height: 100%; width: 100%;"></div>
     </div>
 
     <div class="w-full max-w-4xl mx-auto pb-20">
@@ -255,7 +262,7 @@
     </div>
   </main>
 
-  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#000] py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider mt-12">
+  <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#000] py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider mt-auto shrink-0">
     <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
         <div class="flex items-center gap-2">
@@ -266,7 +273,6 @@
   </footer>
 
   <div id="content-templates" style="display: none;">
-      
       <template id="content-1">
           <p>Routing multi-gigabyte mezzanine video files through a traditional Node.js backend introduces severe memory bottlenecks, upload timeouts, and high compute costs. This setup utilizes <strong>Direct-to-Cloud (D2C)</strong> ingestion alongside Payload CMS and PostgreSQL to handle relational data modeling and client content management.</p>
           
@@ -552,7 +558,7 @@ sequenceDiagram
         }
     }
 
-    // --- D3 PHYSICS ENGINE INITIALIZATION ---
+    // --- D3 PHYSICS ENGINE ---
     
     var nodesData = [
         { id: 'payload', label: 'Payload CMS', color: '#3b82f6', targetIndex: 0 },
@@ -584,10 +590,11 @@ sequenceDiagram
         var container = document.getElementById('d3-graph-container');
         if (!container) return;
         
-        var w = container.clientWidth || 1000;
-        var h = container.clientHeight || 550;
+        // We enforce a minimum coordinate space here so native overflow scrolling kicks in
+        var w = Math.max(container.clientWidth, 900);
+        var h = Math.max(container.clientHeight, 400);
         
-        var isVertical = (w / h) < 1.2;
+        var isVertical = (w / h) < 1.2 && w < 900;
 
         svg.attr("viewBox", `0 0 ${w} ${h}`);
 
@@ -707,10 +714,10 @@ sequenceDiagram
                 return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`;
             });
 
-        node.attr("transform", d => {
+            node.attr("transform", d => {
                 var container = document.getElementById('d3-graph-container');
-                var w = container ? container.clientWidth : 1000;
-                var h = container ? container.clientHeight : 550;
+                var w = container ? Math.max(container.clientWidth, 900) : 1000;
+                var h = container ? Math.max(container.clientHeight, 400) : 550;
                 if (d.x === undefined || d.y === undefined) return "";
                 d.x = Math.max(25, Math.min(w - 25, d.x));
                 d.y = Math.max(25, Math.min(h - 25, d.y));
@@ -720,6 +727,12 @@ sequenceDiagram
 
         updateForces();
         updateD3Theme(document.documentElement.classList.contains('dark'));
+        
+        // Native center scroll on init
+        setTimeout(() => {
+            var vp = document.querySelector('.academy-viewport');
+            if(vp) vp.scrollLeft = Math.max(0, (vp.scrollWidth - vp.clientWidth) / 2);
+        }, 100);
     }
 
     function dragstarted(event, d) {
