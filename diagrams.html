@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure OTT Edge Pipeline | Deterministic Sequences</title>
+    <title>Secure OTT Edge Pipeline | Architecture Topology</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
@@ -29,16 +29,17 @@
             theme: 'base',
             sequence: {
                 showSequenceNumbers: true,
-                actorMargin: 60,
+                actorMargin: 100,
                 messageMargin: 40,
                 boxMargin: 20,
-                rightAngles: true // Forces sleek, sharp Vercel-style routing lines
+                rightAngles: true 
             },
             themeVariables: {
-                fontFamily: 'Geist Mono',
+                fontFamily: 'Geist Sans',
                 primaryColor: 'transparent',
                 primaryTextColor: '#6b7280',
-                lineColor: '#6b7280'
+                lineColor: '#6b7280',
+                actorLineColor: '#0284c7'
             }
         });
     </script>
@@ -46,92 +47,82 @@
         body { 
             font-family: 'Geist Sans', -apple-system, sans-serif;
             transition: background-color 0.2s, color 0.2s;
+            overflow-x: hidden; 
         }
         
         .hide-scroll::-webkit-scrollbar { width: 0px; height: 0px; display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Custom scrollbar for viewports (gives visual cue of pan capability) */
-        .zoom-viewport::-webkit-scrollbar { width: 6px; height: 6px; }
-        .zoom-viewport::-webkit-scrollbar-track { background: transparent; }
-        .zoom-viewport::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.2); border-radius: 3px; }
-        .zoom-viewport::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.4); }
-
-        /* Native Scrolling Viewport */
-        .zoom-viewport {
-            overflow: auto;
-            position: relative;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; /* Native momentum scrolling on iOS */
+        .diagram-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 2rem;
         }
-        
-        .mermaid-wrapper {
-            transform-origin: center center;
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            min-width: max-content;
-            min-height: 100%;
+
+        .diagram-container::-webkit-scrollbar { height: 6px; width: 6px; }
+        .diagram-container::-webkit-scrollbar-track { background: transparent; }
+        .diagram-container::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.2); border-radius: 3px; }
+        .diagram-container::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.4); }
+
+        .mermaid {
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 4rem;
+            width: 100%;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .mermaid svg { 
-            /* FORCE LEGIBLE SCALING: Prevents Mermaid from shrinking to fit */
-            min-width: 900px !important; 
+            min-width: 800px;
             max-width: none !important;
-            font-family: 'Geist Mono', monospace !important;
+            font-family: 'Geist Sans', sans-serif !important;
             overflow: visible;
+            height: auto !important;
         }
 
-        /* --- MERMAID VECTOR OVERRIDES (LIGHT MODE) --- */
-        .mermaid .actor { stroke: #cbd5e1 !important; fill: #ffffff !important; rx: 6px !important; ry: 6px !important; stroke-width: 1px !important; }
-        .mermaid text.actor > tspan { fill: #0f172a !important; font-weight: 600 !important; font-size: 13px !important; }
-        .mermaid .actor-line { stroke: #cbd5e1 !important; stroke-width: 1.5px !important; stroke-dasharray: 4 !important; }
-        .mermaid .messageLine0, .mermaid .messageLine1 { stroke: #94a3b8 !important; stroke-width: 1.5px !important; }
-        .mermaid marker path { fill: #94a3b8 !important; stroke: none !important; }
-        .mermaid .messageText { fill: #475569 !important; font-size: 12px !important; font-weight: 500 !important; }
-        .mermaid .sequenceNumber { fill: #ffffff !important; font-size: 10px !important; font-weight: bold !important; }
+        /* LIGHT MODE VECTOR PAINTS */
+        .mermaid rect.actor { stroke: #0284c7 !important; fill: #ffffff !important; rx: 0px !important; ry: 0px !important; stroke-width: 2px !important; transition: all 0.2s; }
+        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke: #0284c7 !important; fill: #f0f9ff !important; stroke-width: 2px !important; transition: all 0.2s; }
+        .mermaid text.actor > tspan { fill: #334155 !important; font-weight: 700 !important; font-size: 14px !important; transition: fill 0.2s; }
+        .mermaid .actor-line { stroke: #0284c7 !important; stroke-width: 2px !important; stroke-dasharray: 6 6 !important; opacity: 1 !important; visibility: visible !important; transition: stroke 0.2s; }
+        .mermaid .messageLine0 { stroke: #64748b !important; stroke-width: 1.5px !important; transition: stroke 0.2s; }
+        .mermaid .messageLine1 { stroke: #64748b !important; stroke-width: 1.5px !important; stroke-dasharray: 5 5 !important; transition: stroke 0.2s; }
+        .mermaid marker path { fill: #64748b !important; stroke: none !important; transition: fill 0.2s; }
+        .mermaid .messageText { fill: #334155 !important; font-size: 13px !important; font-weight: 500 !important; transition: fill 0.2s; }
+        .mermaid .loopBox { stroke: #0284c7 !important; fill: transparent !important; stroke-width: 1.5px !important; rx: 0px !important; transition: stroke 0.2s; }
+        .mermaid .loopLine { stroke: #0284c7 !important; stroke-width: 1.5px !important; stroke-dasharray: none !important; transition: stroke 0.2s; }
+        .mermaid .labelBox { stroke: #0284c7 !important; fill: #e0f2fe !important; rx: 0px !important; stroke-width: 1.5px !important; transition: all 0.2s; }
+        .mermaid .labelText { fill: #000000 !important; font-size: 12px !important; font-weight: 600 !important; transition: fill 0.2s; }
+        .mermaid .loopText > tspan { fill: #000000 !important; font-size: 12px !important; font-weight: 700 !important; transition: fill 0.2s; }
+        .mermaid .note { stroke: #0284c7 !important; fill: #f0f9ff !important; rx: 0px !important; stroke-width: 1px !important; transition: all 0.2s; }
+        .mermaid .noteText { fill: #0f172a !important; font-size: 12px !important; transition: fill 0.2s; }
+        .mermaid .sequenceNumber { fill: #ffffff !important; font-size: 10px !important; font-weight: bold !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
+        .mermaid g.message:nth-child(n) > circle { fill: #0284c7 !important; stroke: none !important; r: 8 !important; transition: fill 0.2s; }
         
-        /* Containers & Notes */
-        .mermaid .loopText > tspan { fill: #64748b !important; font-size: 11px !important; font-weight: bold !important;}
-        .mermaid .loopLine { stroke: #cbd5e1 !important; stroke-dasharray: 4 !important; stroke-width: 1px !important; }
-        .mermaid .labelBox { stroke: #e2e8f0 !important; fill: #f8fafc !important; rx: 4px !important; }
-        .mermaid .labelText { fill: #475569 !important; font-size: 11px !important; font-weight: 600 !important; }
-        .mermaid .note { stroke: #e2e8f0 !important; fill: #f1f5f9 !important; rx: 6px !important; stroke-width: 1px !important; }
-        .mermaid .noteText { fill: #334155 !important; font-size: 11px !important; }
-        
-        /* --- MERMAID VECTOR OVERRIDES (DARK MODE) --- */
-        .dark .mermaid .actor { stroke: rgba(255,255,255,0.15) !important; fill: #0a0a0a !important; }
-        .dark .mermaid text.actor > tspan { fill: #ededed !important; }
-        .dark .mermaid .actor-line { stroke: rgba(255,255,255,0.1) !important; stroke-dasharray: 4 !important; }
-        .dark .mermaid .messageLine0, .dark .mermaid .messageLine1 { stroke: #52525b !important; }
-        .dark .mermaid marker path { fill: #52525b !important; }
-        .dark .mermaid .messageText { fill: #a1a1aa !important; }
+        /* DARK MODE VECTOR PAINTS */
+        .dark .mermaid rect.actor { stroke: #38bdf8 !important; fill: #050505 !important; }
+        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #38bdf8 !important; fill: #050505 !important; }
+        .dark .mermaid text.actor > tspan { fill: #f8fafc !important; }
+        .dark .mermaid .actor-line { stroke: #38bdf8 !important; }
+        .dark .mermaid .messageLine0, .dark .mermaid .messageLine1 { stroke: #94a3b8 !important; }
+        .dark .mermaid marker path { fill: #94a3b8 !important; }
+        .dark .mermaid .messageText { fill: #e2e8f0 !important; }
+        .dark .mermaid .loopBox { stroke: #38bdf8 !important; }
+        .dark .mermaid .loopLine { stroke: #38bdf8 !important; }
+        .dark .mermaid .labelBox { stroke: #38bdf8 !important; fill: #075985 !important; }
+        .dark .mermaid .labelText { fill: #ffffff !important; }
+        .dark .mermaid .loopText > tspan { fill: #ffffff !important; }
+        .dark .mermaid .note { stroke: #38bdf8 !important; fill: rgba(56,189,248,0.05) !important; }
+        .dark .mermaid .noteText { fill: #e2e8f0 !important; }
+        .dark .mermaid g.message:nth-child(n) > circle { fill: #38bdf8 !important; }
         .dark .mermaid .sequenceNumber { fill: #000000 !important; }
-        
-        /* Containers & Notes */
-        .dark .mermaid .loopText > tspan { fill: #71717a !important; }
-        .dark .mermaid .loopLine { stroke: #3f3f46 !important; }
-        .dark .mermaid .labelBox { stroke: #27272a !important; fill: #111 !important; }
-        .dark .mermaid .labelText { fill: #a1a1aa !important; }
-        .dark .mermaid .note { stroke: rgba(255,255,255,0.1) !important; fill: rgba(255,255,255,0.03) !important; }
-        .dark .mermaid .noteText { fill: #a1a1aa !important; }
-
-        /* Sequence Number Circle background override */
-        .mermaid .sequenceNumber { dominant-baseline: central; text-anchor: middle; }
-        .mermaid g.message:nth-child(n) > circle { fill: #3b82f6 !important; stroke: none !important; r: 8 !important;}
-        .dark .mermaid g.message:nth-child(n) > circle { fill: #3b82f6 !important; }
-        
-        /* Emerald sequence numbers for Phase 4 */
-        .emerald-seq .mermaid g.message:nth-child(n) > circle { fill: #10b981 !important; }
-        .dark .emerald-seq .mermaid g.message:nth-child(n) > circle { fill: #10b981 !important; }
     </style>
 </head>
-<body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
+<body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col relative">
 
-    <!-- Unified Header -->
-    <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="fixed inset-0 z-[-1] pointer-events-none opacity-[0.15] dark:opacity-20" style="background-image: radial-gradient(rgba(150, 150, 150, 0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+    <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
             <div class="flex items-center h-full flex-1 overflow-hidden">
                 <div class="flex items-center shrink-0">
@@ -154,255 +145,185 @@
         </div>
     </header>
 
-    <main class="max-w-[1200px] mx-auto px-6 py-12 w-full relative">
-        
-        <!-- Abstract Grid Background -->
-        <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-40" style="background-image: linear-gradient(to right, rgba(150,150,150,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(150,150,150,0.15) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 10%, transparent 90%); -webkit-mask-image: linear-gradient(to bottom, black 10%, transparent 90%);"></div>
-
-        <div class="mb-12">
-            <div class="inline-flex items-center space-x-2 mb-4 px-3 py-1 rounded-full border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 shadow-sm">
+    <main class="max-w-[1200px] mx-auto px-6 py-16 w-full flex-grow">
+        <div class="mb-20">
+            <div class="inline-flex items-center space-x-2 mb-4 px-3 py-1 rounded-full border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/50 backdrop-blur shadow-sm">
                 <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]"></span>
                 <span class="font-mono text-[9px] text-gray-700 dark:text-zinc-300 tracking-widest uppercase font-bold">Deterministic Sequences</span>
             </div>
-            <h1 class="text-[32px] md:text-4xl font-extrabold tracking-tight text-black dark:text-white mb-3 leading-tight">Architecture Diagrams</h1>
+            <h1 class="text-[32px] md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">Architecture Topology</h1>
             <p class="text-gray-500 dark:text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
-                Scroll to natively pan and pinch-to-zoom through the chronological flow of data and state changes across Next.js, GCP, and AWS environments.
+                Scroll naturally through the chronological flow of data and state changes across Next.js, GCP, and AWS environments. The system relies entirely on atomic substrate constraints.
             </p>
         </div>
 
-        <div class="space-y-10">
-
-            <!-- Phase 1: Ingestion -->
-            <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 font-mono text-xs font-bold">1</div>
-                        <h3 class="font-semibold text-gray-900 dark:text-white text-sm md:text-base">Direct-to-Cloud Ingestion & Minting</h3>
-                    </div>
-                    <div class="flex items-center gap-1 sm:gap-2">
-                        <span class="hidden sm:inline-block text-[10px] font-mono text-gray-400 dark:text-zinc-500 uppercase tracking-widest mr-2">Scale</span>
-                        <button onclick="zoomIn('zoom-1')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" title="Zoom In">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        </button>
-                        <button onclick="zoomOut('zoom-1')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" title="Zoom Out">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
-                        </button>
-                        <button onclick="resetZoom('zoom-1')" class="p-1.5 ml-1 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            <span class="hidden sm:inline">Reset</span>
-                        </button>
-                    </div>
+        <div class="mb-32">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4 mb-8">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 font-mono text-sm font-bold shadow-sm">1</div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Direct-to-Cloud Ingestion</h2>
                 </div>
-                <div class="zoom-viewport h-[450px] w-full bg-white dark:bg-[#030303] relative" id="zoom-1">
-                    <div class="absolute inset-0 pointer-events-none opacity-[0.15] dark:opacity-20" style="background-image: radial-gradient(rgba(150, 150, 150, 0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
-                    <div class="mermaid-wrapper">
-                        <div class="mermaid">
-                            sequenceDiagram
-                                participant UI as React Client (UI)
-                                participant CMS as Payload CMS
-                                participant DB as PostgreSQL
-                                participant GCS as GCP Bucket (Input)
-
-                                UI->>CMS: POST /api/media/initialize-package
-                                CMS->>DB: Raw SQL Insert (Media & Sidecars)
-                                DB-->>CMS: Return DB Relational IDs
-                                CMS-->>UI: 200 OK (docId)
-                                
-                                loop For Each File (Video/Audio/Sub)
-                                    UI->>CMS: POST /api/media/get-resumable-url
-                                    Note over CMS: Generates deterministic token<br/>(clean_folder__hash.ext)
-                                    CMS->>GCS: file.createResumableUpload()
-                                    GCS-->>CMS: Resumable Session URI (TCP Socket)
-                                    CMS-->>UI: uploadUrl, generatedFilename
-                                    
-                                    UI->>GCS: Stream 5MB Chunks (File.slice)
-                                    Note over UI,GCS: Bypasses Node.js RAM footprint completely
-                                    GCS-->>UI: 200 OK (Object Finalized)
-                                end
-                        </div>
-                    </div>
+                <div class="flex items-center gap-1 sm:gap-2">
+                    <span class="hidden sm:inline-block text-[10px] font-mono text-gray-400 dark:text-zinc-500 uppercase tracking-widest mr-2">Scale</span>
+                    <button onclick="zoomIn('diagram-1')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors" title="Zoom In">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </button>
+                    <button onclick="zoomOut('diagram-1')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors" title="Zoom Out">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                    </button>
+                    <button onclick="resetZoom('diagram-1')" class="p-1.5 ml-1 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span class="hidden sm:inline">Reset</span>
+                    </button>
                 </div>
             </div>
+            
+            <div class="diagram-container">
+                <div id="diagram-1" class="mermaid" style="width: 100%;">
+                    sequenceDiagram
+                        actor UI as React Client
+                        participant CMS as Payload CMS
+                        participant DB as PostgreSQL
+                        participant GCS as GCP Bucket (Input)
 
-            <!-- Phase 2: Orchestration -->
-            <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="flex items-center justify-center w-6 h-6 rounded-full bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400 font-mono text-xs font-bold">2</div>
-                        <h3 class="font-semibold text-gray-900 dark:text-white text-sm md:text-base">Orchestration & Transcoding</h3>
-                    </div>
-                    <div class="flex items-center gap-1 sm:gap-2">
-                        <span class="hidden sm:inline-block text-[10px] font-mono text-gray-400 dark:text-zinc-500 uppercase tracking-widest mr-2">Scale</span>
-                        <button onclick="zoomIn('zoom-2')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" title="Zoom In">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        </button>
-                        <button onclick="zoomOut('zoom-2')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" title="Zoom Out">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
-                        </button>
-                        <button onclick="resetZoom('zoom-2')" class="p-1.5 ml-1 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            <span class="hidden sm:inline">Reset</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="zoom-viewport h-[600px] w-full bg-white dark:bg-[#030303] relative" id="zoom-2">
-                    <div class="absolute inset-0 pointer-events-none opacity-[0.15] dark:opacity-20" style="background-image: radial-gradient(rgba(150, 150, 150, 0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
-                    <div class="mermaid-wrapper">
-                        <div class="mermaid">
-                            sequenceDiagram
-                                participant GCS as GCP Bucket (Input)
-                                participant EA as Eventarc Trigger
-                                participant CR as Cloud Run (Python)
-                                participant AWS as Elemental MediaConvert
-                                participant S3 as S3 Bucket (Output)
-
-                                GCS->>EA: Object Finalize Event
-                                EA->>CR: Trigger Async Webhook
-                                
-                                Note over CR: Audit Phase: Verify blob.size > 0<br/>Check for sibling tracks
-                                
-                                alt Incomplete Bundle
-                                    CR-->>EA: 200 OK (Awaiting siblings - safely exit)
-                                else Bundle Complete
-                                    CR->>GCS: Attempt lock (if_generation_match=0)
-                                    
-                                    alt Lock Claimed by Another Thread
-                                        GCS-->>CR: Precondition Failed
-                                        CR-->>EA: 200 OK (Concurrency deflected)
-                                    else Lock Acquired
-                                        GCS-->>CR: Lock Success (___mediaconvert.lock)
-                                        CR->>GCS: Generate Signed v4 URLs (1hr TTL)
-                                        CR->>AWS: Submit Transcode Job (JSON Schema)
-                                        AWS-->>CR: Job ID Acknowledged
-                                        CR-->>EA: 200 OK
-                                    end
-                                end
-                                
-                                Note over AWS: Process H.264 / M3U8 Multiplexing
-                                AWS->>S3: Write .m3u8 playlist & .ts segments
-                        </div>
-                    </div>
+                        UI->>CMS: POST /api/media/initialize-package
+                        CMS->>DB: Raw SQL Insert (Media & Sidecars)
+                        DB-->>CMS: Return DB Relational IDs
+                        CMS-->>UI: 200 OK (docId)
+                        
+                        loop Direct-to-Cloud Bypass
+                            UI->>CMS: POST /api/media/get-resumable-url
+                            Note over CMS: Generate deterministic token<br/>(clean_folder__hash.ext)
+                            CMS->>GCS: file.createResumableUpload()
+                            GCS-->>CMS: Resumable Session URI (TCP Socket)
+                            CMS-->>UI: uploadUrl, generatedFilename
+                            
+                            UI->>GCS: Stream 5MB Chunks (File.slice)
+                            Note over UI,GCS: Native client streaming bypasses Node.js RAM entirely
+                            GCS-->>UI: 200 OK (Object Finalized)
+                        end
                 </div>
             </div>
+        </div>
 
-            <!-- Phase 3: Telemetry & Edge -->
-            <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 text-purple-600 dark:text-purple-400 font-mono text-xs font-bold">3</div>
-                        <h3 class="font-semibold text-gray-900 dark:text-white text-sm md:text-base">Telemetry, GC & Edge Auth</h3>
-                    </div>
-                    <div class="flex items-center gap-1 sm:gap-2">
-                        <span class="hidden sm:inline-block text-[10px] font-mono text-gray-400 dark:text-zinc-500 uppercase tracking-widest mr-2">Scale</span>
-                        <button onclick="zoomIn('zoom-3')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" title="Zoom In">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        </button>
-                        <button onclick="zoomOut('zoom-3')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" title="Zoom Out">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
-                        </button>
-                        <button onclick="resetZoom('zoom-3')" class="p-1.5 ml-1 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            <span class="hidden sm:inline">Reset</span>
-                        </button>
-                    </div>
+        <div class="mb-32">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4 mb-8">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400 font-mono text-sm font-bold shadow-sm">2</div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Serverless Orchestration & Transcode</h2>
                 </div>
-                <div class="zoom-viewport h-[450px] w-full bg-white dark:bg-[#030303] relative" id="zoom-3">
-                    <div class="absolute inset-0 pointer-events-none opacity-[0.15] dark:opacity-20" style="background-image: radial-gradient(rgba(150, 150, 150, 0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
-                    <div class="mermaid-wrapper">
-                        <div class="mermaid">
-                            sequenceDiagram
-                                participant AWS as MediaConvert
-                                participant EB as EventBridge
-                                participant CMS as Payload CMS
-                                participant GCS as GCP Bucket
-                                participant Client as React Client
-                                participant CF as CloudFront (Edge)
-
-                                %% Telemetry Loop
-                                AWS->>EB: Job State Change (COMPLETE)
-                                EB->>CMS: POST /webhooks/mediaconvert (Bearer)
-                                
-                                par GC & Convergence
-                                    CMS->>GCS: Delete lock file (___mediaconvert.lock)
-                                    CMS->>CMS: DB: Update status='ready' & manifest_url
-                                end
-                                CMS-->>EB: 200 OK
-                                
-                                %% Client Playback Loop
-                                Client->>CMS: GET /api/media/mint-token
-                                Note over CMS: Generate HMAC-SHA256 JWT
-                                CMS-->>Client: Token (15m TTL)
-                                
-                                Client->>CF: GET /manifest.m3u8 (X-OTT-ACCESS-TOKEN)
-                                Note over CF: JS 2.0 Edge Worker validates signature
-                                
-                                alt Token Invalid / Expired
-                                    CF-->>Client: 403 Forbidden
-                                else Token Valid
-                                    CF-->>Client: 200 OK (Stream authorized, pull from S3)
-                                end
-                        </div>
-                    </div>
+                <div class="flex items-center gap-1 sm:gap-2">
+                    <span class="hidden sm:inline-block text-[10px] font-mono text-gray-400 dark:text-zinc-500 uppercase tracking-widest mr-2">Scale</span>
+                    <button onclick="zoomIn('diagram-2')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors" title="Zoom In">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </button>
+                    <button onclick="zoomOut('diagram-2')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors" title="Zoom Out">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                    </button>
+                    <button onclick="resetZoom('diagram-2')" class="p-1.5 ml-1 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span class="hidden sm:inline">Reset</span>
+                    </button>
                 </div>
             </div>
+            
+            <div class="diagram-container">
+                <div id="diagram-2" class="mermaid" style="width: 100%;">
+                    sequenceDiagram
+                        participant GCS as GCP Bucket (Input)
+                        participant EA as Eventarc Trigger
+                        participant CR as Cloud Run (Python)
+                        participant AWS as Elemental MediaConvert
+                        participant S3 as S3 Bucket (Output)
 
-            <!-- Phase 4: Linear Scheduler Deletion Flow -->
-            <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm emerald-seq">
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold">4</div>
-                        <h3 class="font-semibold text-gray-900 dark:text-white text-sm md:text-base">Linear Scheduler Deletion Flow</h3>
-                    </div>
-                    <div class="flex items-center gap-1 sm:gap-2">
-                        <span class="hidden sm:inline-block text-[10px] font-mono text-gray-400 dark:text-zinc-500 uppercase tracking-widest mr-2">Scale</span>
-                        <button onclick="zoomIn('zoom-4')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" title="Zoom In">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        </button>
-                        <button onclick="zoomOut('zoom-4')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" title="Zoom Out">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
-                        </button>
-                        <button onclick="resetZoom('zoom-4')" class="p-1.5 ml-1 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            <span class="hidden sm:inline">Reset</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="zoom-viewport h-[600px] w-full bg-white dark:bg-[#030303] relative" id="zoom-4">
-                    <div class="absolute inset-0 pointer-events-none opacity-[0.15] dark:opacity-20" style="background-image: radial-gradient(rgba(150, 150, 150, 0.8) 1px, transparent 1px); background-size: 24px 24px;"></div>
-                    <div class="mermaid-wrapper">
-                        <div class="mermaid">
-                            sequenceDiagram
-                                actor U as User
-                                participant C as CMS Console
-                                participant S as Scheduler Service
-    
-                                U->>C: User selects to delete a schedule
-                                C->>C: Display the schedule details<br/>and request for confirmation
-                                C-->>U: schedule details screen
-                                
-                                U->>C: User confirms to delete schedule
-                                C->>S: Delete entity by UUID<br/>(trigger=manual)
-                                
-                                opt Not Exists Error
-                                    S->>S: Validate schedule exists<br/>and eligible to delete
-                                    S-->>C: error message
-                                    C-->>U: error message
-                                end
-    
-                                S->>S: Delete schedule by ID
-                                S-->>C: success / failure
-                                
-                                C->>C: Refresh and render the scheduler<br/>view with latest information<br/>as per Figma
-                                C-->>U: scheduler screen
-                        </div>
-                    </div>
+                        GCS->>EA: Object Finalize Event
+                        EA->>CR: Trigger Async Webhook
+                        
+                        Note over CR: Audit Phase: Verify blob.size > 0<br/>Check for sibling sidecar tracks
+                        
+                        opt Incomplete Bundle
+                            CR-->>EA: 200 OK (Awaiting siblings - safely exit)
+                        end
+                        
+                        opt Bundle Complete
+                            CR->>GCS: Attempt lock (if_generation_match=0)
+                            
+                            alt Lock Claimed by Another Thread
+                                GCS-->>CR: Precondition Failed
+                                CR-->>EA: 200 OK (Concurrency deflected)
+                            else Lock Acquired
+                                GCS-->>CR: Lock Success (___mediaconvert.lock)
+                                CR->>GCS: Generate Signed v4 URLs (1hr TTL)
+                                CR->>AWS: Submit Transcode Job (JSON Schema)
+                                AWS-->>CR: Job ID Acknowledged
+                                CR-->>EA: 200 OK
+                            end
+                        end
+                        
+                        Note over AWS: Process H.264 / M3U8 Multiplexing
+                        AWS->>S3: Write .m3u8 playlist & .ts segments
                 </div>
             </div>
+        </div>
 
+        <div class="mb-16">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4 mb-8">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 text-purple-600 dark:text-purple-400 font-mono text-sm font-bold shadow-sm">3</div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Telemetry, GC & Edge Auth</h2>
+                </div>
+                <div class="flex items-center gap-1 sm:gap-2">
+                    <span class="hidden sm:inline-block text-[10px] font-mono text-gray-400 dark:text-zinc-500 uppercase tracking-widest mr-2">Scale</span>
+                    <button onclick="zoomIn('diagram-3')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors" title="Zoom In">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </button>
+                    <button onclick="zoomOut('diagram-3')" class="p-1.5 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors" title="Zoom Out">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                    </button>
+                    <button onclick="resetZoom('diagram-3')" class="p-1.5 ml-1 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span class="hidden sm:inline">Reset</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="diagram-container">
+                <div id="diagram-3" class="mermaid" style="width: 100%;">
+                    sequenceDiagram
+                        participant AWS as MediaConvert
+                        participant EB as EventBridge
+                        participant CMS as Payload CMS
+                        participant GCS as GCP Bucket
+                        actor Client as React Client
+                        participant CF as CloudFront (Edge)
+
+                        AWS->>EB: Job State Change (COMPLETE)
+                        EB->>CMS: POST /webhooks/mediaconvert (Bearer Auth)
+                        
+                        opt State Convergence
+                            CMS->>GCS: Delete lock file (___mediaconvert.lock)
+                            CMS->>CMS: DB: Update status='ready' & manifest_url
+                        end
+                        CMS-->>EB: 200 OK
+                        
+                        Client->>CMS: GET /api/media/mint-token
+                        Note over CMS: Server constructs HMAC-SHA256 JWT
+                        CMS-->>Client: Return Secure Token (15m TTL)
+                        
+                        Client->>CF: GET /manifest.m3u8 (X-OTT-ACCESS-TOKEN)
+                        Note over CF: JS 2.0 Edge Worker evaluates mathematics
+                        
+                        alt Token Invalid / Expired
+                            CF-->>Client: 403 Forbidden
+                        else Token Valid
+                            CF-->>Client: 200 OK (Stream authorized, fetch from Origin)
+                        end
+                </div>
+            </div>
         </div>
     </main>
 
-    <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider mt-12">
+    <footer class="border-t border-gray-200 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider shrink-0 mt-8">
         <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
             <div class="flex items-center gap-2">
@@ -415,14 +336,9 @@
     <script>
         const scales = {};
 
-        // Theme Toggle Logic
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            // Re-render Mermaid to apply dark/light classes to SVGs correctly
-            setTimeout(() => {
-                location.reload(); 
-            }, 50);
         }
 
         function initTheme() {
@@ -435,55 +351,48 @@
             }
         }
 
-        // Initialize Interactive Native Scrolling
-        function initInteractiveDiagrams() {
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            
             mermaid.run({ querySelector: '.mermaid' }).then(() => {
-                document.querySelectorAll('.zoom-viewport').forEach((viewport) => {
-                    const id = viewport.id;
-                    scales[id] = 1; // Initial scale
-                    
-                    // Center the diagram natively on initialization
-                    setTimeout(() => {
-                        viewport.scrollLeft = Math.max(0, (viewport.scrollWidth - viewport.clientWidth) / 2);
-                        viewport.scrollTop = Math.max(0, (viewport.scrollHeight - viewport.clientHeight) / 2);
-                    }, 50); // slight delay to allow rendering
+                document.querySelectorAll('.mermaid').forEach((wrapper) => {
+                    const id = wrapper.id;
+                    scales[id] = 100; 
                 });
             }).catch(console.error);
+        });
+
+        function applyScale(viewportId) {
+            const svg = document.querySelector(`#${viewportId} svg`);
+            if (svg) {
+                svg.style.width = `${scales[viewportId]}%`;
+                
+                const baseMinWidth = 800;
+                svg.style.minWidth = `${(scales[viewportId] / 100) * baseMinWidth}px`;
+            }
         }
 
         function zoomIn(viewportId) {
-            scales[viewportId] = Math.min((scales[viewportId] || 1) + 0.15, 2.5);
+            scales[viewportId] = Math.min((scales[viewportId] || 100) + 15, 250);
             applyScale(viewportId);
         }
 
         function zoomOut(viewportId) {
-            scales[viewportId] = Math.max((scales[viewportId] || 1) - 0.15, 0.5);
+            scales[viewportId] = Math.max((scales[viewportId] || 100) - 15, 60);
             applyScale(viewportId);
         }
 
         function resetZoom(viewportId) {
-            scales[viewportId] = 1;
+            scales[viewportId] = 100;
             applyScale(viewportId);
             
-            // Re-center natively
-            const viewport = document.getElementById(viewportId);
-            setTimeout(() => {
-                viewport.scrollLeft = Math.max(0, (viewport.scrollWidth - viewport.clientWidth) / 2);
-                viewport.scrollTop = Math.max(0, (viewport.scrollHeight - viewport.clientHeight) / 2);
-            }, 300); // Wait for transition
-        }
-
-        function applyScale(viewportId) {
-            const wrapper = document.querySelector(`#${viewportId} .mermaid-wrapper`);
-            if (wrapper) {
-                wrapper.style.transform = `scale(${scales[viewportId]})`;
+            const container = document.querySelector(`#${viewportId}`).parentElement;
+            if(container) {
+                setTimeout(() => {
+                    container.scrollLeft = Math.max(0, (container.scrollWidth - container.clientWidth) / 2);
+                }, 300);
             }
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            initInteractiveDiagrams();
-        });
     </script>
 </body>
 </html>
