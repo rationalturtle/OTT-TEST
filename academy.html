@@ -161,12 +161,24 @@
     .academy-viewport {
         overflow: auto;
         -webkit-overflow-scrolling: touch;
+        position: relative;
     }
     .academy-viewport::-webkit-scrollbar { width: 6px; height: 6px; }
     .academy-viewport::-webkit-scrollbar-track { background: transparent; }
     .academy-viewport::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.2); border-radius: 3px; }
     .academy-viewport::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.4); }
     
+    .scale-wrapper {
+        transform-origin: center center;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: max-content;
+        min-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem;
+    }
+
     .node-group { cursor: grab; }
     .node-group:active { cursor: grabbing; }
   </style>
@@ -210,15 +222,31 @@
     </div>
 
     <!-- The Native Scrolling Topology Viewport -->
-    <div class="academy-viewport relative w-full h-[550px] md:h-[400px] mb-12 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm" style="background-image: radial-gradient(rgba(150, 150, 150, 0.2) 1px, transparent 1px); background-size: 24px 24px;">
+    <div class="relative w-full h-[550px] md:h-[400px] mb-12 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm overflow-hidden" style="background-image: radial-gradient(rgba(150, 150, 150, 0.2) 1px, transparent 1px); background-size: 24px 24px;">
         
-        <div class="absolute top-4 left-5 flex items-center gap-2.5 z-10 pointer-events-none sticky-badge" style="position: sticky; top: 1rem; left: 1.25rem;">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]"></span>
-            <span class="text-[10px] font-mono font-bold text-gray-800 dark:text-zinc-200 uppercase tracking-widest bg-white/80 dark:bg-black/80 px-2 py-0.5 rounded backdrop-blur">Live Relational Topology</span>
+        <div class="absolute top-4 left-5 flex items-center justify-between w-[calc(100%-40px)] z-20 pointer-events-none">
+            <div class="flex items-center gap-2.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]"></span>
+                <span class="text-[10px] font-mono font-bold text-gray-800 dark:text-zinc-200 uppercase tracking-widest bg-white/80 dark:bg-black/80 px-2 py-0.5 rounded backdrop-blur">Live Relational Topology</span>
+            </div>
+            <div class="flex items-center gap-1 pointer-events-auto bg-white/80 dark:bg-black/80 backdrop-blur rounded p-1 border border-gray-200 dark:border-white/10">
+                <button onclick="zoomIn('academy-zoom')" class="p-1 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-100 dark:hover:bg-white/10 transition-all" title="Zoom In">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button onclick="zoomOut('academy-zoom')" class="p-1 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-100 dark:hover:bg-white/10 transition-all" title="Zoom Out">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                </button>
+                <button onclick="resetZoom('academy-zoom')" class="p-1 px-2 text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white rounded hover:bg-gray-100 dark:hover:bg-white/10 transition-all text-[9px] font-mono uppercase tracking-wider">
+                    Reset
+                </button>
+            </div>
         </div>
 
-        <!-- Inner Wrapper that enforces a minimum coordinate space for the D3 physics -->
-        <div id="d3-graph-container" style="min-width: 900px; min-height: 400px; height: 100%; width: 100%;"></div>
+        <div class="academy-viewport absolute inset-0 w-full h-full" id="academy-zoom">
+            <div class="scale-wrapper">
+                <div id="d3-graph-container" style="min-width: 900px; min-height: 400px; width: 100%; height: 100%;"></div>
+            </div>
+        </div>
     </div>
 
     <div class="w-full max-w-4xl mx-auto pb-20">
@@ -520,7 +548,8 @@ sequenceDiagram
   </div>
 
   <script>
-    // --- Global Theme & Utilities ---
+    const scales = {};
+
     function toggleTheme() {
         var isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -590,7 +619,6 @@ sequenceDiagram
         var container = document.getElementById('d3-graph-container');
         if (!container) return;
         
-        // We enforce a minimum coordinate space here so native overflow scrolling kicks in
         var w = Math.max(container.clientWidth, 900);
         var h = Math.max(container.clientHeight, 400);
         
@@ -728,11 +756,42 @@ sequenceDiagram
         updateForces();
         updateD3Theme(document.documentElement.classList.contains('dark'));
         
-        // Native center scroll on init
+        scales['academy-zoom'] = 1;
         setTimeout(() => {
-            var vp = document.querySelector('.academy-viewport');
-            if(vp) vp.scrollLeft = Math.max(0, (vp.scrollWidth - vp.clientWidth) / 2);
+            var vp = document.getElementById('academy-zoom');
+            if(vp) {
+                vp.scrollLeft = Math.max(0, (vp.scrollWidth - vp.clientWidth) / 2);
+                vp.scrollTop = Math.max(0, (vp.scrollHeight - vp.clientHeight) / 2);
+            }
         }, 100);
+    }
+
+    function zoomIn(viewportId) {
+        scales[viewportId] = Math.min((scales[viewportId] || 1) + 0.15, 2.5);
+        applyScale(viewportId);
+    }
+
+    function zoomOut(viewportId) {
+        scales[viewportId] = Math.max((scales[viewportId] || 1) - 0.15, 0.5);
+        applyScale(viewportId);
+    }
+
+    function resetZoom(viewportId) {
+        scales[viewportId] = 1;
+        applyScale(viewportId);
+        
+        const viewport = document.getElementById(viewportId);
+        setTimeout(() => {
+            viewport.scrollLeft = Math.max(0, (viewport.scrollWidth - viewport.clientWidth) / 2);
+            viewport.scrollTop = Math.max(0, (viewport.scrollHeight - viewport.clientHeight) / 2);
+        }, 300);
+    }
+
+    function applyScale(viewportId) {
+        const wrapper = document.querySelector(`#${viewportId} .scale-wrapper`);
+        if (wrapper) {
+            wrapper.style.transform = `scale(${scales[viewportId]})`;
+        }
     }
 
     function dragstarted(event, d) {
