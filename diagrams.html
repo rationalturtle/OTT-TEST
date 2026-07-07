@@ -24,6 +24,7 @@
             }
         }
         
+        // 👉 MUTATION: Aligned typography engines to the Academy D3 aesthetic
         mermaid.initialize({ 
             startOnLoad: false, 
             theme: 'base',
@@ -31,32 +32,32 @@
             useMaxWidth: false,
             sequence: {
                 showSequenceNumbers: true,
-                actorMargin: 180, // 👉 MUTATION: Drastically increased to force the diagram wider
+                actorMargin: 180, 
                 messageMargin: 50,
                 boxMargin: 30,
                 rightAngles: true,
                 actorFontFamily: 'Geist Sans',
                 noteFontFamily: 'Geist Sans',
-                messageFontFamily: 'Geist Sans'
+                messageFontFamily: 'Geist Mono' // Technical mono for payloads
             },
             themeVariables: {
                 fontFamily: 'Geist Sans',
-                primaryColor: '#ffffff',
-                primaryTextColor: '#18181b',
-                primaryBorderColor: '#18181b',
-                lineColor: '#a1a1aa',
-                textColor: '#18181b',
-                actorLineColor: '#a1a1aa',
-                actorBkg: '#ffffff',
-                actorBorder: '#18181b',
-                signalColor: '#52525b',
-                signalTextColor: '#52525b',
-                labelBoxBkgColor: '#18181b',
-                labelBoxBorderColor: '#18181b',
-                labelText: '#ffffff',
-                loopTextColor: '#18181b',
+                primaryColor: 'transparent',
+                primaryTextColor: '#171717',
+                primaryBorderColor: '#e5e5e5',
+                lineColor: '#a3a3a3',
+                textColor: '#171717',
+                actorLineColor: '#e5e5e5',
+                actorBkg: 'transparent',
+                actorBorder: '#e5e5e5',
+                signalColor: '#737373',
+                signalTextColor: '#737373',
+                labelBoxBkgColor: '#ffffff',
+                labelBoxBorderColor: '#e5e5e5',
+                labelText: '#171717',
+                loopTextColor: '#171717',
                 noteBkgColor: '#fafafa',
-                noteBorderColor: '#e4e4e7',
+                noteBorderColor: '#e5e5e5',
                 noteTextColor: '#52525b'
             }
         });
@@ -91,7 +92,6 @@
         }
 
         .mermaid svg { 
-            /* 👉 MUTATION: Restored pure percentage scaling to prevent clipping */
             min-width: 1100px;
             width: 100%;
             max-width: none !important;
@@ -102,50 +102,62 @@
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- MERMAID VECTOR OVERRIDES (LIGHT MODE) --- */
-        .mermaid rect.actor { stroke-width: 1.5px !important; rx: 6px !important; ry: 6px !important; transition: all 0.2s; }
-        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke-width: 1.5px !important; transition: all 0.2s; }
-        .mermaid text.actor > tspan { font-weight: 600 !important; font-size: 14px !important; transition: fill 0.2s; }
-        .mermaid .actor-line { stroke: #d4d4d8 !important; stroke-width: 2px !important; stroke-dasharray: 4 4 !important; opacity: 1 !important; visibility: visible !important; transition: stroke 0.2s; }
-        .mermaid .messageLine0 { stroke-width: 1.5px !important; transition: stroke 0.2s; }
-        .mermaid .messageLine1 { stroke-width: 1.5px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
-        .mermaid .messageText { font-size: 13px !important; font-weight: 500 !important; transition: fill 0.2s; }
+        /* --- MERMAID VECTOR OVERRIDES (LIGHT MODE - Enterprise Minimalist) --- */
         
-        .mermaid .loopBox { stroke: #e4e4e7 !important; stroke-width: 1.5px !important; rx: 4px !important; transition: stroke 0.2s; }
-        .mermaid .loopLine { stroke: #e4e4e7 !important; stroke-width: 1.5px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
-        .mermaid .labelBox { stroke: #18181b !important; fill: #18181b !important; rx: 4px !important; stroke-width: 1px !important; transition: all 0.2s; }
-        .mermaid .labelText { fill: #ffffff !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.05em; transition: fill 0.2s; }
-        .mermaid .loopText > tspan { font-size: 11px !important; font-weight: 600 !important; transition: fill 0.2s; }
+        /* Actors (Pill-shaped, thin borders like D3 nodes) */
+        .mermaid rect.actor { stroke: #d4d4d8 !important; fill: #ffffff !important; stroke-width: 1px !important; rx: 999px !important; ry: 999px !important; transition: all 0.2s; }
+        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke: #a1a1aa !important; fill: #ffffff !important; stroke-width: 1.5px !important; transition: all 0.2s; }
+        .mermaid text.actor > tspan { fill: #171717 !important; font-weight: 600 !important; font-size: 13px !important; letter-spacing: -0.01em; transition: fill 0.2s; }
         
-        .mermaid .note { stroke: #e4e4e7 !important; fill: #fafafa !important; rx: 4px !important; stroke-width: 1.5px !important; transition: all 0.2s; }
-        .mermaid .noteText { font-size: 12px !important; transition: fill 0.2s; }
+        /* Lifelines (Airy, thin dashes matching Academy flow lines) */
+        .mermaid .actor-line { stroke: #e5e5e5 !important; stroke-width: 1px !important; stroke-dasharray: 4 6 !important; opacity: 1 !important; visibility: visible !important; transition: stroke 0.2s; }
         
-        /* 👉 MUTATION: Enhanced Sequence Numbers */
-        .mermaid g.message circle { fill: #18181b !important; stroke: none !important; r: 11 !important; transition: fill 0.2s; }
-        .mermaid .sequenceNumber { fill: #ffffff !important; font-family: 'Geist Mono', monospace !important; font-size: 12px !important; font-weight: 700 !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
+        /* Message Lines */
+        .mermaid .messageLine0 { stroke: #737373 !important; stroke-width: 1px !important; transition: stroke 0.2s; }
+        .mermaid .messageLine1 { stroke: #a3a3a3 !important; stroke-width: 1px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
+        .mermaid marker path { fill: #737373 !important; stroke: none !important; transition: fill 0.2s; }
+        
+        /* Message Text (Technical Mono) */
+        .mermaid .messageText { fill: #52525b !important; font-family: 'Geist Mono', monospace !important; font-size: 11px !important; font-weight: 500 !important; transition: fill 0.2s; }
+        
+        /* Control Flow Boxes (Loops/Alts - Ghosted out for minimalism) */
+        .mermaid .loopBox { stroke: #e5e5e5 !important; fill: rgba(0,0,0,0.01) !important; stroke-width: 1px !important; stroke-dasharray: 4 4 !important; rx: 8px !important; transition: stroke 0.2s; }
+        .mermaid .loopLine { stroke: #e5e5e5 !important; stroke-width: 1px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
+        .mermaid .labelBox { stroke: #e5e5e5 !important; fill: #ffffff !important; rx: 4px !important; stroke-width: 1px !important; transition: all 0.2s; }
+        .mermaid .labelText { fill: #171717 !important; font-family: 'Geist Mono', monospace !important; font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.05em; transition: fill 0.2s; }
+        .mermaid .loopText > tspan { fill: #737373 !important; font-family: 'Geist Mono', monospace !important; font-size: 10px !important; font-weight: 500 !important; transition: fill 0.2s; }
+        
+        /* Notes */
+        .mermaid .note { stroke: #e5e5e5 !important; fill: #ffffff !important; rx: 6px !important; stroke-width: 1px !important; transition: all 0.2s; shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .mermaid .noteText { fill: #52525b !important; font-size: 11px !important; line-height: 1.5 !important; transition: fill 0.2s; }
+        
+        /* Sequence Numbers (Matched to D3 Node geometry) */
+        .mermaid g.message circle { fill: #ffffff !important; stroke: #d4d4d8 !important; stroke-width: 1px !important; r: 10 !important; transition: all 0.2s; }
+        .mermaid .sequenceNumber { fill: #71717a !important; font-family: 'Geist Mono', monospace !important; font-size: 10px !important; font-weight: 600 !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
         
         /* --- MERMAID VECTOR OVERRIDES (DARK MODE) --- */
         .dark .mermaid rect.actor { stroke: #3f3f46 !important; fill: #050505 !important; }
-        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #71717a !important; fill: #050505 !important; }
-        .dark .mermaid text.actor > tspan { fill: #f4f4f5 !important; }
+        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #52525b !important; fill: #050505 !important; }
+        .dark .mermaid text.actor > tspan { fill: #ededed !important; }
         
-        .dark .mermaid .actor-line { stroke: #3f3f46 !important; }
-        .dark .mermaid .messageLine0, .dark .mermaid .messageLine1 { stroke: #71717a !important; }
+        .dark .mermaid .actor-line { stroke: #27272a !important; }
+        .dark .mermaid .messageLine0 { stroke: #71717a !important; }
+        .dark .mermaid .messageLine1 { stroke: #52525b !important; }
         .dark .mermaid marker path { fill: #71717a !important; }
+        
         .dark .mermaid .messageText { fill: #a1a1aa !important; }
         
-        .dark .mermaid .loopBox { stroke: #27272a !important; }
+        .dark .mermaid .loopBox { stroke: #27272a !important; fill: rgba(255,255,255,0.01) !important; }
         .dark .mermaid .loopLine { stroke: #27272a !important; }
-        .dark .mermaid .labelBox { stroke: #3f3f46 !important; fill: #3f3f46 !important; }
-        .dark .mermaid .labelText { fill: #ffffff !important; }
-        .dark .mermaid .loopText > tspan { fill: #e4e4e7 !important; }
+        .dark .mermaid .labelBox { stroke: #27272a !important; fill: #0a0a0a !important; }
+        .dark .mermaid .labelText { fill: #ededed !important; }
+        .dark .mermaid .loopText > tspan { fill: #a1a1aa !important; }
         
-        .dark .mermaid .note { stroke: #27272a !important; fill: rgba(255,255,255,0.02) !important; }
+        .dark .mermaid .note { stroke: #27272a !important; fill: #0a0a0a !important; }
         .dark .mermaid .noteText { fill: #a1a1aa !important; }
         
-        /* 👉 MUTATION: Dark Mode High-Contrast Sequence Numbers */
-        .dark .mermaid g.message circle { fill: #e4e4e7 !important; }
-        .dark .mermaid .sequenceNumber { fill: #000000 !important; }
+        .dark .mermaid g.message circle { fill: #0a0a0a !important; stroke: #3f3f46 !important; }
+        .dark .mermaid .sequenceNumber { fill: #a1a1aa !important; }
     </style>
 </head>
 <body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col relative">
@@ -391,13 +403,11 @@
                 document.querySelectorAll('.mermaid').forEach((wrapper) => {
                     const id = wrapper.id;
                     scales[id] = 100; 
-                    applyScale(id); // Set initial correct width
+                    applyScale(id); 
                 });
             }).catch(console.error);
         });
 
-        // 👉 MUTATION: Reverted to pure percentage scaling. 
-        // This stops JS from locking Mermaid's ViewBox internally and causing edge-truncation.
         function applyScale(viewportId) {
             const svg = document.querySelector(`#${viewportId} svg`);
             if (svg) {
