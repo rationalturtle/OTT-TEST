@@ -24,6 +24,8 @@
             }
         }
         
+        // 👉 THE FIX: We pass CSS Variables directly into Mermaid.
+        // This allows Mermaid to calculate SVG math flawlessly while respecting Light/Dark mode.
         mermaid.initialize({ 
             startOnLoad: false, 
             theme: 'base',
@@ -41,27 +43,52 @@
             },
             themeVariables: {
                 fontFamily: 'Geist Sans',
-                primaryColor: 'transparent',
-                primaryTextColor: '#171717',
-                primaryBorderColor: 'transparent', 
-                lineColor: '#a3a3a3',
-                textColor: '#171717',
-                actorLineColor: '#a1a1aa', // Baseline lifeline fallback
-                actorBkg: 'transparent', 
-                actorBorder: 'transparent',
-                signalColor: '#737373',
-                signalTextColor: '#52525b',
-                labelBoxBkgColor: '#ffffff',
-                labelBoxBorderColor: '#e5e5e5',
-                labelText: '#171717',
-                loopTextColor: '#171717',
-                noteBkgColor: '#f4f4f5',
-                noteBorderColor: '#e5e5e5',
-                noteTextColor: '#171717'
+                primaryColor: 'var(--mm-actor-bg)',
+                primaryTextColor: 'var(--mm-text)',
+                primaryBorderColor: 'var(--mm-actor-border)', 
+                lineColor: 'var(--mm-line)',
+                textColor: 'var(--mm-text)',
+                actorLineColor: 'var(--mm-actor-line)',
+                actorBkg: 'var(--mm-actor-bg)', 
+                actorBorder: 'var(--mm-actor-border)',
+                signalColor: 'var(--mm-signal)',
+                signalTextColor: 'var(--mm-text-muted)',
+                labelBoxBkgColor: 'var(--mm-actor-bg)',
+                labelBoxBorderColor: 'var(--mm-actor-border)',
+                labelText: 'var(--mm-text)',
+                loopTextColor: 'var(--mm-text)',
+                noteBkgColor: 'var(--mm-note-bg)',
+                noteBorderColor: 'var(--mm-note-border)',
+                noteTextColor: 'var(--mm-text)'
             }
         });
     </script>
     <style>
+        /* 👉 THE FIX: Define strict monochrome palettes for Mermaid */
+        :root {
+            --mm-text: #171717;
+            --mm-text-muted: #52525b;
+            --mm-line: #a3a3a3;
+            --mm-actor-line: #d4d4d8;
+            --mm-actor-bg: #ffffff;
+            --mm-actor-border: #e5e5e5;
+            --mm-signal: #737373;
+            --mm-note-bg: #fafafa;
+            --mm-note-border: #e5e5e5;
+        }
+        
+        .dark {
+            --mm-text: #ededed;
+            --mm-text-muted: #a1a1aa;
+            --mm-line: #52525b;
+            --mm-actor-line: #3f3f46;
+            --mm-actor-bg: #0a0a0a;
+            --mm-actor-border: #27272a;
+            --mm-signal: #71717a;
+            --mm-note-bg: #111111;
+            --mm-note-border: #27272a;
+        }
+
         body { 
             font-family: 'Geist Sans', -apple-system, sans-serif;
             transition: background-color 0.2s, color 0.2s;
@@ -93,70 +120,48 @@
             min-width: 950px; 
             width: 100%;
             max-width: none !important;
-            font-family: 'Geist Sans', sans-serif !important;
             overflow: visible;
             height: auto !important;
             margin: 0 auto;
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- MERMAID CSS TWEAKS (LIGHT MODE) --- */
+        /* 👉 MINIMALIST CSS OVERRIDES 
+           We only use CSS for things Mermaid's config object cannot handle directly 
+        */
+        .mermaid rect.actor { rx: 6px !important; ry: 6px !important; stroke-width: 1.5px !important; }
+        .mermaid text.actor > tspan { font-weight: 600 !important; font-size: 14px !important; }
+        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke-width: 1.5px !important; fill: var(--mm-actor-bg) !important; stroke: var(--mm-text-muted) !important;}
         
-        /* Floating Text Actor Styling */
-        .mermaid text.actor > tspan { fill: #171717 !important; font-weight: 700 !important; font-size: 14px !important; letter-spacing: -0.01em; transition: fill 0.2s; }
-        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke: #52525b !important; fill: #ffffff !important; stroke-width: 1.5px !important; transition: all 0.2s; }
+        /* Force vertical line visibility */
+        .mermaid .actor-line { stroke-width: 2px !important; stroke-dasharray: 4 6 !important; }
         
-        /* 👉 MUTATION: Highly visible vertical lifelines */
-        .mermaid .actor-line { stroke: #a1a1aa !important; stroke-width: 1.5px !important; stroke-dasharray: 4 6 !important; opacity: 1 !important; visibility: visible !important; transition: stroke 0.2s; }
+        /* Typography */
+        .mermaid .messageText { font-size: 11px !important; font-weight: 500 !important; }
+        .mermaid .labelText, .mermaid .labelText > tspan { font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.05em; }
+        .mermaid .loopText > tspan { font-size: 10px !important; font-weight: 500 !important; }
+        .mermaid .noteText, .mermaid .noteText > tspan { font-size: 11px !important; line-height: 1.5 !important; font-weight: 500 !important; }
         
-        /* Message Lines */
-        .mermaid .messageLine0 { stroke: #737373 !important; stroke-width: 1px !important; transition: stroke 0.2s; }
-        .mermaid .messageLine1 { stroke: #a3a3a3 !important; stroke-width: 1px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
-        .mermaid marker path { fill: #737373 !important; stroke: none !important; transition: fill 0.2s; }
+        /* Structure */
+        .mermaid .loopBox { stroke-width: 1px !important; stroke-dasharray: 4 4 !important; rx: 6px !important; }
+        .mermaid .labelBox { rx: 4px !important; stroke-width: 1px !important; }
+        .mermaid .note { rx: 4px !important; stroke-width: 1px !important; }
         
-        /* Technical Mono Payloads */
-        .mermaid .messageText { font-family: 'Geist Mono', monospace !important; font-size: 11px !important; font-weight: 500 !important; transition: fill 0.2s; }
-        
-        /* Minimalist Groupings */
-        .mermaid .loopBox { stroke: #e5e5e5 !important; fill: transparent !important; stroke-width: 1px !important; stroke-dasharray: 4 4 !important; rx: 6px !important; transition: stroke 0.2s; }
-        .mermaid .loopLine { stroke: #e5e5e5 !important; stroke-width: 1px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
-        .mermaid .labelBox { stroke: #e5e5e5 !important; fill: #ffffff !important; rx: 4px !important; stroke-width: 1px !important; transition: all 0.2s; }
-        .mermaid .labelText, .mermaid .labelText > tspan { fill: #171717 !important; font-family: 'Geist Mono', monospace !important; font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.05em; transition: fill 0.2s; }
-        .mermaid .loopText > tspan { fill: #737373 !important; font-family: 'Geist Mono', monospace !important; font-size: 10px !important; font-weight: 500 !important; transition: fill 0.2s; }
-        
-        /* Clean Notes */
-        .mermaid .note { stroke: #e5e5e5 !important; fill: #ffffff !important; rx: 4px !important; stroke-width: 1px !important; transition: all 0.2s; }
-        .mermaid .noteText, .mermaid .noteText > tspan { fill: #171717 !important; font-size: 11px !important; line-height: 1.5 !important; font-weight: 500 !important; transition: fill 0.2s; }
-        
-        /* 👉 MUTATION: Sequence Numbers High Contrast */
-        .mermaid g.message circle { fill: #18181b !important; stroke: none !important; r: 11 !important; transition: all 0.2s; }
-        .mermaid .sequenceNumber, .mermaid .sequenceNumber > tspan { fill: #ffffff !important; font-family: 'Geist Mono', monospace !important; font-size: 11px !important; font-weight: 700 !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
-        
-        /* --- MERMAID VECTOR OVERRIDES (DARK MODE) --- */
-        .dark .mermaid text.actor > tspan { fill: #ededed !important; }
-        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #a1a1aa !important; fill: #050505 !important; }
-        
-        /* 👉 MUTATION: Dark mode lifeline contrast */
-        .dark .mermaid .actor-line { stroke: #52525b !important; }
-        
-        .dark .mermaid .messageLine0 { stroke: #71717a !important; }
-        .dark .mermaid .messageLine1 { stroke: #52525b !important; }
-        .dark .mermaid marker path { fill: #71717a !important; }
-        
-        .dark .mermaid .messageText { fill: #a1a1aa !important; }
-        
-        .dark .mermaid .loopBox { stroke: #27272a !important; fill: rgba(255,255,255,0.01) !important; }
-        .dark .mermaid .loopLine { stroke: #27272a !important; }
-        .dark .mermaid .labelBox { stroke: #27272a !important; fill: #0a0a0a !important; }
-        .dark .mermaid .labelText, .dark .mermaid .labelText > tspan { fill: #ededed !important; }
-        .dark .mermaid .loopText > tspan { fill: #a1a1aa !important; }
-        
-        .dark .mermaid .note { stroke: #27272a !important; fill: #0a0a0a !important; }
-        .dark .mermaid .noteText, .dark .mermaid .noteText > tspan { fill: #e4e4e7 !important; }
-        
-        /* 👉 MUTATION: Dark Mode High Contrast Sequence Numbers */
-        .dark .mermaid g.message circle { fill: #e4e4e7 !important; }
-        .dark .mermaid .sequenceNumber, .dark .mermaid .sequenceNumber > tspan { fill: #000000 !important; }
+        /* Sequence Numbers */
+        .mermaid g.message circle { 
+            fill: var(--mm-actor-bg) !important; 
+            stroke: var(--mm-actor-border) !important; 
+            stroke-width: 2px !important; 
+            r: 12 !important; 
+        }
+        .mermaid .sequenceNumber, .mermaid .sequenceNumber > tspan { 
+            fill: var(--mm-text) !important; 
+            font-family: 'Geist Mono', monospace !important; 
+            font-size: 11px !important; 
+            font-weight: 700 !important; 
+            dominant-baseline: central; 
+            text-anchor: middle; 
+        }
     </style>
 </head>
 <body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col relative">
