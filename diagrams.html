@@ -29,9 +29,9 @@
             theme: 'base',
             sequence: {
                 showSequenceNumbers: true,
-                actorMargin: 100,
-                messageMargin: 40,
-                boxMargin: 20,
+                actorMargin: 120,
+                messageMargin: 50,
+                boxMargin: 30,
                 rightAngles: true 
             },
             themeVariables: {
@@ -39,7 +39,7 @@
                 primaryColor: 'transparent',
                 primaryTextColor: '#52525b',
                 lineColor: '#a1a1aa',
-                actorLineColor: '#e4e4e7' 
+                actorLineColor: '#a1a1aa' 
             }
         });
     </script>
@@ -73,78 +73,62 @@
         }
 
         .mermaid svg { 
-            min-width: 800px;
+            /* 👉 MUTATION: Increased base legibility scale */
+            min-width: 1000px;
             max-width: none !important;
             font-family: 'Geist Sans', sans-serif !important;
             overflow: visible;
             height: auto !important;
         }
 
-        /* --- MERMAID VECTOR OVERRIDES (LIGHT MODE - Monochrome Match) --- */
-        
-        /* System Boxes */
+        /* --- MERMAID VECTOR OVERRIDES (LIGHT MODE) --- */
         .mermaid rect.actor { stroke: #18181b !important; fill: #ffffff !important; rx: 6px !important; ry: 6px !important; stroke-width: 1.5px !important; transition: all 0.2s; }
-        
-        /* Actor Person (Stick Figure) */
         .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke: #18181b !important; fill: #f4f4f5 !important; stroke-width: 1.5px !important; transition: all 0.2s; }
+        .mermaid text.actor > tspan { fill: #18181b !important; font-weight: 600 !important; font-size: 14px !important; transition: fill 0.2s; }
         
-        /* Actor Labels */
-        .mermaid text.actor > tspan { fill: #18181b !important; font-weight: 600 !important; font-size: 13px !important; transition: fill 0.2s; }
+        /* 👉 MUTATION: Restored optical thickness to vertical lifelines */
+        .mermaid .actor-line { stroke: #d4d4d8 !important; stroke-width: 2px !important; stroke-dasharray: 4 4 !important; opacity: 1 !important; visibility: visible !important; transition: stroke 0.2s; }
         
-        /* Lifelines (CRITICAL FIX FOR VERTICAL GRAPH LINES) */
-        .mermaid .actor-line { stroke: #e4e4e7 !important; stroke-width: 1.5px !important; stroke-dasharray: 4 4 !important; opacity: 1 !important; visibility: visible !important; transition: stroke 0.2s; }
-        
-        /* Message Lines & Arrows */
         .mermaid .messageLine0 { stroke: #71717a !important; stroke-width: 1.5px !important; transition: stroke 0.2s; }
         .mermaid .messageLine1 { stroke: #71717a !important; stroke-width: 1.5px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
         .mermaid marker path { fill: #71717a !important; stroke: none !important; transition: fill 0.2s; }
-        
-        /* Message Labels */
-        .mermaid .messageText { fill: #52525b !important; font-size: 12px !important; font-weight: 500 !important; transition: fill 0.2s; }
-        
-        /* Opt Boxes / Loops */
-        .mermaid .loopBox { stroke: #e4e4e7 !important; fill: transparent !important; stroke-width: 1px !important; rx: 4px !important; transition: stroke 0.2s; }
-        .mermaid .loopLine { stroke: #e4e4e7 !important; stroke-width: 1px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
+        .mermaid .messageText { fill: #52525b !important; font-size: 13px !important; font-weight: 500 !important; transition: fill 0.2s; }
+        .mermaid .loopBox { stroke: #e4e4e7 !important; fill: transparent !important; stroke-width: 1.5px !important; rx: 4px !important; transition: stroke 0.2s; }
+        .mermaid .loopLine { stroke: #e4e4e7 !important; stroke-width: 1.5px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
         .mermaid .labelBox { stroke: #18181b !important; fill: #18181b !important; rx: 4px !important; stroke-width: 1px !important; transition: all 0.2s; }
-        .mermaid .labelText { fill: #ffffff !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.05em; transition: fill 0.2s; }
-        .mermaid .loopText > tspan { fill: #18181b !important; font-size: 11px !important; font-weight: 600 !important; transition: fill 0.2s; }
-        
-        /* Notes */
-        .mermaid .note { stroke: #e4e4e7 !important; fill: #fafafa !important; rx: 4px !important; stroke-width: 1px !important; transition: all 0.2s; }
-        .mermaid .noteText { fill: #52525b !important; font-size: 12px !important; transition: fill 0.2s; }
-        
-        /* Sequence Numbers */
-        .mermaid .sequenceNumber { fill: #ffffff !important; font-size: 10px !important; font-weight: bold !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
+        .mermaid .labelText { fill: #ffffff !important; font-size: 12px !important; font-weight: 600 !important; letter-spacing: 0.05em; transition: fill 0.2s; }
+        .mermaid .loopText > tspan { fill: #18181b !important; font-size: 12px !important; font-weight: 600 !important; transition: fill 0.2s; }
+        .mermaid .note { stroke: #e4e4e7 !important; fill: #fafafa !important; rx: 4px !important; stroke-width: 1.5px !important; transition: all 0.2s; }
+        .mermaid .noteText { fill: #52525b !important; font-size: 13px !important; transition: fill 0.2s; }
+        .mermaid .sequenceNumber { fill: #ffffff !important; font-size: 11px !important; font-weight: bold !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
         .mermaid g.message:nth-child(n) > circle { fill: #18181b !important; stroke: none !important; r: 8 !important; transition: fill 0.2s; }
         
-        /* --- MERMAID VECTOR OVERRIDES (DARK MODE - Clean Slate) --- */
-        .dark .mermaid rect.actor { stroke: #3f3f46 !important; fill: #050505 !important; }
-        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #52525b !important; fill: #050505 !important; }
+        /* --- MERMAID VECTOR OVERRIDES (DARK MODE) --- */
+        .dark .mermaid rect.actor { stroke: #52525b !important; fill: #050505 !important; }
+        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #a1a1aa !important; fill: #050505 !important; }
         .dark .mermaid text.actor > tspan { fill: #f4f4f5 !important; }
         
-        .dark .mermaid .actor-line { stroke: #27272a !important; }
+        /* 👉 MUTATION: Elevated contrast for dark mode lifelines */
+        .dark .mermaid .actor-line { stroke: #52525b !important; }
         
-        .dark .mermaid .messageLine0, .dark .mermaid .messageLine1 { stroke: #52525b !important; }
-        .dark .mermaid marker path { fill: #52525b !important; }
-        .dark .mermaid .messageText { fill: #a1a1aa !important; }
-        
-        .dark .mermaid .loopBox { stroke: #27272a !important; }
-        .dark .mermaid .loopLine { stroke: #27272a !important; }
+        .dark .mermaid .messageLine0, .dark .mermaid .messageLine1 { stroke: #71717a !important; }
+        .dark .mermaid marker path { fill: #71717a !important; }
+        .dark .mermaid .messageText { fill: #e4e4e7 !important; }
+        .dark .mermaid .loopBox { stroke: #3f3f46 !important; }
+        .dark .mermaid .loopLine { stroke: #3f3f46 !important; }
         .dark .mermaid .labelBox { stroke: #3f3f46 !important; fill: #3f3f46 !important; }
         .dark .mermaid .labelText { fill: #ffffff !important; }
         .dark .mermaid .loopText > tspan { fill: #e4e4e7 !important; }
-        
-        .dark .mermaid .note { stroke: #27272a !important; fill: rgba(255,255,255,0.02) !important; }
-        .dark .mermaid .noteText { fill: #a1a1aa !important; }
-        
-        .dark .mermaid g.message:nth-child(n) > circle { fill: #52525b !important; }
+        .dark .mermaid .note { stroke: #3f3f46 !important; fill: rgba(255,255,255,0.02) !important; }
+        .dark .mermaid .noteText { fill: #e4e4e7 !important; }
+        .dark .mermaid g.message:nth-child(n) > circle { fill: #71717a !important; }
         .dark .mermaid .sequenceNumber { fill: #000000 !important; }
     </style>
 </head>
 <body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col relative">
 
-    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-50" style="background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
-    <div class="dark:absolute dark:inset-0 dark:z-[-1] dark:pointer-events-none hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
+    <div class="fixed inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-40" style="background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="dark:fixed dark:inset-0 dark:z-[-1] dark:pointer-events-none hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px;"></div>
 
     <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
@@ -172,7 +156,7 @@
     <main class="max-w-[1200px] mx-auto px-6 py-16 w-full flex-grow">
         
         <div class="mb-20">
-            <div class="inline-flex items-center space-x-2 mb-4 px-3 py-1 rounded-full border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 shadow-sm">
+            <div class="inline-flex items-center space-x-2 mb-4 px-3 py-1 rounded-full border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/50 backdrop-blur shadow-sm">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#00df89] shadow-[0_0_8px_#00df89] animate-pulse"></span>
                 <span class="font-mono text-[9px] text-gray-600 dark:text-zinc-300 tracking-widest uppercase font-bold">Deterministic Sequences</span>
             </div>
@@ -322,7 +306,6 @@
                         actor Client as React Client
                         participant CF as CloudFront (Edge)
 
-                        %% Telemetry Loop
                         AWS->>EB: Job State Change (COMPLETE)
                         EB->>CMS: POST /webhooks/mediaconvert (Bearer Auth)
                         
@@ -332,7 +315,6 @@
                         end
                         CMS-->>EB: 200 OK
                         
-                        %% Client Playback Loop
                         Client->>CMS: GET /api/media/mint-token
                         Note over CMS: Server constructs HMAC-SHA256 JWT
                         CMS-->>Client: Return Secure Token (15m TTL)
@@ -395,7 +377,7 @@
             if (svg) {
                 svg.style.width = `${scales[viewportId]}%`;
                 
-                const baseMinWidth = 800;
+                const baseMinWidth = 1000;
                 svg.style.minWidth = `${(scales[viewportId] / 100) * baseMinWidth}px`;
             }
         }
