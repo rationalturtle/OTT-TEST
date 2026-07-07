@@ -24,22 +24,41 @@
             }
         }
         
+        // 👉 MUTATION 2: Injecting Core Geometry directly into the SVG engine
         mermaid.initialize({ 
             startOnLoad: false, 
             theme: 'base',
+            securityLevel: 'loose',
+            useMaxWidth: false,
             sequence: {
                 showSequenceNumbers: true,
                 actorMargin: 120,
-                messageMargin: 50,
+                messageMargin: 40,
                 boxMargin: 30,
-                rightAngles: true 
+                rightAngles: true,
+                actorFontFamily: 'Geist Sans',
+                noteFontFamily: 'Geist Sans',
+                messageFontFamily: 'Geist Sans'
             },
             themeVariables: {
                 fontFamily: 'Geist Sans',
-                primaryColor: 'transparent',
-                primaryTextColor: '#52525b',
+                primaryColor: '#ffffff',
+                primaryTextColor: '#18181b',
+                primaryBorderColor: '#18181b',
                 lineColor: '#a1a1aa',
-                actorLineColor: '#a1a1aa' 
+                textColor: '#18181b',
+                actorLineColor: '#a1a1aa',
+                actorBkg: '#ffffff',
+                actorBorder: '#18181b',
+                signalColor: '#52525b',
+                signalTextColor: '#52525b',
+                labelBoxBkgColor: '#18181b',
+                labelBoxBorderColor: '#18181b',
+                labelText: '#ffffff',
+                loopTextColor: '#18181b',
+                noteBkgColor: '#fafafa',
+                noteBorderColor: '#e4e4e7',
+                noteTextColor: '#52525b'
             }
         });
     </script>
@@ -67,62 +86,71 @@
 
         .mermaid {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start; /* Ensure zooming expands outwards properly */
             width: 100%;
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 400px;
         }
 
         .mermaid svg { 
-            /* 👉 MUTATION: Increased base legibility scale */
-            min-width: 1000px;
             max-width: none !important;
             font-family: 'Geist Sans', sans-serif !important;
             overflow: visible;
             height: auto !important;
+            margin: 0 auto;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* --- MERMAID VECTOR OVERRIDES (LIGHT MODE) --- */
-        .mermaid rect.actor { stroke: #18181b !important; fill: #ffffff !important; rx: 6px !important; ry: 6px !important; stroke-width: 1.5px !important; transition: all 0.2s; }
-        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke: #18181b !important; fill: #f4f4f5 !important; stroke-width: 1.5px !important; transition: all 0.2s; }
-        .mermaid text.actor > tspan { fill: #18181b !important; font-weight: 600 !important; font-size: 14px !important; transition: fill 0.2s; }
         
-        /* 👉 MUTATION: Restored optical thickness to vertical lifelines */
+        /* System Boxes */
+        .mermaid rect.actor { stroke-width: 1.5px !important; rx: 6px !important; ry: 6px !important; transition: all 0.2s; }
+        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke-width: 1.5px !important; transition: all 0.2s; }
+        .mermaid text.actor > tspan { font-weight: 600 !important; font-size: 14px !important; transition: fill 0.2s; }
+        
+        /* 👉 MUTATION 3: The Vertical Lifelines Restored */
         .mermaid .actor-line { stroke: #d4d4d8 !important; stroke-width: 2px !important; stroke-dasharray: 4 4 !important; opacity: 1 !important; visibility: visible !important; transition: stroke 0.2s; }
         
-        .mermaid .messageLine0 { stroke: #71717a !important; stroke-width: 1.5px !important; transition: stroke 0.2s; }
-        .mermaid .messageLine1 { stroke: #71717a !important; stroke-width: 1.5px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
-        .mermaid marker path { fill: #71717a !important; stroke: none !important; transition: fill 0.2s; }
-        .mermaid .messageText { fill: #52525b !important; font-size: 13px !important; font-weight: 500 !important; transition: fill 0.2s; }
-        .mermaid .loopBox { stroke: #e4e4e7 !important; fill: transparent !important; stroke-width: 1.5px !important; rx: 4px !important; transition: stroke 0.2s; }
+        /* Message Lines & Arrows */
+        .mermaid .messageLine0 { stroke-width: 1.5px !important; transition: stroke 0.2s; }
+        .mermaid .messageLine1 { stroke-width: 1.5px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
+        .mermaid .messageText { font-size: 12px !important; font-weight: 500 !important; transition: fill 0.2s; }
+        
+        /* Opt Boxes / Loops */
+        .mermaid .loopBox { stroke: #e4e4e7 !important; stroke-width: 1.5px !important; rx: 4px !important; transition: stroke 0.2s; }
         .mermaid .loopLine { stroke: #e4e4e7 !important; stroke-width: 1.5px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
         .mermaid .labelBox { stroke: #18181b !important; fill: #18181b !important; rx: 4px !important; stroke-width: 1px !important; transition: all 0.2s; }
-        .mermaid .labelText { fill: #ffffff !important; font-size: 12px !important; font-weight: 600 !important; letter-spacing: 0.05em; transition: fill 0.2s; }
-        .mermaid .loopText > tspan { fill: #18181b !important; font-size: 12px !important; font-weight: 600 !important; transition: fill 0.2s; }
+        .mermaid .labelText { fill: #ffffff !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.05em; transition: fill 0.2s; }
+        .mermaid .loopText > tspan { font-size: 11px !important; font-weight: 600 !important; transition: fill 0.2s; }
+        
+        /* Notes */
         .mermaid .note { stroke: #e4e4e7 !important; fill: #fafafa !important; rx: 4px !important; stroke-width: 1.5px !important; transition: all 0.2s; }
-        .mermaid .noteText { fill: #52525b !important; font-size: 13px !important; transition: fill 0.2s; }
-        .mermaid .sequenceNumber { fill: #ffffff !important; font-size: 11px !important; font-weight: bold !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
+        .mermaid .noteText { font-size: 12px !important; transition: fill 0.2s; }
+        
+        /* Sequence Numbers */
+        .mermaid .sequenceNumber { fill: #ffffff !important; font-size: 10px !important; font-weight: bold !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
         .mermaid g.message:nth-child(n) > circle { fill: #18181b !important; stroke: none !important; r: 8 !important; transition: fill 0.2s; }
         
         /* --- MERMAID VECTOR OVERRIDES (DARK MODE) --- */
-        .dark .mermaid rect.actor { stroke: #52525b !important; fill: #050505 !important; }
-        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #a1a1aa !important; fill: #050505 !important; }
+        .dark .mermaid rect.actor { stroke: #3f3f46 !important; fill: #050505 !important; }
+        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #71717a !important; fill: #050505 !important; }
         .dark .mermaid text.actor > tspan { fill: #f4f4f5 !important; }
         
-        /* 👉 MUTATION: Elevated contrast for dark mode lifelines */
-        .dark .mermaid .actor-line { stroke: #52525b !important; }
+        .dark .mermaid .actor-line { stroke: #3f3f46 !important; }
         
         .dark .mermaid .messageLine0, .dark .mermaid .messageLine1 { stroke: #71717a !important; }
         .dark .mermaid marker path { fill: #71717a !important; }
-        .dark .mermaid .messageText { fill: #e4e4e7 !important; }
-        .dark .mermaid .loopBox { stroke: #3f3f46 !important; }
-        .dark .mermaid .loopLine { stroke: #3f3f46 !important; }
+        .dark .mermaid .messageText { fill: #a1a1aa !important; }
+        
+        .dark .mermaid .loopBox { stroke: #27272a !important; }
+        .dark .mermaid .loopLine { stroke: #27272a !important; }
         .dark .mermaid .labelBox { stroke: #3f3f46 !important; fill: #3f3f46 !important; }
         .dark .mermaid .labelText { fill: #ffffff !important; }
         .dark .mermaid .loopText > tspan { fill: #e4e4e7 !important; }
-        .dark .mermaid .note { stroke: #3f3f46 !important; fill: rgba(255,255,255,0.02) !important; }
-        .dark .mermaid .noteText { fill: #e4e4e7 !important; }
+        
+        .dark .mermaid .note { stroke: #27272a !important; fill: rgba(255,255,255,0.02) !important; }
+        .dark .mermaid .noteText { fill: #a1a1aa !important; }
+        
         .dark .mermaid g.message:nth-child(n) > circle { fill: #71717a !important; }
-        .dark .mermaid .sequenceNumber { fill: #000000 !important; }
     </style>
 </head>
 <body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col relative">
@@ -188,7 +216,7 @@
             </div>
             
             <div class="diagram-container">
-                <div id="diagram-1" class="mermaid" style="width: 100%;">
+                <div id="diagram-1" class="mermaid">
                     sequenceDiagram
                         actor UI as React Client
                         participant CMS as Payload CMS
@@ -237,7 +265,7 @@
             </div>
             
             <div class="diagram-container">
-                <div id="diagram-2" class="mermaid" style="width: 100%;">
+                <div id="diagram-2" class="mermaid">
                     sequenceDiagram
                         participant GCS as GCP Bucket (Input)
                         participant EA as Eventarc Trigger
@@ -297,7 +325,7 @@
             </div>
             
             <div class="diagram-container">
-                <div id="diagram-3" class="mermaid" style="width: 100%;">
+                <div id="diagram-3" class="mermaid">
                     sequenceDiagram
                         participant AWS as MediaConvert
                         participant EB as EventBridge
@@ -345,6 +373,7 @@
 
     <script>
         const scales = {};
+        const baseWidths = {}; // 👉 MUTATION 1: Store intrinsic SVG pixel widths
 
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
@@ -368,17 +397,29 @@
                 document.querySelectorAll('.mermaid').forEach((wrapper) => {
                     const id = wrapper.id;
                     scales[id] = 100; 
+                    
+                    // 👉 Initialize intrinsic widths after Mermaid completes SVG DOM injection
+                    const svg = wrapper.querySelector('svg');
+                    if(svg) {
+                        const viewBox = svg.getAttribute('viewBox');
+                        if(viewBox) {
+                            baseWidths[id] = parseFloat(viewBox.split(' ')[2]);
+                        } else {
+                            baseWidths[id] = svg.clientWidth || 1000;
+                        }
+                        applyScale(id); // Set initial scale
+                    }
                 });
             }).catch(console.error);
         });
 
+        // 👉 MUTATION 1: Pixel-Perfect ViewBox Scaling Mathematics
         function applyScale(viewportId) {
             const svg = document.querySelector(`#${viewportId} svg`);
-            if (svg) {
-                svg.style.width = `${scales[viewportId]}%`;
-                
-                const baseMinWidth = 1000;
-                svg.style.minWidth = `${(scales[viewportId] / 100) * baseMinWidth}px`;
+            if (svg && baseWidths[viewportId]) {
+                const pixelWidth = baseWidths[viewportId] * (scales[viewportId] / 100);
+                svg.style.width = `${pixelWidth}px`;
+                svg.style.minWidth = `${pixelWidth}px`;
             }
         }
 
@@ -399,7 +440,7 @@
             const container = document.querySelector(`#${viewportId}`).parentElement;
             if(container) {
                 setTimeout(() => {
-                    container.scrollLeft = Math.max(0, (container.scrollWidth - container.clientWidth) / 2);
+                    container.scrollLeft = 0; // Reset scroll to left origin naturally
                 }, 300);
             }
         }
