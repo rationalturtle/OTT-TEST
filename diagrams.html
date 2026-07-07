@@ -24,8 +24,6 @@
             }
         }
         
-        // 👉 THE FIX: We pass CSS Variables directly into Mermaid.
-        // This allows Mermaid to calculate SVG math flawlessly while respecting Light/Dark mode.
         mermaid.initialize({ 
             startOnLoad: false, 
             theme: 'base',
@@ -40,36 +38,15 @@
                 actorFontFamily: 'Geist Sans',
                 noteFontFamily: 'Geist Sans',
                 messageFontFamily: 'Geist Mono'
-            },
-            themeVariables: {
-                fontFamily: 'Geist Sans',
-                primaryColor: 'var(--mm-actor-bg)',
-                primaryTextColor: 'var(--mm-text)',
-                primaryBorderColor: 'var(--mm-actor-border)', 
-                lineColor: 'var(--mm-line)',
-                textColor: 'var(--mm-text)',
-                actorLineColor: 'var(--mm-actor-line)',
-                actorBkg: 'var(--mm-actor-bg)', 
-                actorBorder: 'var(--mm-actor-border)',
-                signalColor: 'var(--mm-signal)',
-                signalTextColor: 'var(--mm-text-muted)',
-                labelBoxBkgColor: 'var(--mm-actor-bg)',
-                labelBoxBorderColor: 'var(--mm-actor-border)',
-                labelText: 'var(--mm-text)',
-                loopTextColor: 'var(--mm-text)',
-                noteBkgColor: 'var(--mm-note-bg)',
-                noteBorderColor: 'var(--mm-note-border)',
-                noteTextColor: 'var(--mm-text)'
             }
         });
     </script>
     <style>
-        /* 👉 THE FIX: Define strict monochrome palettes for Mermaid */
+        /* 👉 THE FIX: Unified CSS Variables mapping perfectly to your Light/Dark palettes */
         :root {
             --mm-text: #171717;
-            --mm-text-muted: #52525b;
-            --mm-line: #a3a3a3;
-            --mm-actor-line: #d4d4d8;
+            --mm-text-muted: #737373;
+            --mm-actor-line: #e5e5e5;
             --mm-actor-bg: #ffffff;
             --mm-actor-border: #e5e5e5;
             --mm-signal: #737373;
@@ -80,12 +57,11 @@
         .dark {
             --mm-text: #ededed;
             --mm-text-muted: #a1a1aa;
-            --mm-line: #52525b;
-            --mm-actor-line: #3f3f46;
-            --mm-actor-bg: #0a0a0a;
+            --mm-actor-line: #27272a;
+            --mm-actor-bg: #050505;
             --mm-actor-border: #27272a;
             --mm-signal: #71717a;
-            --mm-note-bg: #111111;
+            --mm-note-bg: #0a0a0a;
             --mm-note-border: #27272a;
         }
 
@@ -120,44 +96,111 @@
             min-width: 950px; 
             width: 100%;
             max-width: none !important;
+            font-family: 'Geist Sans', sans-serif !important;
             overflow: visible;
             height: auto !important;
             margin: 0 auto;
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 👉 MINIMALIST CSS OVERRIDES 
-           We only use CSS for things Mermaid's config object cannot handle directly 
-        */
-        .mermaid rect.actor { rx: 6px !important; ry: 6px !important; stroke-width: 1.5px !important; }
-        .mermaid text.actor > tspan { font-weight: 600 !important; font-size: 14px !important; }
-        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke-width: 1.5px !important; fill: var(--mm-actor-bg) !important; stroke: var(--mm-text-muted) !important;}
+        /* 👉 FORCE-OVERRIDE ALL MERMAID DOM INJECTIONS */
         
-        /* Force vertical line visibility */
-        .mermaid .actor-line { stroke-width: 2px !important; stroke-dasharray: 4 6 !important; }
+        /* Actors: Floating text without breaking math */
+        .mermaid rect.actor { 
+            fill: transparent !important; 
+            stroke: transparent !important; 
+        }
+        .mermaid text.actor > tspan { 
+            fill: var(--mm-text) !important; 
+            font-weight: 600 !important; 
+            font-size: 13px !important; 
+        }
+        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { 
+            fill: var(--mm-actor-bg) !important; 
+            stroke: var(--mm-text-muted) !important; 
+            stroke-width: 1.5px !important; 
+        }
         
-        /* Typography */
-        .mermaid .messageText { font-size: 11px !important; font-weight: 500 !important; }
-        .mermaid .labelText, .mermaid .labelText > tspan { font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.05em; }
-        .mermaid .loopText > tspan { font-size: 10px !important; font-weight: 500 !important; }
-        .mermaid .noteText, .mermaid .noteText > tspan { font-size: 11px !important; line-height: 1.5 !important; font-weight: 500 !important; }
+        /* Lifelines */
+        .mermaid .actor-line { 
+            stroke: var(--mm-actor-line) !important; 
+            stroke-width: 1.5px !important; 
+            stroke-dasharray: 4 6 !important; 
+            opacity: 1 !important; 
+            visibility: visible !important; 
+        }
         
-        /* Structure */
-        .mermaid .loopBox { stroke-width: 1px !important; stroke-dasharray: 4 4 !important; rx: 6px !important; }
-        .mermaid .labelBox { rx: 4px !important; stroke-width: 1px !important; }
-        .mermaid .note { rx: 4px !important; stroke-width: 1px !important; }
+        /* Messages */
+        .mermaid .messageLine0, .mermaid .messageLine1 { 
+            stroke: var(--mm-signal) !important; 
+            stroke-width: 1px !important; 
+        }
+        .mermaid .messageLine1 { stroke-dasharray: 4 4 !important; }
+        .mermaid marker path { fill: var(--mm-signal) !important; stroke: none !important; }
+        .mermaid .messageText { 
+            fill: var(--mm-text-muted) !important; 
+            font-family: 'Geist Mono', monospace !important; 
+            font-size: 11px !important; 
+        }
+        
+        /* Loops & Boundaries */
+        .mermaid .loopBox { 
+            fill: transparent !important; 
+            stroke: var(--mm-actor-border) !important; 
+            stroke-width: 1px !important; 
+            stroke-dasharray: 4 4 !important; 
+            rx: 6px !important; 
+        }
+        .mermaid .loopLine { 
+            stroke: var(--mm-actor-border) !important; 
+            stroke-width: 1px !important; 
+            stroke-dasharray: 4 4 !important; 
+        }
+        .mermaid .labelBox { 
+            fill: var(--mm-actor-bg) !important; 
+            stroke: var(--mm-actor-border) !important; 
+            rx: 4px !important; 
+            stroke-width: 1px !important; 
+        }
+        .mermaid .labelText, .mermaid .labelText > tspan { 
+            fill: var(--mm-text) !important; 
+            font-family: 'Geist Mono', monospace !important; 
+            font-size: 10px !important; 
+            font-weight: 600 !important; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+        }
+        .mermaid .loopText, .mermaid .loopText > tspan { 
+            fill: var(--mm-text-muted) !important; 
+            font-family: 'Geist Mono', monospace !important; 
+            font-size: 10px !important; 
+        }
+        
+        /* Notes (Fixes the yellow bug) */
+        .mermaid .note { 
+            fill: var(--mm-note-bg) !important; 
+            stroke: var(--mm-note-border) !important; 
+            rx: 4px !important; 
+            stroke-width: 1px !important; 
+        }
+        .mermaid .noteText, .mermaid .noteText > tspan { 
+            fill: var(--mm-text) !important; 
+            font-family: 'Geist Sans', sans-serif !important;
+            font-size: 11px !important; 
+            line-height: 1.5 !important; 
+        }
         
         /* Sequence Numbers */
         .mermaid g.message circle { 
             fill: var(--mm-actor-bg) !important; 
             stroke: var(--mm-actor-border) !important; 
-            stroke-width: 2px !important; 
-            r: 12 !important; 
+            stroke-width: 1.5px !important; 
+            r: 10 !important; 
         }
         .mermaid .sequenceNumber, .mermaid .sequenceNumber > tspan { 
             fill: var(--mm-text) !important; 
             font-family: 'Geist Mono', monospace !important; 
-            font-size: 11px !important; 
+            font-size: 10px !important; 
             font-weight: 700 !important; 
             dominant-baseline: central; 
             text-anchor: middle; 
@@ -226,30 +269,32 @@
                 </div>
             </div>
             
-            <div class="diagram-container bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm relative z-10">
-                <div id="diagram-1" class="mermaid">
-                    sequenceDiagram
-                        actor UI as React Client
-                        participant CMS as Payload CMS
-                        participant DB as PostgreSQL
-                        participant GCS as GCP Bucket (Input)
+            <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm overflow-hidden relative z-10">
+                <div class="diagram-container">
+                    <div id="diagram-1" class="mermaid">
+                        sequenceDiagram
+                            actor UI as React Client
+                            participant CMS as Payload CMS
+                            participant DB as PostgreSQL
+                            participant GCS as GCP Bucket (Input)
 
-                        UI->>CMS: POST /api/media/initialize-package
-                        CMS->>DB: Raw SQL Insert (Media & Sidecars)
-                        DB-->>CMS: Return DB Relational IDs
-                        CMS-->>UI: 200 OK (docId)
-                        
-                        loop Direct-to-Cloud Bypass
-                            UI->>CMS: POST /api/media/get-resumable-url
-                            Note over CMS: Generate deterministic token<br/>(clean_folder__hash.ext)
-                            CMS->>GCS: file.createResumableUpload()
-                            GCS-->>CMS: Resumable Session URI (TCP Socket)
-                            CMS-->>UI: uploadUrl, generatedFilename
+                            UI->>CMS: POST /api/media/initialize-package
+                            CMS->>DB: Raw SQL Insert (Media & Sidecars)
+                            DB-->>CMS: Return DB Relational IDs
+                            CMS-->>UI: 200 OK (docId)
                             
-                            UI->>GCS: Stream 5MB Chunks (File.slice)
-                            Note over UI,GCS: Native client streaming bypasses Node.js RAM entirely
-                            GCS-->>UI: 200 OK (Object Finalized)
-                        end
+                            loop Direct-to-Cloud Bypass
+                                UI->>CMS: POST /api/media/get-resumable-url
+                                Note over CMS: Generate deterministic token<br/>(clean_folder__hash.ext)
+                                CMS->>GCS: file.createResumableUpload()
+                                GCS-->>CMS: Resumable Session URI (TCP Socket)
+                                CMS-->>UI: uploadUrl, generatedFilename
+                                
+                                UI->>GCS: Stream 5MB Chunks (File.slice)
+                                Note over UI,GCS: Native client streaming bypasses Node.js RAM entirely
+                                GCS-->>UI: 200 OK (Object Finalized)
+                            end
+                    </div>
                 </div>
             </div>
         </div>
@@ -275,41 +320,43 @@
                 </div>
             </div>
             
-            <div class="diagram-container bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm relative z-10">
-                <div id="diagram-2" class="mermaid">
-                    sequenceDiagram
-                        participant GCS as GCP Bucket (Input)
-                        participant EA as Eventarc Trigger
-                        participant CR as Cloud Run (Python)
-                        participant AWS as Elemental MediaConvert
-                        participant S3 as S3 Bucket (Output)
+            <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm overflow-hidden relative z-10">
+                <div class="diagram-container">
+                    <div id="diagram-2" class="mermaid">
+                        sequenceDiagram
+                            participant GCS as GCP Bucket (Input)
+                            participant EA as Eventarc Trigger
+                            participant CR as Cloud Run (Python)
+                            participant AWS as Elemental MediaConvert
+                            participant S3 as S3 Bucket (Output)
 
-                        GCS->>EA: Object Finalize Event
-                        EA->>CR: Trigger Async Webhook
-                        
-                        Note over CR: Audit Phase: Verify blob.size > 0<br/>Check for sibling sidecar tracks
-                        
-                        opt Incomplete Bundle
-                            CR-->>EA: 200 OK (Awaiting siblings - safely exit)
-                        end
-                        
-                        opt Bundle Complete
-                            CR->>GCS: Attempt lock (if_generation_match=0)
+                            GCS->>EA: Object Finalize Event
+                            EA->>CR: Trigger Async Webhook
                             
-                            alt Lock Claimed by Another Thread
-                                GCS-->>CR: Precondition Failed
-                                CR-->>EA: 200 OK (Concurrency deflected)
-                            else Lock Acquired
-                                GCS-->>CR: Lock Success (___mediaconvert.lock)
-                                CR->>GCS: Generate Signed v4 URLs (1hr TTL)
-                                CR->>AWS: Submit Transcode Job (JSON Schema)
-                                AWS-->>CR: Job ID Acknowledged
-                                CR-->>EA: 200 OK
+                            Note over CR: Audit Phase: Verify blob.size > 0<br/>Check for sibling sidecar tracks
+                            
+                            opt Incomplete Bundle
+                                CR-->>EA: 200 OK (Awaiting siblings - safely exit)
                             end
-                        end
-                        
-                        Note over AWS: Process H.264 / M3U8 Multiplexing
-                        AWS->>S3: Write .m3u8 playlist & .ts segments
+                            
+                            opt Bundle Complete
+                                CR->>GCS: Attempt lock (if_generation_match=0)
+                                
+                                alt Lock Claimed by Another Thread
+                                    GCS-->>CR: Precondition Failed
+                                    CR-->>EA: 200 OK (Concurrency deflected)
+                                else Lock Acquired
+                                    GCS-->>CR: Lock Success (___mediaconvert.lock)
+                                    CR->>GCS: Generate Signed v4 URLs (1hr TTL)
+                                    CR->>AWS: Submit Transcode Job (JSON Schema)
+                                    AWS-->>CR: Job ID Acknowledged
+                                    CR-->>EA: 200 OK
+                                end
+                            end
+                            
+                            Note over AWS: Process H.264 / M3U8 Multiplexing
+                            AWS->>S3: Write .m3u8 playlist & .ts segments
+                    </div>
                 </div>
             </div>
         </div>
@@ -335,37 +382,39 @@
                 </div>
             </div>
             
-            <div class="diagram-container bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm relative z-10">
-                <div id="diagram-3" class="mermaid">
-                    sequenceDiagram
-                        participant AWS as MediaConvert
-                        participant EB as EventBridge
-                        participant CMS as Payload CMS
-                        participant GCS as GCP Bucket
-                        actor Client as React Client
-                        participant CF as CloudFront (Edge)
+            <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm overflow-hidden relative z-10">
+                <div class="diagram-container">
+                    <div id="diagram-3" class="mermaid">
+                        sequenceDiagram
+                            participant AWS as MediaConvert
+                            participant EB as EventBridge
+                            participant CMS as Payload CMS
+                            participant GCS as GCP Bucket
+                            actor Client as React Client
+                            participant CF as CloudFront (Edge)
 
-                        AWS->>EB: Job State Change (COMPLETE)
-                        EB->>CMS: POST /webhooks/mediaconvert (Bearer Auth)
-                        
-                        opt State Convergence
-                            CMS->>GCS: Delete lock file (___mediaconvert.lock)
-                            CMS->>CMS: DB: Update status='ready' & manifest_url
-                        end
-                        CMS-->>EB: 200 OK
-                        
-                        Client->>CMS: GET /api/media/mint-token
-                        Note over CMS: Server constructs HMAC-SHA256 JWT
-                        CMS-->>Client: Return Secure Token (15m TTL)
-                        
-                        Client->>CF: GET /manifest.m3u8 (X-OTT-ACCESS-TOKEN)
-                        Note over CF: JS 2.0 Edge Worker evaluates mathematics
-                        
-                        alt Token Invalid / Expired
-                            CF-->>Client: 403 Forbidden
-                        else Token Valid
-                            CF-->>Client: 200 OK (Stream authorized, fetch from Origin)
-                        end
+                            AWS->>EB: Job State Change (COMPLETE)
+                            EB->>CMS: POST /webhooks/mediaconvert (Bearer Auth)
+                            
+                            opt State Convergence
+                                CMS->>GCS: Delete lock file (___mediaconvert.lock)
+                                CMS->>CMS: DB: Update status='ready' & manifest_url
+                            end
+                            CMS-->>EB: 200 OK
+                            
+                            Client->>CMS: GET /api/media/mint-token
+                            Note over CMS: Server constructs HMAC-SHA256 JWT
+                            CMS-->>Client: Return Secure Token (15m TTL)
+                            
+                            Client->>CF: GET /manifest.m3u8 (X-OTT-ACCESS-TOKEN)
+                            Note over CF: JS 2.0 Edge Worker evaluates mathematics
+                            
+                            alt Token Invalid / Expired
+                                CF-->>Client: 403 Forbidden
+                            else Token Valid
+                                CF-->>Client: 200 OK (Stream authorized, fetch from Origin)
+                            end
+                    </div>
                 </div>
             </div>
         </div>
