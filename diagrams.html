@@ -24,7 +24,6 @@
             }
         }
         
-        // 👉 MINIMALIST MUTATION: Native transparency prevents SVG math explosions
         mermaid.initialize({ 
             startOnLoad: false, 
             theme: 'base',
@@ -44,11 +43,11 @@
                 fontFamily: 'Geist Sans',
                 primaryColor: 'transparent',
                 primaryTextColor: '#171717',
-                primaryBorderColor: 'transparent', // Removes the box border
+                primaryBorderColor: 'transparent', 
                 lineColor: '#a3a3a3',
                 textColor: '#171717',
-                actorLineColor: '#d4d4d8',
-                actorBkg: 'transparent', // Removes the box background
+                actorLineColor: '#a1a1aa', // Baseline lifeline fallback
+                actorBkg: 'transparent', 
                 actorBorder: 'transparent',
                 signalColor: '#737373',
                 signalTextColor: '#52525b',
@@ -76,7 +75,6 @@
             width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            padding-bottom: 2rem;
         }
 
         .diagram-container::-webkit-scrollbar { height: 6px; width: 6px; }
@@ -92,7 +90,7 @@
         }
 
         .mermaid svg { 
-            min-width: 950px; /* Safe minimum width to prevent right-side clipping */
+            min-width: 950px; 
             width: 100%;
             max-width: none !important;
             font-family: 'Geist Sans', sans-serif !important;
@@ -106,10 +104,10 @@
         
         /* Floating Text Actor Styling */
         .mermaid text.actor > tspan { fill: #171717 !important; font-weight: 700 !important; font-size: 14px !important; letter-spacing: -0.01em; transition: fill 0.2s; }
-        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke: #a1a1aa !important; fill: #ffffff !important; stroke-width: 1.5px !important; transition: all 0.2s; }
+        .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { stroke: #52525b !important; fill: #ffffff !important; stroke-width: 1.5px !important; transition: all 0.2s; }
         
-        /* Thin, airy lifelines matching academy.html */
-        .mermaid .actor-line { stroke: #e5e5e5 !important; stroke-width: 1.5px !important; stroke-dasharray: 4 6 !important; opacity: 1 !important; visibility: visible !important; transition: stroke 0.2s; }
+        /* 👉 MUTATION: Highly visible vertical lifelines */
+        .mermaid .actor-line { stroke: #a1a1aa !important; stroke-width: 1.5px !important; stroke-dasharray: 4 6 !important; opacity: 1 !important; visibility: visible !important; transition: stroke 0.2s; }
         
         /* Message Lines */
         .mermaid .messageLine0 { stroke: #737373 !important; stroke-width: 1px !important; transition: stroke 0.2s; }
@@ -123,39 +121,42 @@
         .mermaid .loopBox { stroke: #e5e5e5 !important; fill: transparent !important; stroke-width: 1px !important; stroke-dasharray: 4 4 !important; rx: 6px !important; transition: stroke 0.2s; }
         .mermaid .loopLine { stroke: #e5e5e5 !important; stroke-width: 1px !important; stroke-dasharray: 4 4 !important; transition: stroke 0.2s; }
         .mermaid .labelBox { stroke: #e5e5e5 !important; fill: #ffffff !important; rx: 4px !important; stroke-width: 1px !important; transition: all 0.2s; }
-        .mermaid .labelText { font-family: 'Geist Mono', monospace !important; font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.05em; transition: fill 0.2s; }
+        .mermaid .labelText, .mermaid .labelText > tspan { fill: #171717 !important; font-family: 'Geist Mono', monospace !important; font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.05em; transition: fill 0.2s; }
         .mermaid .loopText > tspan { fill: #737373 !important; font-family: 'Geist Mono', monospace !important; font-size: 10px !important; font-weight: 500 !important; transition: fill 0.2s; }
         
         /* Clean Notes */
         .mermaid .note { stroke: #e5e5e5 !important; fill: #ffffff !important; rx: 4px !important; stroke-width: 1px !important; transition: all 0.2s; }
-        .mermaid .noteText { font-size: 11px !important; line-height: 1.5 !important; transition: fill 0.2s; }
+        .mermaid .noteText, .mermaid .noteText > tspan { fill: #171717 !important; font-size: 11px !important; line-height: 1.5 !important; font-weight: 500 !important; transition: fill 0.2s; }
         
-        /* Sequence Numbers - Let Mermaid handle the radius naturally */
-        .mermaid g.message circle { fill: #ffffff !important; stroke: #d4d4d8 !important; stroke-width: 1px !important; transition: all 0.2s; }
-        .mermaid .sequenceNumber { fill: #71717a !important; font-family: 'Geist Mono', monospace !important; font-size: 10px !important; font-weight: 700 !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
+        /* 👉 MUTATION: Sequence Numbers High Contrast */
+        .mermaid g.message circle { fill: #18181b !important; stroke: none !important; r: 11 !important; transition: all 0.2s; }
+        .mermaid .sequenceNumber, .mermaid .sequenceNumber > tspan { fill: #ffffff !important; font-family: 'Geist Mono', monospace !important; font-size: 11px !important; font-weight: 700 !important; dominant-baseline: central; text-anchor: middle; transition: fill 0.2s; }
         
         /* --- MERMAID VECTOR OVERRIDES (DARK MODE) --- */
         .dark .mermaid text.actor > tspan { fill: #ededed !important; }
-        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #52525b !important; fill: #050505 !important; }
+        .dark .mermaid .actor-man path, .dark .mermaid .actor-man line, .dark .mermaid .actor-man circle { stroke: #a1a1aa !important; fill: #050505 !important; }
         
-        .dark .mermaid .actor-line { stroke: #27272a !important; }
+        /* 👉 MUTATION: Dark mode lifeline contrast */
+        .dark .mermaid .actor-line { stroke: #52525b !important; }
+        
         .dark .mermaid .messageLine0 { stroke: #71717a !important; }
         .dark .mermaid .messageLine1 { stroke: #52525b !important; }
         .dark .mermaid marker path { fill: #71717a !important; }
         
         .dark .mermaid .messageText { fill: #a1a1aa !important; }
         
-        .dark .mermaid .loopBox { stroke: #27272a !important; }
+        .dark .mermaid .loopBox { stroke: #27272a !important; fill: rgba(255,255,255,0.01) !important; }
         .dark .mermaid .loopLine { stroke: #27272a !important; }
         .dark .mermaid .labelBox { stroke: #27272a !important; fill: #0a0a0a !important; }
-        .dark .mermaid .labelText { fill: #ededed !important; }
+        .dark .mermaid .labelText, .dark .mermaid .labelText > tspan { fill: #ededed !important; }
         .dark .mermaid .loopText > tspan { fill: #a1a1aa !important; }
         
         .dark .mermaid .note { stroke: #27272a !important; fill: #0a0a0a !important; }
-        .dark .mermaid .noteText { fill: #a1a1aa !important; }
+        .dark .mermaid .noteText, .dark .mermaid .noteText > tspan { fill: #e4e4e7 !important; }
         
-        .dark .mermaid g.message circle { fill: #0a0a0a !important; stroke: #3f3f46 !important; }
-        .dark .mermaid .sequenceNumber { fill: #a1a1aa !important; }
+        /* 👉 MUTATION: Dark Mode High Contrast Sequence Numbers */
+        .dark .mermaid g.message circle { fill: #e4e4e7 !important; }
+        .dark .mermaid .sequenceNumber, .dark .mermaid .sequenceNumber > tspan { fill: #000000 !important; }
     </style>
 </head>
 <body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col relative">
@@ -179,7 +180,7 @@
             </div>
             <div class="flex items-center space-x-3 pl-2 sm:pl-4 shrink-0">
                 <button onclick="toggleTheme()" class="p-1.5 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" title="Toggle Theme">
-                    <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+                    <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
                     <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                 </button>
             </div>
@@ -200,7 +201,7 @@
         </div>
 
         <div class="mb-32">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4 mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
                 <div class="flex items-center gap-4">
                     <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-zinc-200 font-mono text-sm font-bold shadow-sm">1</div>
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Direct-to-Cloud Ingestion</h2>
@@ -220,7 +221,7 @@
                 </div>
             </div>
             
-            <div class="diagram-container">
+            <div class="diagram-container bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm relative z-10">
                 <div id="diagram-1" class="mermaid">
                     sequenceDiagram
                         actor UI as React Client
@@ -249,7 +250,7 @@
         </div>
 
         <div class="mb-32">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4 mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
                 <div class="flex items-center gap-4">
                     <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-zinc-200 font-mono text-sm font-bold shadow-sm">2</div>
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Serverless Orchestration & Transcode</h2>
@@ -269,7 +270,7 @@
                 </div>
             </div>
             
-            <div class="diagram-container">
+            <div class="diagram-container bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm relative z-10">
                 <div id="diagram-2" class="mermaid">
                     sequenceDiagram
                         participant GCS as GCP Bucket (Input)
@@ -309,7 +310,7 @@
         </div>
 
         <div class="mb-16">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4 mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4 mb-6">
                 <div class="flex items-center gap-4">
                     <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-zinc-200 font-mono text-sm font-bold shadow-sm">3</div>
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Telemetry, GC & Edge Auth</h2>
@@ -329,7 +330,7 @@
                 </div>
             </div>
             
-            <div class="diagram-container">
+            <div class="diagram-container bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm relative z-10">
                 <div id="diagram-3" class="mermaid">
                     sequenceDiagram
                         participant AWS as MediaConvert
