@@ -31,7 +31,7 @@
             useMaxWidth: false,
             sequence: {
                 showSequenceNumbers: true,
-                actorMargin: 120, 
+                actorMargin: 140, 
                 messageMargin: 45,
                 boxMargin: 30,
                 rightAngles: true,
@@ -42,27 +42,26 @@
         });
     </script>
     <style>
-        /* 👉 THE FIX: Unified CSS Variables mapping perfectly to your Light/Dark palettes */
         :root {
             --mm-text: #171717;
-            --mm-text-muted: #737373;
-            --mm-actor-line: #e5e5e5;
+            --mm-text-muted: #52525b;
+            --mm-actor-line: #d4d4d8;
             --mm-actor-bg: #ffffff;
-            --mm-actor-border: #e5e5e5;
             --mm-signal: #737373;
             --mm-note-bg: #fafafa;
             --mm-note-border: #e5e5e5;
+            --mm-loop-border: #e5e5e5;
         }
         
         .dark {
-            --mm-text: #ededed;
-            --mm-text-muted: #a1a1aa;
-            --mm-actor-line: #27272a;
-            --mm-actor-bg: #050505;
-            --mm-actor-border: #27272a;
-            --mm-signal: #71717a;
-            --mm-note-bg: #0a0a0a;
+            --mm-text: #ffffff; /* Brighter text for legibility */
+            --mm-text-muted: #d4d4d8; 
+            --mm-actor-line: #3f3f46; /* Subtle dotted lifeline */
+            --mm-actor-bg: #050505; /* Matches dark card perfectly */
+            --mm-signal: #a1a1aa; /* Brighter signal lines */
+            --mm-note-bg: #111111;
             --mm-note-border: #27272a;
+            --mm-loop-border: #3f3f46;
         }
 
         body { 
@@ -96,18 +95,14 @@
             min-width: 950px; 
             width: 100%;
             max-width: none !important;
-            font-family: 'Geist Sans', sans-serif !important;
             overflow: visible;
             height: auto !important;
             margin: 0 auto;
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        /* 👉 FORCE-OVERRIDE ALL MERMAID DOM INJECTIONS */
         
-        /* Actors: Floating text without breaking math */
         .mermaid rect.actor { 
-            fill: transparent !important; 
+            fill: var(--mm-actor-bg) !important; 
             stroke: transparent !important; 
         }
         .mermaid text.actor > tspan { 
@@ -117,14 +112,14 @@
         }
         .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { 
             fill: var(--mm-actor-bg) !important; 
-            stroke: var(--mm-text-muted) !important; 
+            stroke: var(--mm-text) !important; 
             stroke-width: 1.5px !important; 
         }
         
-        /* Lifelines */
+        /* Lifelines: Thin, dotted, and sitting BEHIND the solid actor masks */
         .mermaid .actor-line { 
             stroke: var(--mm-actor-line) !important; 
-            stroke-width: 1.5px !important; 
+            stroke-width: 1px !important; 
             stroke-dasharray: 4 6 !important; 
             opacity: 1 !important; 
             visibility: visible !important; 
@@ -133,32 +128,33 @@
         /* Messages */
         .mermaid .messageLine0, .mermaid .messageLine1 { 
             stroke: var(--mm-signal) !important; 
-            stroke-width: 1px !important; 
+            stroke-width: 1.5px !important; 
         }
         .mermaid .messageLine1 { stroke-dasharray: 4 4 !important; }
         .mermaid marker path { fill: var(--mm-signal) !important; stroke: none !important; }
         .mermaid .messageText { 
             fill: var(--mm-text-muted) !important; 
             font-family: 'Geist Mono', monospace !important; 
-            font-size: 11px !important; 
+            font-size: 11.5px !important; 
+            font-weight: 500 !important; 
         }
         
         /* Loops & Boundaries */
         .mermaid .loopBox { 
             fill: transparent !important; 
-            stroke: var(--mm-actor-border) !important; 
+            stroke: var(--mm-loop-border) !important; 
             stroke-width: 1px !important; 
             stroke-dasharray: 4 4 !important; 
             rx: 6px !important; 
         }
         .mermaid .loopLine { 
-            stroke: var(--mm-actor-border) !important; 
+            stroke: var(--mm-loop-border) !important; 
             stroke-width: 1px !important; 
             stroke-dasharray: 4 4 !important; 
         }
         .mermaid .labelBox { 
             fill: var(--mm-actor-bg) !important; 
-            stroke: var(--mm-actor-border) !important; 
+            stroke: var(--mm-loop-border) !important; 
             rx: 4px !important; 
             stroke-width: 1px !important; 
         }
@@ -176,7 +172,7 @@
             font-size: 10px !important; 
         }
         
-        /* Notes (Fixes the yellow bug) */
+        /* Notes */
         .mermaid .note { 
             fill: var(--mm-note-bg) !important; 
             stroke: var(--mm-note-border) !important; 
@@ -186,14 +182,14 @@
         .mermaid .noteText, .mermaid .noteText > tspan { 
             fill: var(--mm-text) !important; 
             font-family: 'Geist Sans', sans-serif !important;
-            font-size: 11px !important; 
+            font-size: 11.5px !important; 
             line-height: 1.5 !important; 
         }
         
         /* Sequence Numbers */
         .mermaid g.message circle { 
             fill: var(--mm-actor-bg) !important; 
-            stroke: var(--mm-actor-border) !important; 
+            stroke: var(--mm-signal) !important; 
             stroke-width: 1.5px !important; 
             r: 10 !important; 
         }
