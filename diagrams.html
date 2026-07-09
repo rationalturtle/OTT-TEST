@@ -401,7 +401,6 @@
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateTabBorders();
         }
 
         function initTheme() {
@@ -412,35 +411,29 @@
             } else {
                 document.documentElement.classList.remove('dark');
             }
-            updateTabBorders();
-        }
-
-        function updateTabBorders() {
-            const isDark = document.documentElement.classList.contains('dark');
-            const activeTab = document.querySelector('.tab-btn.active');
-            if(activeTab) {
-                activeTab.classList.remove('border-black', 'border-white');
-                activeTab.classList.add(isDark ? 'border-white' : 'border-black');
-            }
         }
 
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
             
+            // Reset all tab buttons to default (inactive) state
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
-                el.classList.add('border-transparent', 'text-gray-500');
+                el.classList.add('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
             });
 
+            // Show selected tab content
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             document.getElementById('tab-' + tabId).classList.add('block');
             
+            // Apply active styles strictly to the selected tab button
             const activeBtn = document.querySelector(`[data-target="${tabId}"]`);
-            activeBtn.classList.add('active', 'text-black', 'dark:text-white');
-            activeBtn.classList.remove('border-transparent', 'text-gray-500');
-            
-            updateTabBorders();
+            activeBtn.classList.add('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
+            activeBtn.classList.remove('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
