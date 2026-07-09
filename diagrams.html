@@ -31,7 +31,7 @@
             useMaxWidth: false,
             sequence: {
                 showSequenceNumbers: true,
-                actorMargin: 80, /* Reduced to bring actors closer together */
+                actorMargin: 80, 
                 messageMargin: 60,
                 boxMargin: 30,
                 rightAngles: true,
@@ -91,7 +91,7 @@
         }
 
         .mermaid svg { 
-            max-width: 100% !important; /* Allow natural sizing */
+            max-width: 100% !important;
             overflow: visible;
             height: auto !important;
             margin: 0 auto;
@@ -197,21 +197,22 @@
             line-height: 1.5 !important; 
         }
         
-        /* Sequence Numbers */
-        .mermaid g.message circle { 
+        /* --- STATE MUTATION: Sequence Numbers --- */
+        .mermaid .sequenceNumber circle { 
             fill: var(--mm-actor-bg) !important; 
             stroke: var(--mm-signal) !important; 
             stroke-width: 1.5px !important; 
             r: 14 !important; 
         }
-        .mermaid .sequenceNumber, .mermaid .sequenceNumber > tspan { 
+        .mermaid .sequenceNumber text, .mermaid .sequenceNumber text > tspan { 
             fill: var(--mm-text) !important; 
             font-family: 'Geist Mono', monospace !important; 
             font-size: 13px !important; 
             font-weight: 700 !important; 
-            dominant-baseline: central !important; 
-            alignment-baseline: central !important; 
+            dominant-baseline: middle !important; 
+            alignment-baseline: middle !important; 
             text-anchor: middle !important; 
+            transform: translateY(1px); /* Optical baseline correction */
         }
 
         /* --- TAB VISIBILITY LOGIC --- */
