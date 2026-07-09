@@ -32,7 +32,7 @@
             sequence: {
                 showSequenceNumbers: true,
                 actorMargin: 140, 
-                messageMargin: 60, /* Increased slightly for better breathing room */
+                messageMargin: 60,
                 boxMargin: 30,
                 rightAngles: true,
                 actorFontFamily: 'Geist Sans',
@@ -204,15 +204,16 @@
             fill: var(--mm-actor-bg) !important; 
             stroke: var(--mm-signal) !important; 
             stroke-width: 1.5px !important; 
-            r: 10 !important; 
+            r: 14 !important; /* Increased circle size */
         }
         .mermaid .sequenceNumber, .mermaid .sequenceNumber > tspan { 
             fill: var(--mm-text) !important; 
             font-family: 'Geist Mono', monospace !important; 
-            font-size: 10px !important; 
+            font-size: 13px !important; /* Increased text size */
             font-weight: 700 !important; 
-            dominant-baseline: central; 
-            text-anchor: middle; 
+            dominant-baseline: central !important; /* Forces perfect vertical centering */
+            alignment-baseline: central !important; 
+            text-anchor: middle !important; 
         }
 
         /* --- TAB VISIBILITY FIX --- */
