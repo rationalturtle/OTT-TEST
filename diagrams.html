@@ -22,7 +22,7 @@
                     }
                 }
             }
-        }
+        };
         
         mermaid.initialize({ 
             startOnLoad: false, 
@@ -41,7 +41,9 @@
             }
         });
     </script>
+    
     <style>
+        /* CSS Variables defining the strict monochrome palette */
         :root {
             --mm-text: #171717;
             --mm-text-muted: #52525b;
@@ -57,7 +59,7 @@
             --mm-text: #ffffff; 
             --mm-text-muted: #d4d4d8; 
             --mm-actor-line: #52525b; 
-            --mm-actor-bg: #050505; 
+            --mm-actor-bg: #000000; 
             --mm-signal: #a1a1aa; 
             --mm-note-bg: #111111;
             --mm-note-border: #27272a;
@@ -70,7 +72,7 @@
             overflow-x: hidden; 
         }
         
-        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll::-webkit-scrollbar { width: 0px; height: 0px; display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
         .diagram-container {
@@ -78,11 +80,6 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-
-        .diagram-container::-webkit-scrollbar { height: 6px; width: 6px; }
-        .diagram-container::-webkit-scrollbar-track { background: transparent; }
-        .diagram-container::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.2); border-radius: 3px; }
-        .diagram-container::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.4); }
 
         .mermaid {
             display: flex;
@@ -100,6 +97,9 @@
             margin: 0 auto;
         }
 
+        /* --- MERMAID DOM OVERRIDES --- */
+        
+        /* Actors */
         .mermaid rect.actor { 
             fill: var(--mm-actor-bg) !important; 
             stroke: transparent !important; 
@@ -115,6 +115,7 @@
             stroke-width: 1.5px !important; 
         }
         
+        /* Lifelines */
         .mermaid .actor-line { 
             stroke: var(--mm-actor-line) !important; 
             stroke-width: 1px !important; 
@@ -123,6 +124,7 @@
             visibility: visible !important; 
         }
         
+        /* Messages */
         .mermaid .messageLine0, .mermaid .messageLine1 { 
             stroke: var(--mm-signal) !important; 
             stroke-width: 1.5px !important; 
@@ -130,6 +132,7 @@
         .mermaid .messageLine1 { stroke-dasharray: 4 4 !important; }
         .mermaid marker path { fill: var(--mm-signal) !important; stroke: none !important; }
         
+        /* Optical Mask for Message Text */
         .mermaid .messageText { 
             fill: var(--mm-text-muted) !important; 
             font-family: 'Geist Mono', monospace !important; 
@@ -142,6 +145,7 @@
             stroke-linejoin: miter !important;
         }
         
+        /* Loops & Boundaries */
         .mermaid .loopBox { 
             fill: transparent !important; 
             stroke: var(--mm-loop-border) !important; 
@@ -169,6 +173,7 @@
             letter-spacing: 0.05em; 
         }
 
+        /* Optical Mask for Loop Text */
         .mermaid .loopText, .mermaid .loopText > tspan { 
             fill: var(--mm-text-muted) !important; 
             font-family: 'Geist Mono', monospace !important; 
@@ -180,6 +185,7 @@
             stroke-linejoin: miter !important;
         }
         
+        /* Notes */
         .mermaid .note { 
             fill: var(--mm-note-bg) !important; 
             stroke: var(--mm-note-border) !important; 
@@ -193,6 +199,7 @@
             line-height: 1.5 !important; 
         }
         
+        /* Sequence Numbers */
         .mermaid g.message circle { 
             fill: var(--mm-actor-bg) !important; 
             stroke: var(--mm-signal) !important; 
@@ -208,9 +215,7 @@
             text-anchor: middle; 
         }
         
-        .tab-content {
-            animation: fadeIn 0.3s ease-in-out;
-        }
+        .tab-content { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
@@ -275,10 +280,6 @@
         <div class="relative z-10 min-h-[500px] pb-16">
             
             <div id="tab-ingestion" class="tab-content block">
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Direct-to-Cloud Ingestion</h2>
-                    <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">Client-side concurrency bypassing Node.js memory entirely.</p>
-                </div>
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
@@ -308,10 +309,6 @@
             </div>
 
             <div id="tab-orchestration" class="tab-content hidden">
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Serverless Orchestration & Transcode</h2>
-                    <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">Atomic locking and dynamic JSON schema compilation.</p>
-                </div>
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
@@ -352,10 +349,6 @@
             </div>
 
             <div id="tab-telemetry" class="tab-content hidden">
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Telemetry, GC & Edge Auth</h2>
-                    <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">Bearer-authenticated state convergence and 0.1ms edge gating.</p>
-                </div>
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
@@ -452,441 +445,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
-            mermaid.run({ querySelector: '.mermaid' }).catch(console.error);
-        });
-    </script>
-</body>
-</html>                rightAngles: true,
-                actorFontFamily: 'Geist Sans',
-                noteFontFamily: 'Geist Sans',
-                messageFontFamily: 'Geist Mono'
-            }
-        });
-    </script>
-    <style>
-        :root {
-            --mm-text: #171717;
-            --mm-text-muted: #52525b;
-            --mm-actor-line: #a1a1aa;
-            --mm-actor-bg: #ffffff;
-            --mm-signal: #737373;
-            --mm-note-bg: #fafafa;
-            --mm-note-border: #e5e5e5;
-            --mm-loop-border: #e5e5e5;
-        }
-        
-        .dark {
-            --mm-text: #ffffff; 
-            --mm-text-muted: #d4d4d8; 
-            --mm-actor-line: #52525b; 
-            --mm-actor-bg: #050505; 
-            --mm-signal: #a1a1aa; 
-            --mm-note-bg: #111111;
-            --mm-note-border: #27272a;
-            --mm-loop-border: #3f3f46;
-        }
-
-        body { 
-            font-family: 'Geist Sans', -apple-system, sans-serif;
-            transition: background-color 0.2s, color 0.2s;
-            overflow-x: hidden; 
-        }
-        
-        .hide-scroll::-webkit-scrollbar { display: none; }
-        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .diagram-container {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .diagram-container::-webkit-scrollbar { height: 6px; width: 6px; }
-        .diagram-container::-webkit-scrollbar-track { background: transparent; }
-        .diagram-container::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.2); border-radius: 3px; }
-        .diagram-container::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.4); }
-
-        .mermaid {
-            display: flex;
-            justify-content: flex-start;
-            width: 100%;
-            min-height: 400px;
-        }
-
-        /* Enforce min-width so hidden tabs don't collapse SVG math to 0px */
-        .mermaid svg { 
-            min-width: 950px; 
-            width: 100%;
-            max-width: none !important;
-            overflow: visible;
-            height: auto !important;
-            margin: 0 auto;
-        }
-
-        /* Actors */
-        .mermaid rect.actor { 
-            fill: var(--mm-actor-bg) !important; 
-            stroke: transparent !important; 
-        }
-        .mermaid text.actor > tspan { 
-            fill: var(--mm-text) !important; 
-            font-weight: 600 !important; 
-            font-size: 13px !important; 
-        }
-        /* Target rects directly for participants instead of stickmen paths */
-        .mermaid .actor-man rect, .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { 
-            fill: var(--mm-actor-bg) !important; 
-            stroke: var(--mm-text) !important; 
-            stroke-width: 1.5px !important; 
-        }
-        
-        /* Lifelines */
-        .mermaid .actor-line { 
-            stroke: var(--mm-actor-line) !important; 
-            stroke-width: 1px !important; 
-            stroke-dasharray: 4 6 !important; 
-            opacity: 0.4 !important;
-            visibility: visible !important; 
-        }
-        
-        /* Messages */
-        .mermaid .messageLine0, .mermaid .messageLine1 { 
-            stroke: var(--mm-signal) !important; 
-            stroke-width: 1.5px !important; 
-        }
-        .mermaid .messageLine1 { stroke-dasharray: 4 4 !important; }
-        .mermaid marker path { fill: var(--mm-signal) !important; stroke: none !important; }
-        
-        /* Optical Mask for crossing lifelines */
-        .mermaid .messageText { 
-            fill: var(--mm-text-muted) !important; 
-            font-family: 'Geist Mono', monospace !important; 
-            font-size: 11.5px !important; 
-            font-weight: 500 !important; 
-            stroke: var(--mm-actor-bg) !important;
-            stroke-width: 6px !important;
-            paint-order: stroke fill !important;
-            stroke-linecap: butt !important;
-            stroke-linejoin: miter !important;
-        }
-        
-        /* Loops & Boundaries */
-        .mermaid .loopBox { 
-            fill: transparent !important; 
-            stroke: var(--mm-loop-border) !important; 
-            stroke-width: 1px !important; 
-            stroke-dasharray: 4 4 !important; 
-            rx: 6px !important; 
-        }
-        .mermaid .loopLine { 
-            stroke: var(--mm-loop-border) !important; 
-            stroke-width: 1px !important; 
-            stroke-dasharray: 4 4 !important; 
-        }
-        .mermaid .labelBox { 
-            fill: var(--mm-actor-bg) !important; 
-            stroke: var(--mm-loop-border) !important; 
-            rx: 4px !important; 
-            stroke-width: 1px !important; 
-        }
-        .mermaid .labelText, .mermaid .labelText > tspan { 
-            fill: var(--mm-text) !important; 
-            font-family: 'Geist Mono', monospace !important; 
-            font-size: 10px !important; 
-            font-weight: 600 !important; 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em; 
-        }
-
-        .mermaid .loopText, .mermaid .loopText > tspan { 
-            fill: var(--mm-text-muted) !important; 
-            font-family: 'Geist Mono', monospace !important; 
-            font-size: 10px !important; 
-            stroke: var(--mm-actor-bg) !important;
-            stroke-width: 6px !important;
-            paint-order: stroke fill !important;
-            stroke-linecap: butt !important;
-            stroke-linejoin: miter !important;
-        }
-        
-        /* Notes */
-        .mermaid .note { 
-            fill: var(--mm-note-bg) !important; 
-            stroke: var(--mm-note-border) !important; 
-            rx: 4px !important; 
-            stroke-width: 1px !important; 
-        }
-        .mermaid .noteText, .mermaid .noteText > tspan { 
-            fill: var(--mm-text) !important; 
-            font-family: 'Geist Sans', sans-serif !important;
-            font-size: 11.5px !important; 
-            line-height: 1.5 !important; 
-        }
-        
-        /* Sequence Numbers */
-        .mermaid g.message circle { 
-            fill: var(--mm-actor-bg) !important; 
-            stroke: var(--mm-signal) !important; 
-            stroke-width: 1.5px !important; 
-            r: 10 !important; 
-        }
-        .mermaid .sequenceNumber, .mermaid .sequenceNumber > tspan { 
-            fill: var(--mm-text) !important; 
-            font-family: 'Geist Mono', monospace !important; 
-            font-size: 10px !important; 
-            font-weight: 700 !important; 
-            dominant-baseline: central; 
-            text-anchor: middle; 
-        }
-        
-        /* Tab Transitions */
-        .tab-content {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
-</head>
-<body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col relative">
-
-    <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-50" style="background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);"></div>
-    <div class="dark:absolute dark:inset-0 dark:z-[-1] dark:pointer-events-none hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);"></div>
-
-    <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
-        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-            <div class="flex items-center h-full flex-1 overflow-hidden">
-                <div class="flex items-center shrink-0">
-                    <svg class="w-6 h-6 text-black dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2z"/></svg>
-                </div>
-                <span class="text-gray-300 dark:text-gray-700 font-light text-xl mx-3 sm:mx-4 shrink-0">/</span>
-                <nav class="flex items-center space-x-4 sm:space-x-6 h-full overflow-x-auto hide-scroll">
-                    <a href="index.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Main</a>
-                    <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Player</a>
-                    <a href="academy.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Academy</a>
-                    <a href="diagrams.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all whitespace-nowrap">Diagrams</a>
-                </nav>
-            </div>
-            <div class="flex items-center space-x-3 pl-2 sm:pl-4 shrink-0">
-                <button onclick="toggleTheme()" class="p-1.5 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" title="Toggle Theme">
-                    <svg id="theme-icon-light" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
-                    <svg id="theme-icon-dark" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-[1200px] mx-auto px-6 py-16 w-full flex-grow">
-        
-        <div class="mb-12">
-            <div class="inline-flex items-center space-x-2 mb-4 px-3 py-1 rounded-full border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-black/50 backdrop-blur shadow-sm">
-                <span class="w-1.5 h-1.5 rounded-full bg-[#00df89] shadow-[0_0_8px_#00df89] animate-pulse"></span>
-                <span class="font-mono text-[9px] text-gray-600 dark:text-zinc-300 tracking-widest uppercase font-bold">Deterministic Sequences</span>
-            </div>
-            <h1 class="text-[32px] md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">Architecture Topology</h1>
-            <p class="text-gray-500 dark:text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
-                Scroll naturally through the chronological flow of data and state changes across Next.js, GCP, and AWS environments. The system relies entirely on atomic substrate constraints.
-            </p>
-        </div>
-
-        <div class="flex flex-nowrap overflow-x-auto hide-scroll gap-6 border-b border-gray-200 dark:border-white/10 mb-8">
-            <button onclick="switchTab('ingestion')" data-target="ingestion" class="tab-btn active shrink-0 pb-3 border-b-2 border-black dark:border-white text-black dark:text-white font-medium text-[13px] transition-colors cursor-pointer select-none">
-                01. Ingestion
-            </button>
-            <button onclick="switchTab('orchestration')" data-target="orchestration" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                02. Orchestration
-            </button>
-            <button onclick="switchTab('telemetry')" data-target="telemetry" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                03. Telemetry & Auth
-            </button>
-        </div>
-
-        <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-8 shadow-sm overflow-hidden relative z-10 min-h-[500px]">
-            
-            <div id="tab-ingestion" class="tab-content block">
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Direct-to-Cloud Ingestion</h2>
-                    <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">Client-side concurrency bypassing Node.js memory entirely.</p>
-                </div>
-                <div class="diagram-container">
-                    <div class="mermaid">
-                        sequenceDiagram
-                            participant Client as React Client
-                            participant CMS as Payload CMS
-                            participant DB as PostgreSQL
-                            participant GCS as GCP Bucket (Input)
-
-                            Client->>CMS: POST /api/media/initialize-package
-                            CMS->>DB: Raw SQL Insert (Media & Sidecars)
-                            DB-->>CMS: Return DB Relational IDs
-                            CMS-->>Client: 200 OK (docId)
-                            
-                            loop Direct-to-Cloud Bypass
-                                Client->>CMS: POST /api/media/get-resumable-url
-                                Note over CMS: Generate deterministic token<br/>(clean_folder__hash.ext)
-                                CMS->>GCS: file.createResumableUpload()
-                                GCS-->>CMS: Resumable Session URI (TCP Socket)
-                                CMS-->>Client: uploadUrl, generatedFilename
-                                
-                                Client->>GCS: Stream 5MB Chunks (File.slice)
-                                Note over Client,GCS: Native client streaming bypasses Node.js RAM entirely
-                                GCS-->>Client: 200 OK (Object Finalized)
-                            end
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-orchestration" class="tab-content hidden">
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Serverless Orchestration & Transcode</h2>
-                    <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">Atomic locking and dynamic JSON schema compilation.</p>
-                </div>
-                <div class="diagram-container">
-                    <div class="mermaid">
-                        sequenceDiagram
-                            participant GCS as GCP Bucket (Input)
-                            participant EA as Eventarc Trigger
-                            participant CR as Cloud Run (Python)
-                            participant AWS as Elemental MediaConvert
-                            participant S3 as S3 Bucket (Output)
-
-                            GCS->>EA: Object Finalize Event
-                            EA->>CR: Trigger Async Webhook
-                            
-                            Note over CR: Audit Phase: Verify blob.size > 0<br/>Check for sibling sidecar tracks
-                            
-                            opt Incomplete Bundle
-                                CR-->>EA: 200 OK (Awaiting siblings - safely exit)
-                            end
-                            
-                            opt Bundle Complete
-                                CR->>GCS: Attempt lock (if_generation_match=0)
-                                
-                                alt Lock Claimed by Another Thread
-                                    GCS-->>CR: Precondition Failed
-                                    CR-->>EA: 200 OK (Concurrency deflected)
-                                else Lock Acquired
-                                    GCS-->>CR: Lock Success (___mediaconvert.lock)
-                                    CR->>GCS: Generate Signed v4 URLs (1hr TTL)
-                                    CR->>AWS: Submit Transcode Job (JSON Schema)
-                                    AWS-->>CR: Job ID Acknowledged
-                                    CR-->>EA: 200 OK
-                                end
-                            end
-                            
-                            Note over AWS: Process H.264 / M3U8 Multiplexing
-                            AWS->>S3: Write .m3u8 playlist & .ts segments
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-telemetry" class="tab-content hidden">
-                <div class="mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Telemetry, GC & Edge Auth</h2>
-                    <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">Bearer-authenticated state convergence and 0.1ms edge gating.</p>
-                </div>
-                <div class="diagram-container">
-                    <div class="mermaid">
-                        sequenceDiagram
-                            participant AWS as MediaConvert
-                            participant EB as EventBridge
-                            participant CMS as Payload CMS
-                            participant GCS as GCP Bucket
-                            participant Client as React Client
-                            participant CF as CloudFront (Edge)
-
-                            AWS->>EB: Job State Change (COMPLETE)
-                            EB->>CMS: POST /webhooks/mediaconvert (Bearer Auth)
-                            
-                            opt State Convergence
-                                CMS->>GCS: Delete lock file (___mediaconvert.lock)
-                                CMS->>CMS: DB: Update status='ready' & manifest_url
-                            end
-                            CMS-->>EB: 200 OK
-                            
-                            Client->>CMS: GET /api/media/mint-token
-                            Note over CMS: Server constructs HMAC-SHA256 JWT
-                            CMS-->>Client: Return Secure Token (15m TTL)
-                            
-                            Client->>CF: GET /manifest.m3u8 (X-OTT-ACCESS-TOKEN)
-                            Note over CF: JS 2.0 Edge Worker evaluates mathematics
-                            
-                            alt Token Invalid / Expired
-                                CF-->>Client: 403 Forbidden
-                            else Token Valid
-                                CF-->>Client: 200 OK (Stream authorized, fetch from Origin)
-                            end
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <footer class="border-t border-gray-200 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider shrink-0 mt-auto">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
-            <div class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-black dark:bg-white"></span>
-                <span>SYSTEM_READY</span>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateTabBorders();
-        }
-
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-            updateTabBorders();
-        }
-
-        function updateTabBorders() {
-            const isDark = document.documentElement.classList.contains('dark');
-            const activeTab = document.querySelector('.tab-btn.active');
-            if(activeTab) {
-                activeTab.classList.remove('border-black', 'border-white');
-                activeTab.classList.add(isDark ? 'border-white' : 'border-black');
-            }
-        }
-
-        function switchTab(tabId) {
-            // Hide all
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
-            
-            // Reset buttons
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
-                el.classList.add('border-transparent', 'text-gray-500');
-            });
-
-            // Show target
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            document.getElementById('tab-' + tabId).classList.add('block');
-            
-            // Activate button
-            const activeBtn = document.querySelector(`[data-target="${tabId}"]`);
-            activeBtn.classList.add('active', 'text-black', 'dark:text-white');
-            activeBtn.classList.remove('border-transparent', 'text-gray-500');
-            
-            updateTabBorders();
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            // Let all SVGs render first, then the CSS 'hidden' classes will apply to inactive tabs correctly
             mermaid.run({ querySelector: '.mermaid' }).catch(console.error);
         });
     </script>
