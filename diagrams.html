@@ -32,7 +32,7 @@
             sequence: {
                 showSequenceNumbers: true,
                 actorMargin: 140, 
-                messageMargin: 45,
+                messageMargin: 60, /* Increased slightly for better breathing room */
                 boxMargin: 30,
                 rightAngles: true,
                 actorFontFamily: 'Geist Sans',
@@ -214,8 +214,31 @@
             dominant-baseline: central; 
             text-anchor: middle; 
         }
+
+        /* --- TAB VISIBILITY FIX --- */
+        .tab-content { 
+            width: 100%;
+        }
         
-        .tab-content { animation: fadeIn 0.3s ease-in-out; }
+        .tab-inactive {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            z-index: -1;
+        }
+
+        .tab-active {
+            position: relative;
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 1;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
@@ -279,7 +302,7 @@
 
         <div class="relative z-10 min-h-[500px] pb-16">
             
-            <div id="tab-ingestion" class="tab-content block">
+            <div id="tab-ingestion" class="tab-content tab-active">
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
@@ -308,7 +331,7 @@
                 </div>
             </div>
 
-            <div id="tab-orchestration" class="tab-content hidden">
+            <div id="tab-orchestration" class="tab-content tab-inactive">
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
@@ -348,7 +371,7 @@
                 </div>
             </div>
 
-            <div id="tab-telemetry" class="tab-content hidden">
+            <div id="tab-telemetry" class="tab-content tab-inactive">
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
@@ -414,23 +437,23 @@
         }
 
         function switchTab(tabId) {
-            // Hide all tab contents
+            // Revert all tabs to inactive layout rules
             document.querySelectorAll('.tab-content').forEach(el => {
-                el.classList.add('hidden');
-                el.classList.remove('block');
+                el.classList.add('tab-inactive');
+                el.classList.remove('tab-active');
             });
             
-            // Reset all tab buttons to default (inactive) state
+            // Revert button stylings
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
                 el.classList.add('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
             });
 
-            // Show selected tab content
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            document.getElementById('tab-' + tabId).classList.add('block');
+            // Activate the newly selected tab
+            document.getElementById('tab-' + tabId).classList.remove('tab-inactive');
+            document.getElementById('tab-' + tabId).classList.add('tab-active');
             
-            // Apply active styles strictly to the selected tab button
+            // Activate target button visually
             const activeBtn = document.querySelector(`[data-target="${tabId}"]`);
             activeBtn.classList.add('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
             activeBtn.classList.remove('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
