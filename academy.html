@@ -80,12 +80,14 @@
         .dark .node-label { stroke: #050505; }
 
         @keyframes flow {
-            from { stroke-dashoffset: 24; }
+            /* Travel = exact multiple of the dash period (4+6=10) so the loop
+               point is invisible: 20 % 10 == 0. Duration keeps 16px/s speed. */
+            from { stroke-dashoffset: 20; }
             to { stroke-dashoffset: 0; }
         }
         .flow-line {
             stroke-dasharray: 4 6;
-            animation: flow 1.5s linear infinite;
+            animation: flow 1.25s linear infinite;
         }
         .flow-line.active-link {
             animation: flow 0.8s linear infinite;
@@ -452,15 +454,17 @@
 
         // --- D3 PHYSICS ENGINE ---
         var nodesData = [
-            { id: 'console', label: 'Ingest Console', color: '#3b82f6', targetIndex: 0 },
-            { id: 'fastapi', label: 'FastAPI Control', color: '#3b82f6', targetIndex: 1 },
-            { id: 'redis', label: 'Redis Ledger', color: '#ef4444', targetIndex: 2 },
-            { id: 'worker', label: 'Celery GPU Worker', color: '#10b981', targetIndex: 3 },
-            { id: 'gpu', label: 'NVDEC / NVENC', color: '#10b981', targetIndex: 4 },
-            { id: 'nvme', label: 'NVMe Origin', color: '#a855f7', targetIndex: 5 },
-            { id: 'meta', label: 'Metadata Plane', color: '#f97316', targetIndex: 2.5 },
-            { id: 'shaka', label: 'Shaka Console', color: '#f43f5e', targetIndex: 6 },
-            { id: 'vec', label: 'sqlite-vec (roadmap)', color: '#f59e0b', targetIndex: 4.5 }
+            // ax/ay: designed anchors (fraction of viewport). Layout is deterministic —
+            // corridors were chosen so no link passes near an unrelated node.
+            { id: 'console', label: 'Ingest Console', color: '#3b82f6', targetIndex: 0, ax: 0.07, ay: 0.46 },
+            { id: 'fastapi', label: 'FastAPI Control', color: '#3b82f6', targetIndex: 1, ax: 0.22, ay: 0.58 },
+            { id: 'redis', label: 'Redis Ledger', color: '#ef4444', targetIndex: 2, ax: 0.37, ay: 0.30 },
+            { id: 'worker', label: 'Celery GPU Worker', color: '#10b981', targetIndex: 3, ax: 0.52, ay: 0.50 },
+            { id: 'gpu', label: 'NVDEC / NVENC', color: '#10b981', targetIndex: 4, ax: 0.67, ay: 0.28 },
+            { id: 'nvme', label: 'NVMe Origin', color: '#a855f7', targetIndex: 5, ax: 0.80, ay: 0.66 },
+            { id: 'meta', label: 'Metadata Plane', color: '#f97316', targetIndex: 2.5, ax: 0.34, ay: 0.09 },
+            { id: 'shaka', label: 'Shaka Console', color: '#f43f5e', targetIndex: 6, ax: 0.93, ay: 0.38 },
+            { id: 'vec', label: 'sqlite-vec (roadmap)', color: '#f59e0b', targetIndex: 4.5, ax: 0.82, ay: 0.10 }
         ];
 
         var linksData = [
@@ -487,29 +491,23 @@
 
             svg.attr("viewBox", `0 0 ${w} ${h}`);
 
-            simulation.force("center", d3.forceCenter(w / 2, h / 2))
+            simulation.force("center", null)
                       .force("collide", d3.forceCollide().radius(isVertical ? 46 : 54))
                       .force("link").distance(isVertical ? 95 : 135);
 
-            simulation.force("x", d3.forceX(d => {
+            // Deterministic layout: every node pinned to its designed anchor.
+            // Vertical (mobile) mode transposes the plan — geometry (and therefore
+            // corridor clearance) is preserved, rotated 90 degrees.
+            nodesData.forEach(d => {
+                if (d._userPinned) return; // respect manual drags until reset
                 if (isVertical) {
-                    if (d.id === 'meta' || d.id === 'vec') return w * 0.85;
-                    return d.targetIndex % 2 === 0 ? w * 0.20 : w * 0.80; 
+                    d.fx = w * (0.12 + d.ay * 0.76);
+                    d.fy = h * (0.04 + d.ax * 0.90);
                 } else {
-                    var stageNorm = d.targetIndex / 6; 
-                    return w * (0.1 + stageNorm * 0.8); 
+                    d.fx = w * d.ax;
+                    d.fy = h * d.ay;
                 }
-            }).strength(0.8));
-
-            simulation.force("y", d3.forceY(d => {
-                if (isVertical) {
-                    var stageNorm = d.targetIndex / 6;
-                    return h * (0.10 + stageNorm * 0.80);
-                } else {
-                    if (d.id === 'meta' || d.id === 'vec') return h * 0.25;
-                    return d.targetIndex % 2 === 0 ? h * 0.55 : h * 0.75;
-                }
-            }).strength(0.8));
+            });
 
             simulation.alpha(0.3).restart();
         }
@@ -608,9 +606,9 @@
                     var sx = d.source.x + ux * PAD_S, sy = d.source.y + uy * PAD_S;
                     var tx = d.target.x - ux * PAD_T, ty = d.target.y - uy * PAD_T;
 
-                    if (sourceId === 'meta' || targetId === 'meta' || sourceId === 'vec' || targetId === 'vec') {
+                    if (sourceId === 'meta' || targetId === 'meta' || sourceId === 'vec' || targetId === 'vec' || sourceId === 'shaka' || targetId === 'shaka') {
                         var tdx = tx - sx, tdy = ty - sy;
-                        var dr = Math.sqrt(tdx * tdx + tdy * tdy) * 1.5;
+                        var dr = Math.sqrt(tdx * tdx + tdy * tdy) * 1.15;
                         return `M${sx},${sy} A${dr},${dr} 0 0,0 ${tx},${ty}`;
                     }
 
@@ -684,8 +682,10 @@
 
         function dragended(event, d) {
             if (!event.active) simulation.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
+            // Keep the node where the user put it (stays pinned, layout stays calm)
+            d._userPinned = true;
+            d.fx = d.x;
+            d.fy = d.y;
         }
 
         function updateD3Theme(isDark) {
