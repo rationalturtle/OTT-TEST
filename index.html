@@ -29,6 +29,87 @@
     }
     .hide-scroll::-webkit-scrollbar { display: none; }
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Pillar micro-animations — all loops travel exact pattern multiples (no snap) */
+    @keyframes dash-x { from { background-position-x: 0; } to { background-position-x: 10px; } }
+    .anim-dashline {
+        background-image: repeating-linear-gradient(90deg, currentColor 0 4px, transparent 4px 10px);
+        background-size: 10px 1px; background-repeat: repeat-x;
+    }
+    /* Card 1: scan-line sweeps the doc, then the audit ring flashes "verified" */
+    @keyframes scan-y {
+        0% { top: -8%; opacity: 0; } 6% { opacity: 1; }
+        42% { top: 100%; opacity: 1; } 50%, 100% { top: 100%; opacity: 0; }
+    }
+    .anim-scan { animation: scan-y 3s ease-in-out infinite; }
+    @keyframes ring-verify {
+        0%, 46% { border-color: rgb(59 130 246 / 0.45); box-shadow: none; }
+        54%, 72% { border-color: #3b82f6; box-shadow: 0 0 12px rgb(59 130 246 / 0.45); }
+        88%, 100% { border-color: rgb(59 130 246 / 0.45); box-shadow: none; }
+    }
+    .anim-ring-verify { animation: ring-verify 3s ease-in-out infinite; }
+    /* Card 5: one packet sent, one received — sparse on purpose (1 upsert/job) */
+    @keyframes wire-fill {
+        0%, 4% { transform: translateY(-50%) scaleX(0); opacity: 1; }
+        26% { transform: translateY(-50%) scaleX(1); opacity: 1; }
+        40% { transform: translateY(-50%) scaleX(1); opacity: 1; }
+        52%, 100% { transform: translateY(-50%) scaleX(1); opacity: 0; }
+    }
+    .anim-wire-fill {
+        transform-origin: left center;
+        animation: wire-fill 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes meta-receive {
+        0%, 22% { border-color: rgb(249 115 22 / 0.4); color: rgb(249 115 22 / 0.7); box-shadow: none; }
+        28%, 42% { border-color: #f97316; color: #f97316; box-shadow: 0 0 12px rgb(249 115 22 / 0.4); }
+        58%, 100% { border-color: rgb(249 115 22 / 0.4); color: rgb(249 115 22 / 0.7); box-shadow: none; }
+    }
+    .anim-meta-receive { animation: meta-receive 4.5s ease-in-out infinite; }
+    /* Card 6: roadmap items light in sequence; target ring pings without rotating */
+    @keyframes chip-amber {
+        0%, 34%, 100% { border-color: rgb(245 158 11 / 0.35); color: rgb(245 158 11 / 0.7); }
+        8%, 24% { border-color: #f59e0b; color: #f59e0b; }
+    }
+    .anim-chip-amber { animation: chip-amber 5s linear infinite; }
+    @keyframes row-upsert {
+        0%, 24% { background-color: rgb(161 161 170 / 0.2); box-shadow: none; }
+        30%, 78% { background-color: #f97316; box-shadow: 0 0 6px rgb(249 115 22 / 0.5); }
+        90%, 100% { background-color: rgb(161 161 170 / 0.2); box-shadow: none; }
+    }
+    .anim-row-upsert { animation: row-upsert 4.5s ease-in-out infinite; }
+    @keyframes amber-glow {
+        0%, 38% { border-color: rgb(245 158 11 / 0.4); box-shadow: none; }
+        48%, 64% { border-color: #f59e0b; box-shadow: 0 0 10px rgb(245 158 11 / 0.4); }
+        78%, 100% { border-color: rgb(245 158 11 / 0.4); box-shadow: none; }
+    }
+    .anim-amber-glow { animation: amber-glow 5s ease-in-out infinite; }
+    @keyframes vec-compute {
+        0%, 100% { transform: scaleY(0.45); }
+        50% { transform: scaleY(1); }
+    }
+    .anim-vec { transform-origin: bottom; animation: vec-compute 1.6s ease-in-out infinite; }
+    @keyframes cid-cycle {
+        0%, 24%, 100% { border-color: rgb(212 212 216 / 0.6); color: rgb(161 161 170); }
+        6%, 16% { border-color: #ef4444; color: #ef4444; }
+    }
+    .dark .cid-chip { border-color: rgba(255,255,255,0.1); }
+    .cid-chip { animation: cid-cycle 3.5s linear infinite; }
+    @keyframes bar-pulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+    .anim-bar { animation: bar-pulse 2.4s ease-in-out infinite; }
+    @keyframes progress-loop { 0% { width: 8%; } 85% { width: 92%; } 100% { width: 92%; } }
+    .anim-progress { animation: progress-loop 3.2s cubic-bezier(0.4,0,0.2,1) infinite; }
+    @keyframes packet-travel {
+        0% { transform: translateX(0); opacity: 0; }
+        12% { opacity: 1; } 82% { opacity: 1; }
+        100% { transform: translateX(36px); opacity: 0; }
+    }
+    .anim-packet { animation: packet-travel 2.2s ease-in-out infinite; }
+    .anim-dash-run { animation: dash-x 0.9s linear infinite; }
+    @media (prefers-reduced-motion: reduce) {
+        .anim-dashline, .cid-chip, .anim-bar, .anim-progress,
+        .anim-wire-fill, .anim-dash-run, .anim-scan, .anim-ring-verify, .anim-meta-receive,
+        .anim-chip-amber, .anim-row-upsert, .anim-amber-glow, .anim-vec, .animate-pulse { animation: none !important; }
+    }
   </style>
 </head>
 <body class="bg-white text-black dark:bg-[#000000] dark:text-white font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
@@ -88,7 +169,7 @@
       </a>
     </div>
 
-    <!-- Numbers Strip -->
+    <!-- Proven Numbers Strip -->
     <div class="border border-gray-200 dark:border-white/10 rounded-lg bg-white/60 dark:bg-[#0a0a0a]/60 backdrop-blur-sm mb-16 overflow-hidden">
       <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-gray-200 dark:divide-white/10">
         <div class="p-5 text-center">
@@ -124,17 +205,17 @@
       <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
              <div class="relative flex items-center justify-center gap-5 w-full h-full z-10 transform group-hover:scale-105 transition-transform duration-300">
-                <div class="w-14 h-14 border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#050505] rounded-lg shadow-sm flex flex-col p-2.5 gap-1.5 relative overflow-hidden">
-                    <div class="w-full h-1 bg-zinc-200 dark:bg-white/10 rounded-full"></div>
+                <div class="w-14 h-14 border border-blue-500/40 bg-white dark:bg-[#050505] rounded-lg shadow-sm flex flex-col p-2.5 gap-1.5 relative overflow-hidden">
+                    <div class="w-full h-1 bg-blue-500/60 rounded-full"></div>
+                    <div class="absolute left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500/80 to-transparent anim-scan"></div>
                     <div class="w-3/4 h-1 bg-zinc-200 dark:bg-white/10 rounded-full"></div>
                     <div class="w-1/2 h-1 bg-zinc-200 dark:bg-white/10 rounded-full"></div>
                 </div>
-                <div class="w-8 h-px bg-zinc-300 dark:bg-white/20 relative">
-                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 border-t border-r border-zinc-300 dark:border-white/20 transform rotate-45"></div>
+                <div class="w-8 h-px text-blue-500/70 anim-dashline anim-dash-run relative">
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 border-t border-r border-blue-500/70 transform rotate-45"></div>
                 </div>
-                <div class="w-12 h-12 border-2 border-dashed border-zinc-300 dark:border-white/20 bg-transparent rounded-full flex items-center justify-center relative">
-                    <div class="w-3 h-3 bg-zinc-300 dark:bg-zinc-600 rounded-sm"></div>
-                    <div class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.6)] animate-pulse"></div>
+                <div class="w-12 h-12 border-2 border-dashed bg-transparent rounded-full flex items-center justify-center relative anim-ring-verify" style="border-color: rgb(59 130 246 / 0.45)">
+                    <div class="w-3 h-3 bg-blue-500/70 rounded-sm"></div>
                 </div>
              </div>
              <div class="absolute inset-0 z-0 opacity-30 pointer-events-none" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
@@ -151,11 +232,11 @@
       <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
              <div class="relative flex items-center justify-center gap-1.5 w-full h-full z-10 transform group-hover:scale-105 transition-transform duration-300">
-                <div class="w-8 h-8 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px] text-zinc-400">a4f</div>
-                <div class="w-8 h-8 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px] text-zinc-400">9c2</div>
-                <div class="w-8 h-8 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px] text-zinc-400">e71</div>
-                <div class="w-8 h-8 border-2 border-green-500/60 bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px] text-green-600 dark:text-green-500">1d8</div>
-                <div class="w-8 h-8 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px] text-zinc-400">b3e</div>
+                <div class="cid-chip w-8 h-8 border bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px]" style="animation-delay: 0s">a4f</div>
+                <div class="cid-chip w-8 h-8 border bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px]" style="animation-delay: 0.7s">9c2</div>
+                <div class="cid-chip w-8 h-8 border bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px]" style="animation-delay: 1.4s">e71</div>
+                <div class="cid-chip w-8 h-8 border bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px]" style="animation-delay: 2.1s">1d8</div>
+                <div class="cid-chip w-8 h-8 border bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[8px]" style="animation-delay: 2.8s">b3e</div>
              </div>
              <div class="absolute inset-0 z-0 opacity-30 pointer-events-none" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
@@ -172,11 +253,11 @@
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
              <div class="relative flex items-center justify-center gap-4 w-full h-full z-10 transform group-hover:scale-105 transition-transform duration-300">
                 <div class="w-10 h-10 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded flex items-center justify-center font-mono text-[9px] text-zinc-500">SRC</div>
-                <div class="w-6 h-px bg-zinc-300 dark:bg-white/20"></div>
+                <div class="w-6 h-px text-green-500/70 anim-dashline anim-dash-run"></div>
                 <div class="flex flex-col gap-1.5">
-                    <div class="w-16 h-4 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded-sm flex items-center px-1.5 font-mono text-[8px] text-zinc-400">1080p</div>
-                    <div class="w-12 h-4 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded-sm flex items-center px-1.5 font-mono text-[8px] text-zinc-400">720p</div>
-                    <div class="w-9 h-4 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded-sm flex items-center px-1.5 font-mono text-[8px] text-zinc-400">360p</div>
+                    <div class="w-16 h-4 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded-sm flex items-center px-1.5 font-mono text-[8px] text-green-600/80 dark:text-green-500/80 border-green-500/40 anim-bar" style="animation-delay: 0s">1080p</div>
+                    <div class="w-12 h-4 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded-sm flex items-center px-1.5 font-mono text-[8px] text-green-600/80 dark:text-green-500/80 border-green-500/40 anim-bar" style="animation-delay: 0.4s">720p</div>
+                    <div class="w-9 h-4 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded-sm flex items-center px-1.5 font-mono text-[8px] text-green-600/80 dark:text-green-500/80 border-green-500/40 anim-bar" style="animation-delay: 0.8s">360p</div>
                 </div>
                 <div class="absolute bottom-4 font-mono text-[8px] tracking-widest uppercase text-green-600 dark:text-green-500">VRAM-ONLY GRAPH</div>
              </div>
@@ -194,15 +275,15 @@
       <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
              <div class="relative flex items-center justify-center gap-4 w-full h-full z-10 transform group-hover:scale-105 transition-transform duration-300">
-                <div class="w-20 h-12 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded flex items-center justify-center relative">
-                    <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[10px] border-l-zinc-400 dark:border-l-zinc-500 ml-1"></div>
-                    <div class="absolute bottom-1 left-1.5 right-1.5 h-0.5 bg-zinc-200 dark:bg-white/10 rounded-full"><div class="h-full w-1/3 bg-zinc-400 dark:bg-zinc-500 rounded-full"></div></div>
+                <div class="w-20 h-12 border border-purple-500/40 bg-white dark:bg-[#050505] rounded flex items-center justify-center relative">
+                    <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[10px] border-l-purple-500/80 ml-1"></div>
+                    <div class="absolute bottom-1 left-1.5 right-1.5 h-0.5 bg-zinc-200 dark:bg-white/10 rounded-full"><div class="h-full bg-purple-500/80 rounded-full anim-progress"></div></div>
                 </div>
                 <div class="flex flex-col gap-1 font-mono text-[8px] text-zinc-400">
                     <span>master.m3u8</span>
-                    <span class="text-zinc-300 dark:text-zinc-600">&rarr; 1080p.m3u8</span>
-                    <span class="text-zinc-300 dark:text-zinc-600">&rarr; 720p.m3u8</span>
-                    <span class="text-zinc-300 dark:text-zinc-600">&rarr; 360p.m3u8</span>
+                    <span class="text-purple-400/70 dark:text-purple-500/60">&rarr; 1080p.m3u8</span>
+                    <span class="text-purple-400/70 dark:text-purple-500/60">&rarr; 720p.m3u8</span>
+                    <span class="text-purple-400/70 dark:text-purple-500/60">&rarr; 360p.m3u8</span>
                 </div>
              </div>
              <div class="absolute inset-0 z-0 opacity-30 pointer-events-none" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
@@ -219,14 +300,29 @@
       <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
              <div class="relative flex items-center justify-center gap-5 w-full h-full z-10 transform group-hover:scale-105 transition-transform duration-300">
-                <div class="w-14 h-14 border-2 border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded-lg flex items-center justify-center font-mono text-[9px] text-zinc-500">EDGE</div>
-                <div class="flex flex-col items-center gap-0.5">
+                <div class="flex flex-col items-center gap-1.5">
+                    <div class="w-16 h-14 border-2 border-blue-500/50 bg-white dark:bg-[#050505] rounded-lg p-2.5 flex flex-col justify-center gap-1.5">
+                        <div class="h-1 w-full bg-blue-500/50 rounded-full anim-bar" style="animation-duration: 1.1s"></div>
+                        <div class="h-1 w-3/4 bg-blue-500/50 rounded-full anim-bar" style="animation-duration: 1.1s; animation-delay: 0.35s"></div>
+                        <div class="h-1 w-5/6 bg-blue-500/50 rounded-full anim-bar" style="animation-duration: 1.1s; animation-delay: 0.7s"></div>
+                    </div>
+                    <span class="font-mono text-[7px] tracking-widest uppercase text-zinc-400">edge &middot; churning</span>
+                </div>
+                <div class="flex flex-col items-center gap-1.5">
                   <div class="w-10 h-px bg-zinc-300 dark:bg-white/20 relative">
-                      <div class="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 border-t border-r border-zinc-300 dark:border-white/20 transform rotate-45"></div>
+                      <div class="absolute -right-[6px] top-1/2 -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-orange-500"></div>
+                      <div class="absolute left-0 top-1/2 w-full h-[3px] rounded-full bg-orange-500 shadow-[0_0_5px_rgba(249,115,22,0.6)] anim-wire-fill"></div>
                   </div>
                   <span class="font-mono text-[7px] tracking-widest uppercase text-zinc-400">1 upsert / job</span>
                 </div>
-                <div class="w-11 h-11 border border-dashed border-zinc-300 dark:border-white/20 bg-transparent rounded-full flex items-center justify-center font-mono text-[8px] text-zinc-400">meta</div>
+                <div class="flex flex-col items-center gap-1.5">
+                    <div class="w-16 h-14 border border-dashed bg-transparent rounded-lg p-2.5 flex flex-col justify-center gap-1.5 anim-meta-receive" style="border-color: rgb(249 115 22 / 0.4)">
+                        <div class="h-1 w-full bg-zinc-200 dark:bg-white/10 rounded-full"></div>
+                        <div class="h-1 w-3/4 bg-zinc-200 dark:bg-white/10 rounded-full"></div>
+                        <div class="h-1 w-5/6 rounded-full anim-row-upsert"></div>
+                    </div>
+                    <span class="font-mono text-[7px] tracking-widest uppercase text-zinc-400">meta &middot; job_status</span>
+                </div>
              </div>
              <div class="absolute inset-0 z-0 opacity-30 pointer-events-none" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
@@ -242,15 +338,21 @@
       <div class="group flex flex-col border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden bg-white dark:bg-[#0a0a0a] hover:border-gray-300 dark:hover:border-white/20 transition-all duration-200 shadow-sm">
         <div class="h-48 bg-[#fafafa] dark:bg-[#111111] relative overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-white/5">
              <div class="relative flex items-center justify-center gap-3 w-full h-full z-10 transform group-hover:scale-105 transition-transform duration-300">
-                <div class="flex flex-col gap-1.5 font-mono text-[8px]">
-                    <div class="px-2 py-1 border border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded text-zinc-500">scene cuts</div>
-                    <div class="px-2 py-1 border border-dashed border-zinc-300 dark:border-white/20 rounded text-zinc-400">SigLIP &rarr; sqlite-vec</div>
-                    <div class="px-2 py-1 border border-dashed border-zinc-300 dark:border-white/20 rounded text-zinc-400">9:16 TensorRT crop</div>
+                <div class="flex gap-1">
+                    <div class="w-5 h-5 border rounded-[3px] bg-white dark:bg-[#050505] anim-chip-amber" style="animation-delay: 0s"></div>
+                    <div class="w-5 h-5 border rounded-[3px] bg-white dark:bg-[#050505] anim-chip-amber" style="animation-delay: 0.9s"></div>
+                    <div class="w-5 h-5 border rounded-[3px] bg-white dark:bg-[#050505] anim-chip-amber" style="animation-delay: 1.8s"></div>
                 </div>
-                <div class="w-11 h-11 border-2 border-zinc-300 dark:border-white/20 bg-white dark:bg-[#050505] rounded-full flex items-center justify-center relative">
-                    <span class="font-mono text-[8px] text-zinc-500">&lt;1ms</span>
-                    <div class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.6)] animate-pulse"></div>
+                <div class="w-5 h-px text-amber-500/60 anim-dashline anim-dash-run"></div>
+                <div class="w-11 h-10 border border-dashed rounded-md bg-white dark:bg-[#050505] flex items-center justify-center font-mono text-[7px] text-amber-600 dark:text-amber-500 anim-amber-glow" style="border-color: rgb(245 158 11 / 0.4)">SigLIP</div>
+                <div class="w-5 h-px text-amber-500/60 anim-dashline anim-dash-run"></div>
+                <div class="flex items-end gap-[3px] h-8">
+                    <div class="w-1 h-4 bg-amber-500/70 rounded-t-sm anim-vec" style="animation-delay: 0s"></div>
+                    <div class="w-1 h-7 bg-amber-500/70 rounded-t-sm anim-vec" style="animation-delay: 0.2s"></div>
+                    <div class="w-1 h-5 bg-amber-500/70 rounded-t-sm anim-vec" style="animation-delay: 0.4s"></div>
+                    <div class="w-1 h-8 bg-amber-500/70 rounded-t-sm anim-vec" style="animation-delay: 0.6s"></div>
                 </div>
+                <div class="absolute bottom-4 font-mono text-[8px] tracking-widest uppercase text-amber-600 dark:text-amber-500">keyframes &rarr; embeddings &middot; &lt;1ms search</div>
              </div>
              <div class="absolute inset-0 z-0 opacity-30 pointer-events-none" style="background-image: linear-gradient(to right, rgba(120,120,120,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,120,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
         </div>
