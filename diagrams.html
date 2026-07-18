@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure OTT Edge Pipeline | Architecture Topology</title>
+    <title>Ouroboros Metal | Architecture Topology</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
@@ -256,7 +256,7 @@
                 <span class="text-gray-300 dark:text-gray-700 font-light text-xl mx-3 sm:mx-4 shrink-0">/</span>
                 <nav class="flex items-center space-x-4 sm:space-x-6 h-full overflow-x-auto hide-scroll">
                     <a href="index.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Main</a>
-                    <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Player</a>
+                    <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Console</a>
                     <a href="academy.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Academy</a>
                     <a href="diagrams.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all whitespace-nowrap">Diagrams</a>
                 </nav>
@@ -280,19 +280,22 @@
         <div class="mb-12 pt-8">
             <h1 class="text-[32px] md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">Architecture Topology</h1>
             <p class="text-gray-500 dark:text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
-                Scroll naturally through the chronological flow of data and state changes across Next.js, GCP, and AWS environments. The system relies entirely on atomic substrate constraints.
+                The chronological flow of data and state across the two-plane edge architecture: host control plane, GPU compute plane, and a cloud reduced to one metadata upsert per job. Genesis (the cloud-native predecessor) is preserved as the final tab.
             </p>
         </div>
 
         <div class="flex flex-nowrap overflow-x-auto hide-scroll gap-6 border-b border-gray-200 dark:border-white/10 mb-8 relative z-10">
             <button onclick="switchTab('ingestion')" data-target="ingestion" class="tab-btn active shrink-0 pb-3 border-b-2 border-black dark:border-white text-black dark:text-white font-medium text-[13px] transition-colors cursor-pointer select-none">
-                01. Ingestion
+                01. Ingest &amp; Audit
             </button>
             <button onclick="switchTab('orchestration')" data-target="orchestration" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                02. Orchestration
+                02. GPU Swarm Transcode
             </button>
             <button onclick="switchTab('telemetry')" data-target="telemetry" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                03. Telemetry & Auth
+                03. Delivery &amp; Playback
+            </button>
+            <button onclick="switchTab('genesis')" data-target="genesis" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+                04. Genesis (Cloud V1)
             </button>
         </div>
 
@@ -302,28 +305,21 @@
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
-                            participant Client as React Client
-                            participant CMS as Payload CMS
-                            participant DB as PostgreSQL
-                            participant GCS as GCP Bucket (Input)
-
-                            Client->>CMS: POST /api/media/initialize-package
-                            CMS->>DB: Raw SQL Insert (Media & Sidecars)
-                            DB-->>CMS: Return DB Relational IDs
-                            CMS-->>Client: 200 OK (docId)
-                            
-                            loop Direct-to-Cloud Bypass
-                                Client->>CMS: POST /api/media/get-resumable-url
-                                Note over CMS: Generate deterministic token<br/>(clean_folder__hash.ext)
-                                CMS->>GCS: file.createResumableUpload()
-                                GCS-->>CMS: Resumable Session URI (TCP Socket)
-                                CMS-->>Client: uploadUrl, generatedFilename
-                                
-                                Client->>GCS: Stream 5MB Chunks (File.slice)
-                                Note over Client,GCS: Native client streaming bypasses Node.js RAM entirely
-                                GCS-->>Client: 200 OK (Object Finalized)
-                            end
-                    </div>
+                            participant UI as Ingest Console
+                            participant API as FastAPI Control Plane
+                            participant Meta as Metadata Plane (Postgres)
+                            participant R as Redis Ledger
+                            UI->>API: POST /api/audit (2MB head slice)
+                            Note over API: In-RAM ffprobe audit<br/>MOOV fallback: 2MB tail, 10MB tail
+                            API->>API: Fail-fast gate (pix_fmt > 8-bit rejected)
+                            API->>Meta: Upsert media row (PROCESSING)
+                            API->>R: Seed job:state (STAGED)
+                            API-->>UI: 200 OK (job_id)
+                            UI->>API: POST /api/ingest (streaming, 8MB reads)
+                            Note over API: Sanitized filename, capacity guard<br/>bytes -> NVMe payload_buffer
+                            API->>R: dispatch phase_0_audit (send_task)
+                            API-->>UI: job_id + status_url (1s polling)
+                        </div>
                 </div>
             </div>
 
@@ -331,39 +327,25 @@
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
-                            participant GCS as GCP Bucket (Input)
-                            participant EA as Eventarc Trigger
-                            participant CR as Cloud Run (Python)
-                            participant AWS as Elemental MediaConvert
-                            participant S3 as S3 Bucket (Output)
-
-                            GCS->>EA: Object Finalize Event
-                            EA->>CR: Trigger Async Webhook
-                            
-                            Note over CR: Audit Phase: Verify blob.size > 0<br/>Check for sibling sidecar tracks
-                            
-                            opt Incomplete Bundle
-                                CR-->>EA: 200 OK (Awaiting siblings - safely exit)
+                            participant R as Redis (Broker + Ledger)
+                            participant W as Celery GPU Worker
+                            participant GPU as RTX NVENC/NVDEC
+                            participant FS as NVMe /data
+                            R->>W: phase_0_audit
+                            W->>W: Structural SHA256 master CID
+                            Note over W: Differential ledger healing<br/>only missing/failed chunks re-dispatch
+                            W->>R: job:ledger CIDs (4.0s chunks)
+                            loop Per chunk (concurrency engineered to session ceiling)
+                                R->>W: transcode_chunk(cid, t, dur)
+                                W->>GPU: NVDEC decode (frames stay in VRAM)
+                                GPU->>GPU: scale_cuda x3 (passthrough=0)
+                                GPU->>GPU: h264_nvenc x3 (5M/2.5M/1M)
+                                GPU->>FS: 1080p/720p/360p .ts segments
+                                W->>R: chunk COMPLETED
                             end
-                            
-                            opt Bundle Complete
-                                CR->>GCS: Attempt lock (if_generation_match=0)
-                                
-                                alt Lock Claimed by Another Thread
-                                    GCS-->>CR: Precondition Failed
-                                    CR-->>EA: 200 OK (Concurrency deflected)
-                                else Lock Acquired
-                                    GCS-->>CR: Lock Success (___mediaconvert.lock)
-                                    CR->>GCS: Generate Signed v4 URLs (1hr TTL)
-                                    CR->>AWS: Submit Transcode Job (JSON Schema)
-                                    AWS-->>CR: Job ID Acknowledged
-                                    CR-->>EA: 200 OK
-                                end
-                            end
-                            
-                            Note over AWS: Process H.264 / M3U8 Multiplexing
-                            AWS->>S3: Write .m3u8 playlist & .ts segments
-                    </div>
+                            W->>W: assemble_manifest (master + variants)
+                            W-->>R: job COMPLETED
+                        </div>
                 </div>
             </div>
 
@@ -371,34 +353,43 @@
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
-                            participant AWS as MediaConvert
-                            participant EB as EventBridge
+                            participant W as Celery Worker
+                            participant Meta as Metadata Plane (Postgres)
+                            participant API as FastAPI Origin
+                            participant P as Shaka Console
+                            W->>Meta: SINGLE async UPDATE (job_status = READY)
+                            Note over W,Meta: The only cloud contact after ingest<br/>Redis remains UI source of truth
+                            P->>API: GET /api/media/mint-token
+                            API-->>P: 15-min HS256 JWT
+                            P->>API: GET /media/{job}_output/master.m3u8
+                            Note over P,API: Interceptor injects X-OTT-Access-Token<br/>on every segment fetch
+                            API-->>P: HLS master + variant playlists
+                            loop ABR playback
+                                P->>API: GET segment .ts (range)
+                                API-->>P: 200/206 from local NVMe origin
+                            end
+                        </div>
+                </div>
+            </div>
+            <div id="tab-genesis" class="tab-content tab-inactive">
+                <div class="mb-6 border border-amber-500/30 bg-amber-500/5 rounded-lg px-4 py-3">
+                    <span class="font-mono text-[10px] tracking-widest uppercase text-amber-600 dark:text-amber-500">Historical — the cloud-native predecessor this project rebuilt on-die</span>
+                </div>
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        sequenceDiagram
                             participant CMS as Payload CMS
-                            participant GCS as GCP Bucket
-                            participant Client as React Client
-                            participant CF as CloudFront (Edge)
-
-                            AWS->>EB: Job State Change (COMPLETE)
-                            EB->>CMS: POST /webhooks/mediaconvert (Bearer Auth)
-                            
-                            opt State Convergence
-                                CMS->>GCS: Delete lock file (___mediaconvert.lock)
-                                CMS->>CMS: DB: Update status='ready' & manifest_url
-                            end
-                            CMS-->>EB: 200 OK
-                            
-                            Client->>CMS: GET /api/media/mint-token
-                            Note over CMS: Server constructs HMAC-SHA256 JWT
-                            CMS-->>Client: Return Secure Token (15m TTL)
-                            
-                            Client->>CF: GET /manifest.m3u8 (X-OTT-ACCESS-TOKEN)
-                            Note over CF: JS 2.0 Edge Worker evaluates mathematics
-                            
-                            alt Token Invalid / Expired
-                                CF-->>Client: 403 Forbidden
-                            else Token Valid
-                                CF-->>Client: 200 OK (Stream authorized, fetch from Origin)
-                            end
+                            participant GCS as GCS + Eventarc
+                            participant CR as Cloud Run
+                            participant MC as Elemental MediaConvert
+                            participant CF as S3 + CloudFront Edge
+                            CMS->>GCS: Direct-to-cloud resumable upload
+                            GCS->>CR: Eventarc trigger (sibling-file pacifier)
+                            CR->>CR: Atomic lock (if_generation_match=0)
+                            CR->>MC: POST transcode schema (signed URLs)
+                            MC->>CF: HLS ladder to S3 origin (OAC)
+                            CF->>CMS: EventBridge webhook (READY + cleanup)
+                            Note over CF: ES5 viewer-request fn validates<br/>HMAC JWT in ~0.08ms
                     </div>
                 </div>
             </div>
@@ -408,10 +399,10 @@
 
     <footer class="border-t border-gray-200 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider shrink-0 mt-auto">
         <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
+            <span>&copy; 2026 OUROBOROS METAL.</span>
             <div class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-black dark:bg-white"></span>
-                <span>SYSTEM_READY</span>
+                <span>FRAMES_STAY_IN_VRAM</span>
             </div>
         </div>
     </footer>
