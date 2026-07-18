@@ -77,7 +77,7 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .node-label { paint-order: stroke; stroke: #ffffff; stroke-width: 4px; stroke-linejoin: round; }
-        .dark .node-label { stroke: #050505; }
+        .dark .node-label { stroke: #000000; }
 
         @keyframes flow {
             /* Travel = exact multiple of the dash period (4+6=10) so the loop
@@ -275,7 +275,7 @@
             </p>
         </div>
 
-        <div class="relative w-full h-[550px] md:h-[400px] mb-12 bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm overflow-hidden academy-viewport" id="academy-zoom">
+        <div class="relative w-full h-[550px] md:h-[400px] mb-12 overflow-hidden academy-viewport" id="academy-zoom">
             <div class="absolute top-4 left-5 flex items-center justify-between w-[calc(100%-40px)] z-20 pointer-events-none">
                 <div class="flex items-center gap-2.5">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]"></span>
