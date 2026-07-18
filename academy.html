@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure OTT Edge Pipeline | Academy</title>
+    <title>Ouroboros Metal | Academy</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
@@ -243,7 +243,7 @@
                 <span class="text-gray-300 dark:text-gray-700 font-light text-xl mx-3 sm:mx-4 shrink-0">/</span>
                 <nav class="flex items-center space-x-4 sm:space-x-6 h-full overflow-x-auto hide-scroll">
                     <a href="index.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Main</a>
-                    <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Player</a>
+                    <a href="player.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Console</a>
                     <a href="academy.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all whitespace-nowrap">Academy</a>
                     <a href="diagrams.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Diagrams</a>
                 </nav>
@@ -267,7 +267,7 @@
         <div class="mb-12 pt-8">
             <h1 class="text-[32px] md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">Platform Academy</h1>
             <p class="text-gray-500 dark:text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
-                Explore the technical implementation of each architectural stage. Select a module below to inspect the deterministic pipeline logic.
+                The engineering behind the edge-native pipeline, module by module — each pane documents decisions proven on the verification gates, including the failures that shaped them.
             </p>
         </div>
 
@@ -296,31 +296,31 @@
 
         <div class="w-full max-w-4xl mx-auto pb-20">
             <div class="flex flex-nowrap overflow-x-auto hide-scroll gap-6 border-b border-gray-200 dark:border-white/10 relative z-10 mb-8">
-                <button data-id="1" data-nodes="node-payload,node-gcs" onclick="selectModule(this)" class="tab-btn active shrink-0 pb-3 border-b-2 border-black dark:border-white text-black dark:text-white font-medium text-[13px] transition-colors cursor-pointer select-none">
-                    01. Ingestion
+                <button data-id="1" data-nodes="node-console,node-fastapi,node-meta,node-redis" onclick="selectModule(this)" class="tab-btn active shrink-0 pb-3 border-b-2 border-black dark:border-white text-black dark:text-white font-medium text-[13px] transition-colors cursor-pointer select-none">
+                    01. Ingest &amp; Audit
                 </button>
-                <button data-id="2" data-nodes="node-gcs,node-cloudrun,node-mediaconvert" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                    02. Orchestration
+                <button data-id="2" data-nodes="node-fastapi,node-redis,node-worker" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+                    02. Chunk Ledger
                 </button>
-                <button data-id="3" data-nodes="node-cloudrun,node-mediaconvert,node-s3" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                    03. Transcoding
+                <button data-id="3" data-nodes="node-redis,node-worker,node-gpu" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+                    03. GPU Swarm
                 </button>
-                <button data-id="4" data-nodes="node-s3,node-cloudfront,node-client" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                    04. Delivery
+                <button data-id="4" data-nodes="node-worker,node-gpu,node-nvme" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+                    04. VRAM Graph
                 </button>
-                <button data-id="5" data-nodes="node-payload,node-cloudfront,node-client" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                    05. Edge Security
+                <button data-id="5" data-nodes="node-nvme,node-fastapi,node-shaka,node-meta" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+                    05. Delivery &amp; Playback
                 </button>
-                <button data-id="6" data-nodes="node-mediaconvert,node-eventbridge,node-payload" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                    06. Webhooks
+                <button data-id="6" data-nodes="node-worker,node-gpu,node-vec" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+                    06. Edge Intelligence
                 </button>
-                <button data-id="7" data-nodes="node-payload,node-gcs,node-cloudrun,node-mediaconvert,node-s3,node-cloudfront,node-client,node-eventbridge" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                    07. Post-Mortem
+                <button data-id="7" data-nodes="node-console,node-fastapi,node-redis,node-worker,node-gpu,node-nvme,node-meta,node-shaka,node-vec" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+                    07. Genesis (Cloud V1)
                 </button>
             </div>
 
             <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl p-8 shadow-sm min-h-[400px]">
-                <h2 id="pane-title" class="text-[20px] font-semibold text-gray-900 dark:text-white tracking-tight mb-8">CMS Ingestion & Validation</h2>
+                <h2 id="pane-title" class="text-[20px] font-semibold text-gray-900 dark:text-white tracking-tight mb-8">Streaming Ingest &amp; Deterministic Audit</h2>
                 <article id="reading-pane" class="text-sm academy-article">
                 </article>
             </div>
@@ -329,263 +329,93 @@
 
     <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider mt-auto shrink-0">
         <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
+            <span>&copy; 2026 OUROBOROS METAL.</span>
             <div class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-black dark:bg-white"></span>
-                <span>SYSTEM_READY</span>
+                <span>FRAMES_STAY_IN_VRAM</span>
             </div>
         </div>
     </footer>
 
     <div id="content-templates" style="display: none;">
         <template id="content-1">
-            <p>Routing multi-gigabyte mezzanine video files through a traditional Node.js backend introduces severe memory bottlenecks, upload timeouts, and high compute costs. This setup utilizes <strong>Direct-to-Cloud (D2C)</strong> ingestion alongside Payload CMS and PostgreSQL to handle relational data modeling and client content management.</p>
-            
-            <h4>Unified Admin Panel & Relational Topology</h4>
-            <p>Content operators upload media packages directly through the tailored Payload collection dashboard. Uploads partition into clean parent-child relational mappings powered by the underlying <code>@payloadcms/db-postgres</code> adapter:</p>
-            <ul>
-                <li><strong>Media Collection:</strong> Stores primary high-resolution video tracks (<code>.mp4</code>), pipeline statuses, and final master playlist paths.</li>
-                <li><strong>Files Collection:</strong> Captures parallel sidecar assets (<code>.wav</code> / <code>.m4a</code> audio stems, <code>.srt</code> / <code>.vtt</code> subtitles) bound explicitly to their parent ID.</li>
-            </ul>
-
-            <h4>Flat Namespace Optimization</h4>
-            <p>To eliminate pseudo-directory overhead in cloud storage buckets, Payload hooks intercept creations and split file identifiers using a secure <code>clean_title__random_hash.ext</code> token.</p>
-<pre><code class="language-typescript">// src/collections/Files.ts
-beforeOperation: [
-  ({ args, operation }: any) => {
-    if (operation === 'create' && file) {
-      const baseName = data.base_name || file.name.split('.')[0]
-      const originalName = file.name
-      const ext = originalName.split('.').pop()?.toLowerCase()
-      const hash = crypto.randomBytes(4).toString('hex')
-      const cleanFolder = baseName.toLowerCase().replace(/[^a-z0-9_]/g, '_')
-
-      // Clean, single-prefix namespace token (no double prefix)
-      file.name = `${cleanFolder}__${hash}.${ext}`
-    }
-    return args
-  }
-]</code></pre>
+            <p>Every source is interrogated <strong>before a byte is committed</strong>. The console slices a 2MB head sample; the control plane runs an in-RAM <code>ffprobe</code> against it — no disk writes, no full upload wasted on a broken file. If the MOOV atom is missing (common on some encoders), the client retries with a 2MB tail slice, then a 10MB tail.</p>
+            <h4>The Fail-Fast Gate</h4>
+            <p>The audit extracts <code>pix_fmt</code> alongside codec, geometry and duration. Anything above 8-bit is rejected <em>instantly</em> with a distinct, legible terminal state — zero chunks dispatched, zero GPU cycles burned. This replaced what was originally a 20-second retry storm against a deterministic failure:</p>
+<pre><code class="language-text">AUDIT PROTOCOL
+  1. slice(0, 2MB) -> ffprobe (in-RAM)
+  2. MOOV_ATOM_MISSING? -> slice(tail 2MB) -> slice(tail 10MB)
+  3. pix_fmt depth &gt; 8-bit -> UNSUPPORTED_SOURCE_10BIT (terminal, no dispatch)
+  4. OK -> metadata upsert (PROCESSING) + Redis job:state seed (STAGED)</code></pre>
+            <p>Only after the audit passes does the streaming ingest run: sanitized filename, 8MB streamed reads (the file never sits in RAM), a capacity guard against the storage window, and a single task dispatch into the swarm.</p>
         </template>
 
         <template id="content-2">
-            <p>The Multi-File Orchestration Edge is powered by <strong>GCP EventArc & Cloud Run</strong>. When files hit the input Google Cloud Storage bucket, GCP Eventarc captures distinct object finalization signals and fires parallel webhooks.</p>
-            
-            <h4>The Self-Healing Guardrail (Pacifier Pattern)</h4>
-            <p>The cached, elevated Python <code>vod-trigger-function</code> intercepts the multi-file wave. If sidecar tracks finish uploading ahead of the primary heavy <code>.mp4</code>, the instance safely logs the imbalance and bails with a standard 200 OK without throwing errors or locking the pipeline.</p>
-
-<pre><code class="language-python"># main.py
-def trigger_mediaconvert(cloud_event: CloudEvent):
-    # ... setup and namespace extraction ...
-    
-    # --- RACE CONDITION PROTECTION & ORDER ORDINATION ---
-    bundle_files = check_asset_bundle_complete(bucket_name, folder_prefix)
-    
-    if bundle_files == "LOCKED": 
-        print(f"🔒 Job is actively locked and processing for token '{folder_prefix}'. Exiting cleanly.")
-        return "Job Already Locked", 200
-        
-    if not bundle_files: 
-        print(f"⏳ Bundle package '{folder_prefix}' incomplete. Awaiting remaining sibling tracks...")
-        return "Awaiting Remaining Sibling Files", 200</code></pre>
-
-            <h4>Deterministic Concurrency Control</h4>
-            <p>When all sibling files are validated, the highest-velocity thread attempts an atomic metadata operation via <code>if_generation_match=0</code> to claim the unique tracking lock (<code>___mediaconvert.lock</code>). The winner uses ambient compute credentials to sign secure time-delimited v4 URLs and forwards the settings schema to AWS.</p>
+            <p>The pipeline is <strong>content-addressed end to end</strong>. A structural SHA256 master CID identifies the source; each 4-second chunk derives its own CID from it. State lives in a Redis micro-state ledger designed for one property: <em>re-runs are differential</em>. Kill a job at chunk 40 of 150 and the healing pass re-dispatches only what's missing or failed.</p>
+<pre><code class="language-text">LEDGER SCHEMA (Redis)
+  job:state:{job_id}      hash   lifecycle: STAGED -> SWARM DISPATCHED -> COMPLETED
+  job:ledger:{job_id}     chunk CIDs + per-chunk status
+  chunk_cid = sha256(master_cid + "_chunk_" + i)</code></pre>
+            <h4>Two Vocabularies, On Purpose</h4>
+            <p>Redis speaks fine-grained lifecycle; the cloud metadata plane speaks coarse catalog state (<code>PROCESSING</code> / <code>READY</code>). The vocabularies never mix — the split is what guarantees the cloud sees exactly two writes per job while the UI polls rich local state at 1s resolution.</p>
         </template>
 
         <template id="content-3">
-            <p>AWS serves as the heavy transcoding factory via the <strong>AWS Elemental MediaConvert</strong> Compute Transcoding Engine. The incoming JSON job definition defines the processing parameters dynamically, mapping out adaptive bitrate rules, audio selector inclusions, and subtitle sidecar injection.</p>
-            
-            <h4>Clean HLS Pathing & Schema</h4>
-            <p>MediaConvert reads the inputs via the signed GCP URLs and transcodes them into HLS fragments, rendering the outputs directly to your outbound S3 bucket under an identical nested subdirectory structure.</p>
-            <p><strong>Critical Guardrail:</strong> The API requires explicit <code>ContainerSettings: { Container: "M3U8" }</code> within the Output Group JSON to successfully map the H.264 codec to an Apple HLS playlist.</p>
-
-<pre><code class="language-json">"OutputGroups": [{
-    "Name": "Apple HLS",
-    "OutputGroupSettings": {
-        "Type": "HLS_GROUP_SETTINGS",
-        "HlsGroupSettings": {
-            "Destination": f"{clean_dest}/{folder_prefix}/{folder_prefix}",
-            "MinSegmentLength": 2, 
-            "SegmentLength": 6
-        }
-    },
-    "Outputs": [{
-        // Explicit Container Settings mapping to M3U8
-        "ContainerSettings": {
-            "Container": "M3U8",
-            "M3u8Settings": {}
-        },
-        "VideoDescription": {
-            "CodecSettings": {
-                "Codec": "H_264", 
-                "H264Settings": {
-                    "MaxBitrate": 5000000,
-                    "RateControlMode": "QVBR", 
-                    "SceneChangeDetect": "ENABLED"
-                }
-            }
-        },
-        "NameModifier": "_1080p" 
-    }]
-}]</code></pre>
+            <p>Consumer NVENC silicon enforces a hard ceiling on concurrent encode sessions. This pipeline found it the honest way: a correctness fix took each chunk task from one real encode session to three (the full ladder), and at 8 concurrent tasks the driver refused — <code>OpenEncodeSessionEx failed (error 21)</code>.</p>
+<pre><code class="language-text">MEASURED, NOT ASSUMED
+  observed session ceiling      ~9 concurrent
+  sessions per chunk task        3 (1080p + 720p + 360p)
+  standing rule                  tasks x 3 &lt;= 6
+  worker concurrency             2
+  retry storms before/after      15 -> 0</code></pre>
+            <p>Counter-intuitively, <em>fewer</em> workers made the system faster: the encoder ASICs are the true serialization point, and two clean tasks beat eight thrashing ones. The alternative — serializing the ladder into three sequential encodes — was rejected permanently: it triples decode work and breaks the single-decode VRAM invariant.</p>
         </template>
 
         <template id="content-4">
-            <p><strong>AWS CloudFront & S3</strong> establish the Content Delivery Edge. Rather than serving directly from the S3 output bucket, AWS CloudFront acts as the CDN layer, retrieving the transcoded assets and distributing them to edge nodes globally to minimize latency and origin load.</p>
-            
-            <h4>Secured Origin Storage & OAC</h4>
-            <p>The output S3 bucket employs strict security perimeters. "Block All Public Access" is <strong>ON</strong>, and an S3 Bucket Policy (Origin Access Control) enforces that the bucket only accepts requests routed through the designated CloudFront distribution.</p>
-            
-            <h4>Differential Caching & CORS</h4>
-            <p>The CDN implements strict path-pattern routing to apply optimized caching rules tailored specifically for HTTP Live Streaming (HLS):</p>
-            <ul>
-                <li><strong>Media Fragments (<code>.ts</code> / <code>.m4s</code>):</strong> Aggressive cache policies with a high TTL. Immutable video chunks remain cached at the edge for maximum offload.</li>
-                <li><strong>VOD Manifests (<code>.m3u8</code>):</strong> Moderate TTLs and strict Cache-Control headers prevent edge nodes from serving stale index data.</li>
-            </ul>
-            <p>A permissive CORS policy on S3 allows <code>GET</code>/<code>HEAD</code> requests from all origins (<code>*</code>) to satisfy Shaka Player's XHR requirements.</p>
+            <p>The core axiom: <strong>a frame decoded into VRAM never leaves it</strong>. One NVDEC decode feeds a split into three <code>scale_cuda</code> rungs and three <code>h264_nvenc</code> encodes — the entire ABR ladder from a single pass, with the CPU touching nothing but command dispatch.</p>
+<pre><code class="language-text">[v1]scale_cuda=-2:1080:passthrough=0[v1out];
+[v2]scale_cuda=-2:720:passthrough=0[v2out];
+[v3]scale_cuda=-2:360:passthrough=0[v3out]</code></pre>
+            <h4>Two Scars, Two Rules</h4>
+            <p><code>passthrough=0</code> is mandatory on every rung: when output dimensions equal input, the filter's default passthrough breaks graph negotiation, silently inserts a CPU auto-scaler, and violates the invariant. And per-file codec flags must precede each output path — stream-index suffixes (<code>-c:v:1</code>) match nothing when each output file holds one stream, which once left two-thirds of the ladder silently falling back to CPU MPEG-2. Both failures were invisible until the gates forced every path to execute.</p>
+            <p><code>-2:H</code> scaling preserves the source aspect exactly — a 12:5 anamorphic source produces a 2592&times;1080-class rung, not a distorted 1920&times;1080.</p>
         </template>
 
         <template id="content-5">
-            <p>To prevent unauthorized CDN scraping, the pipeline implements a <strong>Zero-Trust Security Perimeter</strong> using short-lived cryptographic tokens validated directly at the CloudFront distribution edge.</p>
-            
-            <h4>CMS Administrative Minting (Cookie Auth)</h4>
-            <p>Token generation is strictly bounded to the Payload CMS interface. An admin uses a custom UI component to ping the internal <code>/api/media/mint-token</code> endpoint. Because this relies entirely on Payload's HTTP-only session cookies, external programmatic access (via Bearer tokens) is structurally blocked.</p>
-
-<pre><code class="language-typescript">// src/collections/Media.ts
-endpoints: [
-  {
-    path: '/mint-token',
-    method: 'get',
-    handler: async (req) => {
-      if (!req.user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
-
-      const secret = process.env.JWT_SECRET
-      const expirationSeconds = Math.floor(Date.now() / 1000) + (15 * 60)
-
-      const payloadBase64Url = Buffer.from(JSON.stringify({ exp: expirationSeconds })).toString('base64url')
-      
-      const hmac = crypto.createHmac('sha256', secret)
-      hmac.update(payloadBase64Url)
-      
-      return Response.json({ token: `${payloadBase64Url}.${hmac.digest('base64url')}` })
-    }
-  }
-]</code></pre>
-
-            <h4>Decoupled Edge KeyValueStore Storage Plane</h4>
-            <p>Hardcoding cryptographic keys directly within the deployment source string introduces severe operational risks regarding git-repository leaks. Instead, the symmetric 256-bit key is injected inside a globally distributed <strong>CloudFront KeyValueStore (KVS)</strong> data instance named <code>EdgeSecrets</code>.</p>
-
-            <h4>Asynchronous Edge Interception (cloudfront-js-2.0)</h4>
-            <p>The client player intercepts network traffic to attach the token string into the <code>X-OTT-Access-Token</code> header. A high-performance viewer-request edge worker running the <code>cloudfront-js-2.0</code> execution profile handles the traffic, querying edge storage memory via dynamic async lookups to assert authorization state within <code>0.1ms</code> before checking the cache matrix.</p>
-
-<pre><code class="language-javascript">// CloudFront Edge Token Validator Function
-import crypto from 'crypto';
-import cf from 'cloudfront';
-
-const kvsHandle = cf.kvs();
-
-async function handler(event) {
-    var request = event.request;
-    let JWT_SECRET;
-    try {
-        // Safe asynchronous lookup out of the global AWS edge data plane
-        JWT_SECRET = await kvsHandle.get('JWT_SECRET');
-    } catch (err) {
-        return { statusCode: 500, statusDescription: 'Crypto Substrate Error' };
-    }
-    
-    // ... extract headers, validate token structure, match HMAC, and check TTL
-    return request;
-}</code></pre>
+            <p>Manifest assembly is native: when the ledger reports every chunk complete, the worker writes the master playlist, three variant playlists, and finalizes the MPEG-TS segment set on the NVMe. The same machine serves as origin — a static mount over the output tree.</p>
+<pre><code class="language-text">master.m3u8
+  ├─ 1080p.m3u8   (5.0 Mbps)
+  ├─ 720p.m3u8    (2.5 Mbps)
+  └─ 360p.m3u8    (1.0 Mbps)</code></pre>
+            <h4>Zero-Trust Playback</h4>
+            <p>The console mints short-TTL HMAC-signed JWTs and a network interceptor injects them on <em>every</em> segment fetch:</p>
+<pre><code class="language-javascript">request.headers['X-OTT-Access-Token'] = token;</code></pre>
+            <p>The pattern was proven at CDN scale in Genesis (a viewer-request edge function validating HMAC in ~0.08ms) and carries over unchanged — the origin moved on-die; the trust model didn't. The single cloud write of the whole post-ingest lifecycle fires here: <code>job_status = READY</code>.</p>
         </template>
 
         <template id="content-6">
-            <p>To securely and deterministically notify the CMS when transcoding succeeds or fails, we implement <strong>Telemetry Loops & Automated Garbage Collection</strong>.</p>
-            
-            <h4>Secured API Destination Routing</h4>
-            <p><strong>AWS EventBridge</strong> filters out non-actionable job phase changes, isolating the exact moment a transcode hits <code>COMPLETE</code> or <code>ERROR</code>. It bypasses the noise of messaging queues by utilizing an authenticated EventBridge Connection to securely manage and inject a Bearer credential, POSTing the payload straight back to the Payload CMS API Destination.</p>
-
-            <h4>State Updates & Cleanup</h4>
-            <p>The custom Next.js endpoint <code>/api/webhooks/mediaconvert</code> updates the document state, logs time-stamped telemetry data, and immediately triggers garbage collection to delete the initial lock file from Google Cloud Storage.</p>
-
-<pre><code class="language-typescript">// src/endpoints/mediaconvert.ts
-export const mediaconvertWebhook: Endpoint = {
-  path: '/webhooks/mediaconvert',
-  method: 'post',
-  handler: async (req) => {
-    // ... EventBridge processing ...
-      
-    // Unlock the GCS Bundle (Garbage Collection)
-    try {
-      console.log(`🔓 [Garbage Collection] Removing lock file for: ${folderPrefix}`)
-      await gcpBucket.file(`${folderPrefix}___mediaconvert.lock`).delete({ ignoreNotFound: true })
-    } catch (err) {
-      console.error(`⚠️ [Garbage Collection] Failed to delete lock for ${folderPrefix}:`, err)
-    }
-
-    // Update the Document State
-    if (jobStatus === 'COMPLETE') {
-      const manifestUrl = `https://${cdnDomain}/${folderPrefix}/${folderPrefix}.m3u8`
-
-      await req.payload.update({
-        collection: 'media',
-        id: mediaId,
-        data: {
-          status: 'ready',
-          manifest_url: manifestUrl,
-          logs: `AWS Webhook COMPLETE: Transcode finished.`,
-        },
-      })
-    }
-  }
-}</code></pre>
+            <p><span style="color:#d97706;font-family:monospace;font-size:11px;letter-spacing:0.1em;">ROADMAP — SPECCED, IN FLIGHT</span></p>
+            <p>The transcode engine is the substrate; intelligence rides on top of it, always under the same physics: C++-backed runtimes, VRAM-resident inference, zero cloud round-trips.</p>
+            <h4>Scene Structure, From the Encoder's Side</h4>
+            <p>Native FFmpeg scene-boundary detection maps semantic cuts onto the chunk ledger — no OpenCV, no frame export:</p>
+<pre><code class="language-text">select='gt(scene,0.4)',showinfo   ->   job:ledger:{job_id}:scenes</code></pre>
+            <h4>Sub-Millisecond Moment Search</h4>
+            <p>Scene keyframes pass through a SigLIP vision model on ONNX Runtime (CUDA execution, verified at the node-placement level — not just the provider list) into <code>sqlite-vec</code> on the local NVMe. A natural-language query vectorizes through the same model and cosine-matches in under a millisecond, entirely on-machine. TensorRT object detection then drives in-VRAM 9:16 verticalization from the same keyframes.</p>
+            <p>Nothing here is claimed as shipped until its verification gate runs — the amber badge comes off when the numbers exist.</p>
         </template>
 
         <template id="content-7">
-            <p>The core architectural mandate of this pipeline is minimizing operational entropy—the unpredictable states, race conditions, and network failures inherent in distributed cloud systems. Rather than attempting to control systemic chaos via bloated orchestration layers or expensive polling loops, this pipeline relies on <strong>bottom-up, deterministic execution</strong>.</p>
-            
-            <h4>The End-to-End Execution Sequence</h4>
-            <p>The chronological flow of state transitions maps directly across three distinct cloud environments, minimizing local compute bottlenecks:</p>
-
-            <div class="mermaid-wrapper">
-                <div class="mermaid">
-sequenceDiagram
-    participant UI as React Client
-    participant P as Payload CMS
-    participant GCS as GCP Bucket (Input)
-    participant CR as Cloud Run (Python)
-    participant AWS as MediaConvert
-    participant S3 as S3 Bucket (Output)
-    participant CF as CloudFront (Edge)
-    
-    UI->>P: Bulk Intent (/get-resumable-url)
-    P-->>UI: Minted GCP Resumable Sockets
-    UI->>GCS: Stream 5MB Chunks (Direct-to-Cloud)
-    GCS-->>CR: Eventarc Trigger
-    CR->>CR: Pacifier Pattern (0-byte check & Lock)
-    CR->>AWS: Submit Job (Signed URLs)
-    AWS->>S3: Write .m3u8 & .ts segments
-    AWS-->>P: EventBridge Webhook (COMPLETE)
-    P->>P: DB Status = 'ready' & Delete Lock
-    CF->>S3: Pull cached segments (OAC)
-                </div>
-            </div>
-
-            <h4>Enterprise-Grade Resiliency Patterns</h4>
-            <ul>
-                <li><strong>State Deflection via Atomic Operations:</strong> In distributed systems, concurrency is guaranteed, but execution order is not. By leveraging atomic metadata locks (<code>if_generation_match=0</code>) directly at the GCS layer, the system inherently prevents state collisions.</li>
-                <li><strong>Bounded Substrate Responsibilities:</strong> Cloud boundaries are utilized as deliberate constraints to isolate failure domains. Payload CMS and PostgreSQL are strictly bounded to relational data modeling; GCP Eventarc handles high-throughput ingestion; and AWS is dedicated exclusively to heavy compute and delivery.</li>
-                <li><strong>Structural Guardrails over Network Chance:</strong> The self-healing guardrails—such as verifying the complete presence of sibling files before attempting to claim a lock—ensure that processing only begins when the environment reaches a mathematically complete state.</li>
-            </ul>
-
-            <p class="mt-8 italic text-center font-medium">This pipeline demonstrates that true resilience is not achieved by building heavier error-handling mechanisms, but by designing an architecture where invalid states are structurally impossible to process.</p>
+            <p><span style="color:#d97706;font-family:monospace;font-size:11px;letter-spacing:0.1em;">HISTORICAL</span></p>
+            <p>Ouroboros Metal began as a fully working <strong>cloud-native pipeline</strong>: direct-to-cloud resumable uploads from a headless CMS into GCS, Eventarc-triggered orchestration on Cloud Run, AWS Elemental MediaConvert producing the HLS ladder into S3, and CloudFront serving it behind a sub-millisecond JWT edge firewall.</p>
+            <h4>What It Taught</h4>
+            <p>Its best ideas survive in Metal: event-driven design, atomic claim locks (<code>if_generation_match=0</code> arbitrating racing orchestrators), zero-trust token minting, and telemetry loops closing state back to the catalog. Its lesson was economic and physical — for this workload class, every managed hop traded determinism and cost for convenience, and the round-trips fenced off the most valuable optimization: keeping frames on the silicon that decoded them.</p>
+            <p>The full historical topology is preserved on the <a href="diagrams.html">Diagrams</a> page, tab 04.</p>
         </template>
     </div>
 
     <script>
         const scales = {};
-        let activeCardId = null;
+        let activeCardId = '1';
         let simulation, svg, link, node;
         let resizeTimer;
 
@@ -620,26 +450,28 @@ sequenceDiagram
 
         // --- D3 PHYSICS ENGINE ---
         var nodesData = [
-            { id: 'payload', label: 'Payload CMS', color: '#3b82f6', targetIndex: 0 },
-            { id: 'gcs', label: 'GCS EventArc', color: '#f97316', targetIndex: 1 },
-            { id: 'cloudrun', label: 'Cloud Run', color: '#f97316', targetIndex: 2 },
-            { id: 'mediaconvert', label: 'MediaConvert', color: '#10b981', targetIndex: 3 },
-            { id: 's3', label: 'S3 Origin', color: '#a855f7', targetIndex: 4 },
-            { id: 'cloudfront', label: 'CloudFront CDN', color: '#a855f7', targetIndex: 5 },
-            { id: 'client', label: 'Client Playback', color: '#f43f5e', targetIndex: 6 },
-            { id: 'eventbridge', label: 'EventBridge', color: '#3b82f6', targetIndex: 2.5 }
+            { id: 'console', label: 'Ingest Console', color: '#3b82f6', targetIndex: 0 },
+            { id: 'fastapi', label: 'FastAPI Control', color: '#3b82f6', targetIndex: 1 },
+            { id: 'redis', label: 'Redis Ledger', color: '#ef4444', targetIndex: 2 },
+            { id: 'worker', label: 'Celery GPU Worker', color: '#10b981', targetIndex: 3 },
+            { id: 'gpu', label: 'NVDEC / NVENC', color: '#10b981', targetIndex: 4 },
+            { id: 'nvme', label: 'NVMe Origin', color: '#a855f7', targetIndex: 5 },
+            { id: 'meta', label: 'Metadata Plane', color: '#f97316', targetIndex: 2.5 },
+            { id: 'shaka', label: 'Shaka Console', color: '#f43f5e', targetIndex: 6 },
+            { id: 'vec', label: 'sqlite-vec (roadmap)', color: '#f59e0b', targetIndex: 4.5 }
         ];
 
         var linksData = [
-            { source: 'payload', target: 'gcs' },
-            { source: 'gcs', target: 'cloudrun' },
-            { source: 'cloudrun', target: 'mediaconvert' },
-            { source: 'mediaconvert', target: 's3' },
-            { source: 's3', target: 'cloudfront' },
-            { source: 'cloudfront', target: 'client' },
-            { source: 'mediaconvert', target: 'eventbridge' },
-            { source: 'eventbridge', target: 'payload' },
-            { source: 'payload', target: 'client' }
+            { source: 'console', target: 'fastapi' },
+            { source: 'fastapi', target: 'meta' },
+            { source: 'fastapi', target: 'redis' },
+            { source: 'fastapi', target: 'nvme' },
+            { source: 'redis', target: 'worker' },
+            { source: 'worker', target: 'gpu' },
+            { source: 'gpu', target: 'nvme' },
+            { source: 'worker', target: 'meta' },
+            { source: 'shaka', target: 'fastapi' },
+            { source: 'worker', target: 'vec' }
         ];
 
         function updateForces() {
@@ -659,7 +491,7 @@ sequenceDiagram
 
             simulation.force("x", d3.forceX(d => {
                 if (isVertical) {
-                    if (d.id === 'eventbridge') return w * 0.85;
+                    if (d.id === 'meta' || d.id === 'vec') return w * 0.85;
                     return d.targetIndex % 2 === 0 ? w * 0.20 : w * 0.80; 
                 } else {
                     var stageNorm = d.targetIndex / 6; 
@@ -672,7 +504,7 @@ sequenceDiagram
                     var stageNorm = d.targetIndex / 6;
                     return h * (0.10 + stageNorm * 0.80);
                 } else {
-                    if (d.id === 'eventbridge') return h * 0.25;
+                    if (d.id === 'meta' || d.id === 'vec') return h * 0.25;
                     return d.targetIndex % 2 === 0 ? h * 0.55 : h * 0.75;
                 }
             }).strength(0.8));
@@ -761,7 +593,7 @@ sequenceDiagram
                     var sourceId = d.source.id || d.source;
                     var targetId = d.target.id || d.target;
 
-                    if (sourceId === 'eventbridge' || targetId === 'eventbridge') {
+                    if (sourceId === 'meta' || targetId === 'meta' || sourceId === 'vec' || targetId === 'vec') {
                         var dr = Math.sqrt(dx * dx + dy * dy) * 1.5; 
                         return `M${d.source.x},${d.source.y} A${dr},${dr} 0 0,0 ${d.target.x},${d.target.y}`;
                     }
@@ -881,13 +713,13 @@ sequenceDiagram
 
         // --- CMS MODULE BINDING ---
         var playbookTitles = {
-            "1": "CMS Ingestion & Namespace Optimization",
-            "2": "Serverless Orchestration & Pacifier Pattern",
-            "3": "Compute Transcoding Engine",
-            "4": "Global CDN Distribution & Caching",
-            "5": "Zero-Trust Edge Security Perimeter",
-            "6": "Telemetry Loops & Garbage Collection",
-            "7": "Deterministic Systems Engineering"
+            "1": "Streaming Ingest & Deterministic Audit",
+            "2": "The Content-Addressed Chunk Ledger",
+            "3": "Swarm Compute & the NVENC Session Ceiling",
+            "4": "The VRAM-Invariant Filter Graph",
+            "5": "HLS Assembly, Origin & Zero-Trust Playback",
+            "6": "Edge Intelligence Roadmap",
+            "7": "Genesis: The Cloud-Native Predecessor"
         };
 
         function selectModule(tabElement) {
@@ -956,6 +788,15 @@ sequenceDiagram
                     if(simulation) updateForces();
                 }, 150);
             });
+        });
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            var pane = document.getElementById('reading-pane');
+            var tpl = document.getElementById('content-1');
+            if (pane && tpl) {
+                pane.innerHTML = tpl.innerHTML;
+                pane.querySelectorAll('pre code').forEach(function(b){ hljs.highlightElement(b); });
+            }
         });
     </script>
 </body>
