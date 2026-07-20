@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ouroboros Metal | Deterministic Console</title>
+    <title>Secure OTT Edge Pipeline | Deterministic Console</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/core.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/mono.css">
@@ -59,7 +59,7 @@
                 <span class="text-gray-300 dark:text-gray-700 font-light text-xl mx-3 sm:mx-4 shrink-0">/</span>
                 <nav class="flex items-center space-x-4 sm:space-x-6 h-full overflow-x-auto hide-scroll">
                     <a href="index.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Main</a>
-                    <a href="player.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all whitespace-nowrap">Console</a>
+                    <a href="player.html" class="text-sm font-semibold text-black dark:text-white border-b-2 border-black dark:border-white h-full flex items-center transition-all whitespace-nowrap">Player</a>
                     <a href="academy.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Academy</a>
                     <a href="diagrams.html" class="text-sm text-gray-500 hover:text-black dark:text-zinc-400 dark:hover:text-white border-b-2 border-transparent h-full flex items-center transition-colors whitespace-nowrap">Diagrams</a>
                 </nav>
@@ -83,7 +83,7 @@
         <div class="mb-12 pt-8">
             <h1 class="text-[32px] md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">Edge Playback Verification</h1>
             <p class="text-gray-500 dark:text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
-                Point the console at any HLS origin — including a local Ouroboros Metal pipeline. Monitor explicit JWT injection, origin boundaries, and structural ABR guardrails in real time.
+                Verify Edge Phase 4 & 5 execution. Monitor explicit JWT injection, CDN cache boundaries, and structural ABR guardrails.
             </p>
         </div>
 
@@ -160,7 +160,7 @@
                     <div class="p-5 space-y-4">
                         <div>
                             <label class="block text-[10px] font-mono font-medium text-gray-500 dark:text-zinc-500 uppercase mb-2">Manifest Origin URI</label>
-                            <input type="text" id="manifestInput" value="" placeholder="http://<your-origin>/media/<job>_output/master.m3u8" class="w-full bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs p-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white text-gray-900 dark:text-white font-mono transition-shadow">
+                            <input type="text" id="manifestInput" value="" placeholder="https://your-perimeter.cloudfront.net/folder/manifest.m3u8" class="w-full bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs p-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white text-gray-900 dark:text-white font-mono transition-shadow">
                         </div>
                         <div>
                             <div class="flex justify-between items-center mb-2">
@@ -241,10 +241,10 @@
 
     <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider mt-auto shrink-0">
         <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span>&copy; 2026 OUROBOROS METAL.</span>
+            <span>&copy; 2026 OTT VIDEO TECHNOLOGIES.</span>
             <div class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-black dark:bg-white"></span>
-                <span>FRAMES_STAY_IN_VRAM</span>
+                <span>SYSTEM_READY</span>
             </div>
         </div>
     </footer>
@@ -333,7 +333,11 @@
             const visualizer = document.getElementById('jwtVisualizer');
             const payloadCode = document.getElementById('jwtPayloadCode');
             try {
-                let base64 = tokenStr.split('.')[0].replace(/-/g, '+').replace(/_/g, '/');
+                // Format-agnostic: standard JWT (3 parts) carries claims in [1];
+                // the Genesis edge 2-part format (payload.sig) carries them in [0].
+                const parts = tokenStr.trim().split('.');
+                const claimsPart = parts.length === 3 ? parts[1] : parts[0];
+                let base64 = claimsPart.replace(/-/g, '+').replace(/_/g, '/');
                 const pad = base64.length % 4;
                 if (pad) {
                     base64 += new Array(5 - pad).join('=');
@@ -359,6 +363,11 @@
             
             badge.classList.remove('hidden');
             badge.classList.add('flex');
+
+            if (!payloadObj || typeof payloadObj.exp !== 'number') {
+                timerText.innerText = "NO EXP";
+                return;
+            }
 
             ttlInterval = setInterval(() => {
                 const now = Math.floor(Date.now() / 1000);
@@ -414,10 +423,10 @@
                 document.getElementById('telemetryIndicator').className = "w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]";
                 if(e.detail && e.detail.code === 1002) {
                     logNetwork("ERR", "MANIFEST_FETCH", null, "text-red-500");
-                    updateLockScreen("Access Denied", "CORS OR ORIGIN SECURITY REJECTED TOKEN", true);
+                    updateLockScreen("Access Denied", "CORS OR CDN SECURITY REJECTED TOKEN", true);
                 } else if (e.detail && e.detail.code === 1001) {
                     logNetwork("ERR", "MANIFEST_FETCH", null, "text-red-500");
-                    updateLockScreen("404 Not Found", "VERIFY ORIGIN AND ASSET PATH", true);
+                    updateLockScreen("404 Not Found", "VERIFY CDN DOMAIN AND ASSET PATH", true);
                 } else {
                     logNetwork("ERR", "PLAYER_CRASH", null, "text-red-500");
                     updateLockScreen("Stream Error", `CODE: ${e.detail ? e.detail.code : 'UNKNOWN'}`, true);
@@ -498,7 +507,7 @@
             });
 
             try {
-                updateLockScreen("Executing Handoff...", "NEGOTIATING WITH ORIGIN", false);
+                updateLockScreen("Executing Handoff...", "NEGOTIATING WITH CLOUDFRONT EDGE", false);
                 await player.load(manifestUri);
                 
                 document.getElementById('playerOverlay').style.opacity = '0';
