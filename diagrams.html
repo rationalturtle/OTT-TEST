@@ -65,7 +65,7 @@
             --mm-note-border: #27272a;
             --mm-loop-border: #3f3f46;
         }
-
+ 
         body { 
             font-family: 'Geist Sans', -apple-system, sans-serif;
             transition: background-color 0.2s, color 0.2s;
@@ -74,13 +74,13 @@
         
         .hide-scroll::-webkit-scrollbar { width: 0px; height: 0px; display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-
+ 
         .diagram-container {
             width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-
+ 
         /* --- MERMAID DOM OVERRIDES --- */
         .mermaid {
             display: flex;
@@ -89,7 +89,7 @@
             min-height: 400px;
             padding: 0 20px;
         }
-
+ 
         .mermaid svg { 
             max-width: 100% !important;
             overflow: visible;
@@ -170,7 +170,7 @@
             text-transform: uppercase; 
             letter-spacing: 0.05em; 
         }
-
+ 
         /* Optical Mask for Loop Text */
         .mermaid .loopText, .mermaid .loopText > tspan { 
             fill: var(--mm-text-muted) !important; 
@@ -214,7 +214,7 @@
             text-anchor: middle !important; 
             transform: translateY(1px); /* Optical baseline correction */
         }
-
+ 
         /* --- TAB VISIBILITY LOGIC --- */
         .tab-content { 
             width: 100%;
@@ -229,7 +229,7 @@
             pointer-events: none !important;
             z-index: -1;
         }
-
+ 
         .tab-active {
             position: relative;
             visibility: visible;
@@ -246,7 +246,7 @@
     </style>
 </head>
 <body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col">
-
+ 
     <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
             <div class="flex items-center h-full flex-1 overflow-hidden">
@@ -269,21 +269,21 @@
             </div>
         </div>
     </header>
-
+ 
     <main class="max-w-[1200px] mx-auto px-6 py-16 w-full flex-grow relative">
         
         <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-50" style="background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
         <div class="dark:absolute dark:inset-0 dark:z-[-1] dark:pointer-events-none hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
         <div class="absolute top-8 left-6 text-gray-300 dark:text-gray-700 pointer-events-none select-none">+</div>
         <div class="absolute top-8 right-6 text-gray-300 dark:text-gray-700 pointer-events-none select-none">+</div>
-
+ 
         <div class="mb-12 pt-8">
             <h1 class="text-[32px] md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">Architecture Topology</h1>
             <p class="text-gray-500 dark:text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
-                The chronological flow of data and state across the two-plane edge architecture: host control plane, GPU compute plane, and a cloud reduced to one metadata upsert per job. Genesis (the cloud-native predecessor) is preserved as the final tab.
+                The chronological flow of data and state across the two-plane architecture: host control plane, GPU compute plane, and a local Postgres chronicle as the durable record of every artifact. Genesis (the cloud-native predecessor) is preserved as the final tab.
             </p>
         </div>
-
+ 
         <div class="flex flex-nowrap overflow-x-auto hide-scroll gap-6 border-b border-gray-200 dark:border-white/10 mb-8 relative z-10">
             <button onclick="switchTab('ingestion')" data-target="ingestion" class="tab-btn active shrink-0 pb-3 border-b-2 border-black dark:border-white text-black dark:text-white font-medium text-[13px] transition-colors cursor-pointer select-none">
                 01. Ingest &amp; Audit
@@ -294,11 +294,14 @@
             <button onclick="switchTab('telemetry')" data-target="telemetry" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
                 03. Delivery &amp; Playback
             </button>
+            <button onclick="switchTab('planes')" data-target="planes" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+                04. Two Planes &amp; Authority
+            </button>
             <button onclick="switchTab('genesis')" data-target="genesis" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                04. Genesis (Cloud V1)
+                05. Genesis (Cloud V1)
             </button>
         </div>
-
+ 
         <div class="relative z-10 min-h-[500px] pb-16">
             
             <div id="tab-ingestion" class="tab-content tab-active">
@@ -307,12 +310,12 @@
                         sequenceDiagram
                             participant UI as Ingest Console
                             participant API as FastAPI Control Plane
-                            participant Meta as Metadata Plane (Postgres)
-                            participant R as Redis Ledger
+                            participant Meta as Postgres Chronicle
+                            participant R as Redis (Working State)
                             UI->>API: POST /api/audit (2MB head slice)
                             Note over API: In-RAM ffprobe audit<br/>MOOV fallback: 2MB tail, 10MB tail
                             API->>API: Fail-fast gate (pix_fmt > 8-bit rejected)
-                            API->>Meta: Upsert media row (PROCESSING)
+                            API->>Meta: Chronicle row written: intent (PROCESSING)
                             API->>R: Seed job:state (STAGED)
                             API-->>UI: 200 OK (job_id)
                             UI->>API: POST /api/ingest (streaming, 8MB reads)
@@ -322,43 +325,48 @@
                         </div>
                 </div>
             </div>
-
+ 
             <div id="tab-orchestration" class="tab-content tab-inactive">
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
-                            participant R as Redis (Broker + Ledger)
+                            participant Meta as Postgres Chronicle
+                            participant R as Redis (Broker + Working State)
                             participant W as Celery GPU Worker
                             participant GPU as RTX NVENC/NVDEC
                             participant FS as NVMe /data
                             R->>W: phase_0_audit
-                            W->>W: Structural SHA256 master CID
-                            Note over W: Differential ledger healing<br/>only missing/failed chunks re-dispatch
-                            W->>R: job:ledger CIDs (4.0s chunks)
+                            W->>Meta: Read chunk CIDs (fail-closed)
+                            Note over Meta,W: Missing or unverified row -> typed refusal<br/>no ffmpeg process starts
+                            W->>R: Seed working ledger (4.0s chunks)
+                            Note over W: Differential healing<br/>only missing/failed chunks re-dispatch
                             loop Per chunk (concurrency engineered to session ceiling)
                                 R->>W: transcode_chunk(cid, t, dur)
                                 W->>GPU: NVDEC decode (frames stay in VRAM)
                                 GPU->>GPU: scale_cuda x3 (passthrough=0)
-                                GPU->>GPU: h264_nvenc x3 (5M/2.5M/1M)
+                                GPU->>GPU: h264_nvenc x3 (full ABR ladder)
                                 GPU->>FS: 1080p/720p/360p .ts segments
-                                W->>R: chunk COMPLETED
+                                W->>R: chunk COMPLETED (segment digests -> proof)
                             end
-                            W->>W: assemble_manifest (master + variants)
+                            W->>FS: Verify every segment against recorded proof
+                            W->>W: join_playlist_fragments
+                            Note over W: BANDWIDTH authored from verified segments<br/>~6.4 / 3.2 / 1.5 Mbps measured
+                            W->>Meta: Spine transition: transcoded -> staged
                             W-->>R: job COMPLETED
                         </div>
                 </div>
             </div>
-
+ 
             <div id="tab-telemetry" class="tab-content tab-inactive">
                 <div class="diagram-container">
                     <div class="mermaid">
                         sequenceDiagram
                             participant W as Celery Worker
-                            participant Meta as Metadata Plane (Postgres)
+                            participant Meta as Postgres Chronicle
                             participant API as FastAPI Origin
                             participant P as Shaka Console
-                            W->>Meta: SINGLE async UPDATE (job_status = READY)
-                            Note over W,Meta: The only cloud contact after ingest<br/>Redis remains UI source of truth
+                            W->>Meta: Spine transition: staged -> serving
+                            Note over W,Meta: Chronicle is the durable record (local Postgres)<br/>Redis serves 1s UI polling - zero authority
                             P->>API: GET /api/media/mint-token
                             API-->>P: 15-min HS256 JWT
                             P->>API: GET /media/{job}_output/master.m3u8
@@ -371,6 +379,35 @@
                         </div>
                 </div>
             </div>
+            <div id="tab-planes" class="tab-content tab-inactive">
+                <div class="diagram-container">
+                    <div class="mermaid">
+                        sequenceDiagram
+                            participant FS as NVMe Disk (Final Authority)
+                            participant Meta as Postgres Chronicle (Durable Record)
+                            participant R as Redis (Zero Authority)
+                            participant W as L0 Worker
+                            participant AI as L1 Inference
+                            W->>Meta: Read chunk CIDs before any work
+                            alt row missing or unverified
+                                Meta-->>W: Typed refusal - no ffmpeg process starts
+                            else row verified
+                                W->>FS: Encode segments to disk
+                                W->>FS: Hash what landed
+                                Note over FS,W: exit-0 proves the command ran<br/>only hashes prove effects survived
+                                W->>Meta: Record segment digests as proof
+                                W->>R: Progress for 1s UI polling (flushable, rebuilt from chronicle)
+                            end
+                            W->>FS: Verify every segment against proof
+                            W->>Meta: Spine: landed -> transcoded -> staged -> serving
+                            Note over Meta: Verified tense - each state names something proven,<br/>never something attempted
+                            AI->>FS: Read verified video by L0 coordinates
+                            AI->>AI: Scene detect -> SigLIP embed -> sqlite-vec
+                            Note over AI: L1 artifacts key to L0 coordinates<br/>and can never gate an L0 transition
+                    </div>
+                </div>
+            </div>
+ 
             <div id="tab-genesis" class="tab-content tab-inactive">
                 <div class="mb-6 border border-amber-500/30 bg-amber-500/5 rounded-lg px-4 py-3">
                     <span class="font-mono text-[10px] tracking-widest uppercase text-amber-600 dark:text-amber-500">Historical — the cloud-native predecessor this project rebuilt on-die</span>
@@ -393,10 +430,10 @@
                     </div>
                 </div>
             </div>
-
+ 
         </div>
     </main>
-
+ 
     <footer class="border-t border-gray-200 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider shrink-0 mt-auto">
         <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <span>&copy; 2026 OUROBOROS METAL.</span>
@@ -406,13 +443,13 @@
             </div>
         </div>
     </footer>
-
+ 
     <script>
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
-
+ 
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -423,7 +460,7 @@
                 document.documentElement.classList.remove('dark');
             }
         }
-
+ 
         function switchTab(tabId) {
             // Revert all tabs to inactive layout rules
             document.querySelectorAll('.tab-content').forEach(el => {
@@ -436,7 +473,7 @@
                 el.classList.remove('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
                 el.classList.add('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
             });
-
+ 
             // Activate the newly selected tab
             document.getElementById('tab-' + tabId).classList.remove('tab-inactive');
             document.getElementById('tab-' + tabId).classList.add('tab-active');
@@ -446,10 +483,16 @@
             activeBtn.classList.add('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
             activeBtn.classList.remove('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
         }
-
+ 
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
-            mermaid.run({ querySelector: '.mermaid' }).catch(console.error);
+            if (typeof mermaid === 'undefined') {
+                document.querySelectorAll('.mermaid').forEach(el => {
+                    el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:200px;font-family:monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#71717a;">Diagram offline — mermaid failed to load. Refresh to retry.</div>';
+                });
+            } else {
+                mermaid.run({ querySelector: '.mermaid' }).catch(console.error);
+            }
         });
     </script>
 </body>
