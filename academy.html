@@ -11,7 +11,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     
     <script>
@@ -44,7 +44,7 @@
             }
         });
     </script>
-
+ 
     <style>
         :root {
             --mm-text: #171717;
@@ -67,7 +67,7 @@
             --mm-note-border: #27272a;
             --mm-loop-border: #3f3f46;
         }
-
+ 
         body { 
             font-family: 'Geist Sans', -apple-system, sans-serif;
             transition: background-color 0.2s, color 0.2s;
@@ -78,7 +78,7 @@
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .node-label { paint-order: stroke; stroke: #ffffff; stroke-width: 4px; stroke-linejoin: round; }
         .dark .node-label { stroke: #000000; }
-
+ 
         @keyframes flow {
             /* Travel = exact multiple of the dash period (4+6=10) so the loop
                point is invisible: 20 % 10 == 0. Duration keeps 16px/s speed. */
@@ -92,14 +92,14 @@
         .flow-line.active-link {
             animation: flow 0.8s linear infinite;
         }
-
+ 
         /* Academy Article Typography */
         .academy-article h3 { font-size: 1.15rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: #111827; letter-spacing: -0.01em; }
         .dark .academy-article h3 { color: #ededed; }
-
+ 
         .academy-article h4 { font-size: 0.95rem; font-weight: 500; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #475569; letter-spacing: -0.01em; }
         .dark .academy-article h4 { color: #a1a1aa; }
-
+ 
         .academy-article p { margin-bottom: 1.25rem; line-height: 1.6; color: #475569; font-weight: 400; font-size: 0.95rem; }
         .dark .academy-article p { color: #a1a1aa; }
         
@@ -109,7 +109,7 @@
         
         .academy-article strong { color: #0f172a; font-weight: 600; }
         .dark .academy-article strong { color: #f8fafc; font-weight: 600; }
-
+ 
         /* Code Blocks */
         .academy-article pre { 
             background: #f8fafc; 
@@ -140,7 +140,7 @@
             background-color: rgba(255, 255, 255, 0.1);
             border-color: transparent;
         }
-
+ 
         /* --- MERMAID DOM OVERRIDES --- */
         .mermaid-wrapper {
             overflow-x: auto;
@@ -164,14 +164,14 @@
             justify-content: center;
             width: 100%;
         }
-
+ 
         .mermaid svg { 
             max-width: 100% !important;
             overflow: visible;
             height: auto !important;
             margin: 0 auto;
         }
-
+ 
         .mermaid rect.actor { fill: var(--mm-actor-bg) !important; stroke: transparent !important; }
         .mermaid text.actor > tspan { fill: var(--mm-text) !important; font-weight: 600 !important; font-size: 13px !important; }
         .mermaid .actor-man rect, .mermaid .actor-man path, .mermaid .actor-man line, .mermaid .actor-man circle { fill: var(--mm-actor-bg) !important; stroke: var(--mm-text) !important; stroke-width: 1.5px !important; }
@@ -191,7 +191,7 @@
             stroke-linecap: butt !important;
             stroke-linejoin: miter !important;
         }
-
+ 
         /* --- STATE MUTATION: Sequence Numbers --- */
         .mermaid .sequenceNumber circle { 
             fill: var(--mm-actor-bg) !important; 
@@ -209,7 +209,7 @@
             text-anchor: middle !important; 
             transform: translateY(1px); 
         }
-
+ 
         /* D3 Canvas Native Scroll Adjustments */
         .academy-viewport {
             overflow: auto;
@@ -231,13 +231,13 @@
             justify-content: center;
             padding: 4rem;
         }
-
+ 
         .node-group { cursor: grab; }
         .node-group:active { cursor: grabbing; }
     </style>
 </head>
 <body class="bg-[#fafafa] text-black dark:bg-[#000000] dark:text-[#ededed] font-sans antialiased min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200 flex flex-col relative">
-
+ 
     <header class="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
             <div class="flex items-center h-full flex-1 overflow-hidden">
@@ -260,21 +260,21 @@
             </div>
         </div>
     </header>
-
+ 
     <main class="max-w-[1200px] mx-auto px-6 py-16 w-full relative flex-grow">
         
         <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-50" style="background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
         <div class="dark:absolute dark:inset-0 dark:z-[-1] dark:pointer-events-none hidden dark:block" style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 20%, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 80%);"></div>
         <div class="absolute top-8 left-6 text-gray-300 dark:text-gray-700 pointer-events-none select-none">+</div>
         <div class="absolute top-8 right-6 text-gray-300 dark:text-gray-700 pointer-events-none select-none">+</div>
-
+ 
         <div class="mb-12 pt-8">
             <h1 class="text-[32px] md:text-5xl font-extrabold tracking-tight text-black dark:text-white mb-4 leading-tight">Platform Academy</h1>
             <p class="text-gray-500 dark:text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
                 The engineering behind the edge-native pipeline, module by module — each pane documents decisions proven on the verification gates, including the failures that shaped them.
             </p>
         </div>
-
+ 
         <div class="relative w-full h-[550px] md:h-[400px] mb-12 overflow-hidden academy-viewport" id="academy-zoom">
             <div class="absolute top-4 left-5 flex items-center justify-between w-[calc(100%-40px)] z-20 pointer-events-none">
                 <div class="flex items-center gap-2.5">
@@ -297,14 +297,14 @@
                 <div id="d3-graph-container" style="min-width: 900px; min-height: 400px; width: 100%; height: 100%;"></div>
             </div>
         </div>
-
+ 
         <div class="w-full max-w-4xl mx-auto pb-20">
             <div class="flex flex-nowrap overflow-x-auto hide-scroll gap-6 border-b border-gray-200 dark:border-white/10 relative z-10 mb-8">
                 <button data-id="1" data-nodes="node-console,node-fastapi,node-meta,node-redis" onclick="selectModule(this)" class="tab-btn active shrink-0 pb-3 border-b-2 border-black dark:border-white text-black dark:text-white font-medium text-[13px] transition-colors cursor-pointer select-none">
                     01. Ingest &amp; Audit
                 </button>
                 <button data-id="2" data-nodes="node-fastapi,node-redis,node-worker" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                    02. Chunk Ledger
+                    02. Identity &amp; Chronicle
                 </button>
                 <button data-id="3" data-nodes="node-redis,node-worker,node-gpu" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
                     03. GPU Swarm
@@ -318,11 +318,14 @@
                 <button data-id="6" data-nodes="node-worker,node-gpu,node-vec" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
                     06. Edge Intelligence
                 </button>
+                <button data-id="8" data-nodes="node-nvme,node-meta,node-redis,node-worker" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
+                    07. Truth &amp; Verification
+                </button>
                 <button data-id="7" data-nodes="node-console,node-fastapi,node-redis,node-worker,node-gpu,node-nvme,node-meta,node-shaka,node-vec" onclick="selectModule(this)" class="tab-btn shrink-0 pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium text-[13px] transition-colors cursor-pointer select-none">
-                    07. Genesis (Cloud V1)
+                    08. Genesis (Cloud V1)
                 </button>
             </div>
-
+ 
             <div class="bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl p-8 shadow-sm min-h-[400px]">
                 <h2 id="pane-title" class="text-[20px] font-semibold text-gray-900 dark:text-white tracking-tight mb-8">Streaming Ingest &amp; Deterministic Audit</h2>
                 <article id="reading-pane" class="text-sm academy-article">
@@ -330,7 +333,7 @@
             </div>
         </div>
     </main>
-
+ 
     <footer class="border-t border-gray-200 dark:border-white/10 bg-[#fafafa] dark:bg-[#0a0a0a] py-8 text-center text-gray-500 dark:text-zinc-500 text-[13px] font-mono tracking-wider mt-auto shrink-0">
         <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
             <span>&copy; 2026 OUROBOROS METAL.</span>
@@ -340,7 +343,7 @@
             </div>
         </div>
     </footer>
-
+ 
     <div id="content-templates" style="display: none;">
         <template id="content-1">
             <p>Every source is interrogated <strong>before a byte is committed</strong>. The console slices a 2MB head sample; the control plane runs an in-RAM <code>ffprobe</code> against it — no disk writes, no full upload wasted on a broken file. If the MOOV atom is missing (common on some encoders), the client retries with a 2MB tail slice, then a 10MB tail.</p>
@@ -350,20 +353,21 @@
   1. slice(0, 2MB) -> ffprobe (in-RAM)
   2. MOOV_ATOM_MISSING? -> slice(tail 2MB) -> slice(tail 10MB)
   3. pix_fmt depth &gt; 8-bit -> UNSUPPORTED_SOURCE_10BIT (terminal, no dispatch)
-  4. OK -> metadata upsert (PROCESSING) + Redis job:state seed (STAGED)</code></pre>
+  4. OK -> chronicle row written (intent) + Redis job:state seed (STAGED)</code></pre>
             <p>Only after the audit passes does the streaming ingest run: sanitized filename, 8MB streamed reads (the file never sits in RAM), a capacity guard against the storage window, and a single task dispatch into the swarm.</p>
         </template>
-
+ 
         <template id="content-2">
-            <p>The pipeline is <strong>content-addressed end to end</strong>. A structural SHA256 master CID identifies the source; each 4-second chunk derives its own CID from it. State lives in a Redis micro-state ledger designed for one property: <em>re-runs are differential</em>. Kill a job at chunk 40 of 150 and the healing pass re-dispatches only what's missing or failed.</p>
-<pre><code class="language-text">LEDGER SCHEMA (Redis)
-  job:state:{job_id}      hash   lifecycle: STAGED -> SWARM DISPATCHED -> COMPLETED
-  job:ledger:{job_id}     chunk CIDs + per-chunk status
-  chunk_cid = sha256(master_cid + "_chunk_" + i)</code></pre>
-            <h4>Two Vocabularies, On Purpose</h4>
-            <p>Redis speaks fine-grained lifecycle; the cloud metadata plane speaks coarse catalog state (<code>PROCESSING</code> / <code>READY</code>). The vocabularies never mix — the split is what guarantees the cloud sees exactly two writes per job while the UI polls rich local state at 1s resolution.</p>
+            <p>The pipeline is <strong>content-addressed end to end</strong>, and identity lives in the Postgres chronicle. At ingest the source splits into 4-second chunks; each chunk's content ID and lifecycle row are written to the chronicle before any work is dispatched, with <code>master_cid</code> identifying the whole asset the way an infohash identifies a torrent. Redis carries the same job as working state for the UI and the Celery broker, and holds no authority: flush it and the system rebuilds it from the chronicle. Re-runs are differential — kill a job at chunk 40 of 150 and the healing pass re-dispatches only what's missing or failed.</p>
+            <h4>The Structural-CID Incident</h4>
+            <p>Earlier builds computed identity locally: a "structural" SHA256 derived from container geometry, with chunk CIDs derived from it. The determinism gates passed for months because they proved the wrong property — geometry determinism over one clip, not content invariance. The defect surfaced when all eight named gate assets turned out to share a single md5. The hashing was correct; promoting a geometry fingerprint to an asset-identity primitive was the error.</p>
+<pre><code class="language-text">REMEDY (logged and closed in the defect register)
+  generate_structural_cid     deleted from the codebase
+  dispatch                    anchored to CIDs read from the chronicle
+  missing / unverified row    typed refusal — no ffmpeg process starts</code></pre>
+            <p>Chronicle reads are fail-closed. A worker that cannot verify what it was asked to build refuses the task and says why, instead of inventing an identity and continuing.</p>
         </template>
-
+ 
         <template id="content-3">
             <p>Consumer NVENC silicon enforces a hard ceiling on concurrent encode sessions. This pipeline found it the honest way: a correctness fix took each chunk task from one real encode session to three (the full ladder), and at 8 concurrent tasks the driver refused — <code>OpenEncodeSessionEx failed (error 21)</code>.</p>
 <pre><code class="language-text">MEASURED, NOT ASSUMED
@@ -374,7 +378,7 @@
   retry storms before/after      15 -> 0</code></pre>
             <p>Counter-intuitively, <em>fewer</em> workers made the system faster: the encoder ASICs are the true serialization point, and two clean tasks beat eight thrashing ones. The alternative — serializing the ladder into three sequential encodes — was rejected permanently: it triples decode work and breaks the single-decode VRAM invariant.</p>
         </template>
-
+ 
         <template id="content-4">
             <p>The core axiom: <strong>a frame decoded into VRAM never leaves it</strong>. One NVDEC decode feeds a split into three <code>scale_cuda</code> rungs and three <code>h264_nvenc</code> encodes — the entire ABR ladder from a single pass, with the CPU touching nothing but command dispatch.</p>
 <pre><code class="language-text">[v1]scale_cuda=-2:1080:passthrough=0[v1out];
@@ -384,30 +388,48 @@
             <p><code>passthrough=0</code> is mandatory on every rung: when output dimensions equal input, the filter's default passthrough breaks graph negotiation, silently inserts a CPU auto-scaler, and violates the invariant. And per-file codec flags must precede each output path — stream-index suffixes (<code>-c:v:1</code>) match nothing when each output file holds one stream, which once left two-thirds of the ladder silently falling back to CPU MPEG-2. Both failures were invisible until the gates forced every path to execute.</p>
             <p><code>-2:H</code> scaling preserves the source aspect exactly — a 12:5 anamorphic source produces a 2592&times;1080-class rung, not a distorted 1920&times;1080.</p>
         </template>
-
+ 
         <template id="content-5">
-            <p>Manifest assembly is native: when the ledger reports every chunk complete, the worker writes the master playlist, three variant playlists, and finalizes the MPEG-TS segment set on the NVMe. The same machine serves as origin — a static mount over the output tree.</p>
-<pre><code class="language-text">master.m3u8
-  ├─ 1080p.m3u8   (5.0 Mbps)
-  ├─ 720p.m3u8    (2.5 Mbps)
-  └─ 360p.m3u8    (1.0 Mbps)</code></pre>
+            <p>Joining runs only after every chunk in the chronicle reads verified. <code>join_playlist_fragments</code> checks each variant's segment digests against the proof recorded at transcode time, then writes the master playlist, three variant playlists, and the final MPEG-TS segment set to the NVMe. The same machine serves as origin — a static mount over the output tree.</p>
+<pre><code class="language-text">master.m3u8              BANDWIDTH authored from verified segments
+  ├─ 1080p.m3u8   ~6.4 Mbps measured
+  ├─ 720p.m3u8    ~3.2 Mbps measured
+  └─ 360p.m3u8    ~1.5 Mbps measured</code></pre>
+            <h4>Why BANDWIDTH Is Measured</h4>
+            <p>The original assembler wrote BANDWIDTH from a template, and every variant declared the same value — a player selecting rungs off those numbers cannot tell them apart. The conformance gate flagged the master playlist, the assembler was replaced, and each BANDWIDTH is now computed from the verified segments themselves. The declared ladder is monotonic because the measured one is.</p>
             <h4>Zero-Trust Playback</h4>
             <p>The console mints short-TTL HMAC-signed JWTs and a network interceptor injects them on <em>every</em> segment fetch:</p>
 <pre><code class="language-javascript">request.headers['X-OTT-Access-Token'] = token;</code></pre>
-            <p>The pattern was proven at CDN scale in Genesis (a viewer-request edge function validating HMAC in ~0.08ms) and carries over unchanged — the origin moved on-die; the trust model didn't. The single cloud write of the whole post-ingest lifecycle fires here: <code>job_status = READY</code>.</p>
+            <p>The pattern was proven at CDN scale in Genesis (a viewer-request edge function validating HMAC in ~0.08ms) and carries over unchanged — the origin moved on-die; the trust model didn't. The chronicle row flips to its verified serving state here.</p>
         </template>
-
+ 
         <template id="content-6">
-            <p><span style="color:#d97706;font-family:monospace;font-size:11px;letter-spacing:0.1em;">ROADMAP — SPECCED, IN FLIGHT</span></p>
-            <p>The transcode engine is the substrate; intelligence rides on top of it, always under the same physics: C++-backed runtimes, VRAM-resident inference, zero cloud round-trips.</p>
+            <p>The transcode plane is the substrate; intelligence rides on top of it under the same physics: C++-backed runtimes, VRAM-resident inference, zero cloud round-trips. Every artifact this layer produces keys to L0 coordinates — a scene is an address into verified video, not a copy of it.</p>
             <h4>Scene Structure, From the Encoder's Side</h4>
-            <p>Native FFmpeg scene-boundary detection maps semantic cuts onto the chunk ledger — no OpenCV, no frame export:</p>
-<pre><code class="language-text">select='gt(scene,0.4)',showinfo   ->   job:ledger:{job_id}:scenes</code></pre>
-            <h4>Sub-Millisecond Moment Search</h4>
-            <p>Scene keyframes pass through a SigLIP vision model on ONNX Runtime (CUDA execution, verified at the node-placement level — not just the provider list) into <code>sqlite-vec</code> on the local NVMe. A natural-language query vectorizes through the same model and cosine-matches in under a millisecond, entirely on-machine. TensorRT object detection then drives in-VRAM 9:16 verticalization from the same keyframes.</p>
-            <p>Nothing here is claimed as shipped until its verification gate runs — the amber badge comes off when the numbers exist.</p>
+            <p>Native FFmpeg scene-boundary detection maps semantic cuts onto the timeline — no OpenCV, no frame export:</p>
+<pre><code class="language-text">select='gt(scene,0.4)',showinfo   ->   scene boundaries keyed to L0 timestamps</code></pre>
+            <p>On the current gate asset, a 2h34m feature, detection produced 674 scene boundaries.</p>
+            <h4>Moment Search, Measured</h4>
+            <p>Scene keyframes pass through a SigLIP vision model (768-D) on ONNX Runtime — CUDA execution verified at the node-placement level, not just the provider list — into <code>sqlite-vec</code> on the local NVMe. A natural-language query vectorizes through the same model and cosine-matches against the boundary set; warm queries return in roughly 30 ms, entirely on-machine.</p>
+            <p><span style="color:#d97706;font-family:monospace;font-size:11px;letter-spacing:0.1em;">ROADMAP</span> TensorRT object detection driving in-VRAM 9:16 verticalization from the same keyframes remains specced, not shipped.</p>
         </template>
-
+ 
+        <template id="content-8">
+            <p>Everything in the system belongs to one of two planes. <strong>L0 is the transcode pipeline</strong> — ingest, transcode, stage, serve — and it is deterministic: within the pinned environment, re-running a job produces byte-identical output. This has held on the current gate asset across days, reboots, and full worker rebuilds. <strong>L1 is inference</strong> — scene detection, embeddings, search. Every L1 artifact keys to L0 coordinates, and no L1 result can gate an L0 transition. If the AI layer is wrong, the video is still correct.</p>
+            <h4>Authority, In Order</h4>
+<pre><code class="language-text">AUTHORITY (descending)
+  1. disk artifacts + hashes     final authority
+  2. postgres chronicle          durable record: intent -> verified
+  3. redis / celery              working memory, zero authority</code></pre>
+            <p>The ordering is operational, not decorative. Exit-0 from a dispatched command proves the command ran; only hashes on disk prove its effects survived. The chronicle records what was intended and what was verified. Redis can be flushed at any moment and the system rebuilds it from the chronicle.</p>
+            <h4>The L0 Spine</h4>
+<pre><code class="language-text">L0 STATES (verified tense)
+  landed -> transcoded -> staged -> serving</code></pre>
+            <p>Each state names something already proven, not something attempted — a row advances only when the artifact behind it verifies.</p>
+            <h4>The Gate and the Register</h4>
+            <p>Every run ends in an eight-tier conformance sweep that writes a per-run verdict file. Defects land in an append-only register, 84 rows to date. A fix is made under a written charter with explicit scope, and the row closes only after a control run proves the fix. One finding is open: roughly 21 ms of audio surplus at some span boundaries on film-rate sources, caught by the audio gate.</p>
+        </template>
+ 
         <template id="content-7">
             <p><span style="color:#d97706;font-family:monospace;font-size:11px;letter-spacing:0.1em;">HISTORICAL</span></p>
             <p>Ouroboros Metal began as a fully working <strong>cloud-native pipeline</strong>: direct-to-cloud resumable uploads from a headless CMS into GCS, Eventarc-triggered orchestration on Cloud Run, AWS Elemental MediaConvert producing the HLS ladder into S3, and CloudFront serving it behind a sub-millisecond JWT edge firewall.</p>
@@ -416,13 +438,13 @@
             <p>The full historical topology is preserved on the <a href="diagrams.html">Diagrams</a> page, tab 04.</p>
         </template>
     </div>
-
+ 
     <script>
         const scales = {};
         let activeCardId = '1';
         let simulation, svg, link, node;
         let resizeTimer;
-
+ 
         // --- THEME ENGINE ---
         function toggleTheme() {
             var isDark = document.documentElement.classList.toggle('dark');
@@ -444,29 +466,31 @@
             updateHighlightTheme(isDark);
             return isDark;
         }
-
+ 
         function updateHighlightTheme(isDark) {
             var link = document.getElementById('hljs-theme');
             link.href = isDark 
                 ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" 
                 : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
         }
-
+ 
         // --- D3 PHYSICS ENGINE ---
         var nodesData = [
             // ax/ay: designed anchors (fraction of viewport). Layout is deterministic —
             // corridors were chosen so no link passes near an unrelated node.
-            { id: 'console', label: 'Ingest Console', color: '#3b82f6', targetIndex: 0, ax: 0.07, ay: 0.46 },
-            { id: 'fastapi', label: 'FastAPI Control', color: '#3b82f6', targetIndex: 1, ax: 0.22, ay: 0.58 },
-            { id: 'redis', label: 'Redis Ledger', color: '#ef4444', targetIndex: 2, ax: 0.37, ay: 0.30 },
-            { id: 'worker', label: 'Celery GPU Worker', color: '#10b981', targetIndex: 3, ax: 0.52, ay: 0.50 },
-            { id: 'gpu', label: 'NVDEC / NVENC', color: '#10b981', targetIndex: 4, ax: 0.67, ay: 0.28 },
-            { id: 'nvme', label: 'NVMe Origin', color: '#a855f7', targetIndex: 5, ax: 0.80, ay: 0.66 },
-            { id: 'meta', label: 'Metadata Plane', color: '#f97316', targetIndex: 2.5, ax: 0.34, ay: 0.09 },
-            { id: 'shaka', label: 'Shaka Console', color: '#f43f5e', targetIndex: 6, ax: 0.93, ay: 0.38 },
-            { id: 'vec', label: 'sqlite-vec (roadmap)', color: '#f59e0b', targetIndex: 4.5, ax: 0.82, ay: 0.10 }
+            // Two swimlanes: pipeline (ay 0.68) reads left-to-right in processing
+            // order; state stores (ay 0.22) sit above the stage that owns them.
+            { id: 'console', label: 'Ingest Console', color: '#3b82f6', targetIndex: 0, ax: 0.06, ay: 0.68 },
+            { id: 'fastapi', label: 'FastAPI Control', color: '#3b82f6', targetIndex: 1, ax: 0.21, ay: 0.68 },
+            { id: 'worker', label: 'Celery GPU Worker', color: '#10b981', targetIndex: 3, ax: 0.42, ay: 0.68 },
+            { id: 'gpu', label: 'NVDEC / NVENC', color: '#10b981', targetIndex: 4, ax: 0.58, ay: 0.68 },
+            { id: 'nvme', label: 'NVMe Origin', color: '#a855f7', targetIndex: 5, ax: 0.74, ay: 0.68 },
+            { id: 'shaka', label: 'Shaka Console', color: '#f43f5e', targetIndex: 6, ax: 0.92, ay: 0.68 },
+            { id: 'meta', label: 'Postgres Chronicle', color: '#f97316', targetIndex: 2.5, ax: 0.28, ay: 0.22 },
+            { id: 'redis', label: 'Redis Ledger', color: '#ef4444', targetIndex: 2, ax: 0.48, ay: 0.22 },
+            { id: 'vec', label: 'sqlite-vec', color: '#f59e0b', targetIndex: 4.5, ax: 0.70, ay: 0.22 }
         ];
-
+ 
         var linksData = [
             { source: 'console', target: 'fastapi' },
             { source: 'fastapi', target: 'meta' },
@@ -479,7 +503,7 @@
             { source: 'shaka', target: 'fastapi' },
             { source: 'worker', target: 'vec' }
         ];
-
+ 
         function updateForces() {
             var container = document.getElementById('d3-graph-container');
             if (!container) return;
@@ -488,13 +512,18 @@
             var h = Math.max(container.clientHeight, 400);
             
             var isVertical = (w / h) < 1.2 && w < 900;
-
+ 
             svg.attr("viewBox", `0 0 ${w} ${h}`);
-
+ 
+            svg.select('#lane-state').attr('x', 24).attr('y', h * 0.22 - 40)
+                .style('display', isVertical ? 'none' : null);
+            svg.select('#lane-flow').attr('x', 24).attr('y', h * 0.68 - 40)
+                .style('display', isVertical ? 'none' : null);
+ 
             simulation.force("center", null)
                       .force("collide", d3.forceCollide().radius(isVertical ? 46 : 54))
                       .force("link").distance(isVertical ? 95 : 135);
-
+ 
             // Deterministic layout: every node pinned to its designed anchor.
             // Vertical (mobile) mode transposes the plan — geometry (and therefore
             // corridor clearance) is preserved, rotated 90 degrees.
@@ -508,17 +537,17 @@
                     d.fy = h * d.ay;
                 }
             });
-
+ 
             simulation.alpha(0.3).restart();
         }
-
+ 
         function initD3() {
             d3.select("#d3-graph-container").selectAll("*").remove();
-
+ 
             svg = d3.select("#d3-graph-container").append("svg")
                 .attr("width", "100%")
                 .attr("height", "100%");
-
+ 
             var defs = svg.append("defs");
             var markers = [
                 { id: "arrow-light", color: "rgba(0,0,0,0.15)" },
@@ -526,7 +555,7 @@
                 { id: "arrow-active-light", color: "#000000" },
                 { id: "arrow-active-dark", color: "#ffffff" }
             ];
-
+ 
             defs.selectAll("marker")
                 .data(markers)
                 .enter().append("marker")
@@ -540,11 +569,20 @@
                 .append("path")
                 .attr("d", "M 0,-4 L 10,0 L 0,4 L 3,0 Z") 
                 .attr("fill", d => d.color);
-
+ 
+            var lanes = svg.append("g").attr("class", "lane-labels");
+            ["lane-state|STATE", "lane-flow|PIPELINE"].forEach(function(spec) {
+                var p = spec.split("|");
+                lanes.append("text").attr("id", p[0]).text(p[1])
+                    .attr("class", "font-mono pointer-events-none")
+                    .style("font-size", "9px").style("letter-spacing", "0.25em")
+                    .style("fill", "rgba(130,130,130,0.55)");
+            });
+ 
             simulation = d3.forceSimulation(nodesData)
                 .force("link", d3.forceLink(linksData).id(d => d.id).strength(0.5))
                 .force("charge", d3.forceManyBody().strength(-1000));
-
+ 
             link = svg.append("g")
                 .attr("class", "links")
                 .selectAll("path")
@@ -553,7 +591,7 @@
                 .attr("class", "flow-link flow-line")
                 .attr("fill", "none")
                 .attr("stroke-width", 2);
-
+ 
             node = svg.append("g")
                 .attr("class", "nodes")
                 .selectAll("g")
@@ -569,23 +607,23 @@
                     var tab = document.querySelector(`.tab-btn[data-nodes*="node-${d.id}"]`);
                     if(tab) selectModule(tab);
                 });
-
+ 
             node.append("circle")
                 .attr("r", 20)
                 .attr("class", "node-bg");
-
+ 
             node.append("circle")
                 .attr("r", 5)
                 .attr("fill", d => d.color)
                 .attr("class", "shadow-sm");
-
+ 
             node.append("text")
                 .attr("class", "node-label")
                 .attr("dy", 38)
                 .attr("text-anchor", "middle")
                 .attr("class", "node-text font-mono text-[11px] pointer-events-none")
                 .text(d => d.label);
-
+ 
             simulation.on("tick", () => {
                 link.attr("d", d => {
                     if (!d.source || !d.target || d.source.x === undefined) return "";
@@ -594,7 +632,7 @@
                     var dist = Math.sqrt(dx * dx + dy * dy);
                     var sourceId = d.source.id || d.source;
                     var targetId = d.target.id || d.target;
-
+ 
                     // Rim-trim: links start/end at the node circle edge (r=20),
                     // never under it — arrowheads stay fully visible.
                     var PAD_S = 24, PAD_T = 25;
@@ -605,16 +643,37 @@
                     var ux = dx / dist, uy = dy / dist;
                     var sx = d.source.x + ux * PAD_S, sy = d.source.y + uy * PAD_S;
                     var tx = d.target.x - ux * PAD_T, ty = d.target.y - uy * PAD_T;
-
-                    if (sourceId === 'meta' || targetId === 'meta' || sourceId === 'vec' || targetId === 'vec' || sourceId === 'shaka' || targetId === 'shaka') {
-                        var tdx = tx - sx, tdy = ty - sy;
-                        var dr = Math.sqrt(tdx * tdx + tdy * tdy) * 1.15;
-                        return `M${sx},${sy} A${dr},${dr} 0 0,0 ${tx},${ty}`;
+ 
+                    // Circuit-trace routing: cross-lane links run at right angles
+                    // (exit vertical -> corridor horizontal -> enter vertical).
+                    // Links sharing a node share the trunk; distinct corridor
+                    // heights keep horizontals from ever overlapping. Returns
+                    // (fastapi>nvme, shaka>fastapi) run as a bus under the lane.
+                    var key = sourceId + '>' + targetId;
+                    var routes = {
+                        'fastapi>redis': { exit: -1, enter: +1, cy: -44 },
+                        'worker>meta':   { exit: -1, enter: +1, cy: -66 },
+                        'fastapi>meta':  { exit: -1, enter: +1, cy: -88 },
+                        'worker>vec':    { exit: -1, enter: +1, cy: -110 },
+                        'redis>worker':  { exit: +1, enter: -1, cy: +40 },
+                        'fastapi>nvme':  { exit: +1, enter: +1, cy: +48 },
+                        'shaka>fastapi': { exit: +1, enter: +1, cy: +72 }
+                    };
+                    var container = document.getElementById('d3-graph-container');
+                    var cw = container ? Math.max(container.clientWidth, 900) : 1000;
+                    var ch = container ? Math.max(container.clientHeight, 400) : 550;
+                    var isVertical = (cw / ch) < 1.2 && cw < 900;
+                    var r = routes[key];
+                    if (r && !isVertical) {
+                        var sy2 = d.source.y + r.exit * PAD_S;
+                        var ty2 = d.target.y + r.enter * PAD_T;
+                        var cy = d.source.y + r.cy;
+                        return `M${d.source.x},${sy2} L${d.source.x},${cy} L${d.target.x},${cy} L${d.target.x},${ty2}`;
                     }
-
+ 
                     return `M${sx},${sy} L${tx},${ty}`;
                 });
-
+ 
                 node.attr("transform", d => {
                     var container = document.getElementById('d3-graph-container');
                     var w = container ? Math.max(container.clientWidth, 900) : 1000;
@@ -625,7 +684,7 @@
                     return `translate(${d.x},${d.y})`;
                 });
             });
-
+ 
             updateForces();
             updateD3Theme(document.documentElement.classList.contains('dark'));
             
@@ -638,18 +697,18 @@
                 }
             }, 100);
         }
-
+ 
         // --- ZOOM CONTROLS ---
         function zoomIn(viewportId) {
             scales[viewportId] = Math.min((scales[viewportId] || 1) + 0.15, 2.5);
             applyScale(viewportId);
         }
-
+ 
         function zoomOut(viewportId) {
             scales[viewportId] = Math.max((scales[viewportId] || 1) - 0.15, 0.5);
             applyScale(viewportId);
         }
-
+ 
         function resetZoom(viewportId) {
             scales[viewportId] = 1;
             applyScale(viewportId);
@@ -660,26 +719,26 @@
                 viewport.scrollTop = Math.max(0, (viewport.scrollHeight - viewport.clientHeight) / 2);
             }, 300);
         }
-
+ 
         function applyScale(viewportId) {
             const wrapper = document.querySelector(`#${viewportId} .scale-wrapper`);
             if (wrapper) {
                 wrapper.style.transform = `scale(${scales[viewportId]})`;
             }
         }
-
+ 
         // --- DRAG CONTROLS ---
         function dragstarted(event, d) {
             if (!event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x;
             d.fy = d.y;
         }
-
+ 
         function dragged(event, d) {
             d.fx = event.x;
             d.fy = event.y;
         }
-
+ 
         function dragended(event, d) {
             if (!event.active) simulation.alphaTarget(0);
             // Keep the node where the user put it (stays pinned, layout stays calm)
@@ -687,13 +746,13 @@
             d.fx = d.x;
             d.fy = d.y;
         }
-
+ 
         function updateD3Theme(isDark) {
             if(!svg) return;
             
             var activeTab = activeCardId ? document.querySelector(`.tab-btn[data-id="${activeCardId}"]`) : null;
             var targetNodes = activeTab && activeTab.dataset.nodes ? activeTab.dataset.nodes.split(',') : [];
-
+ 
             d3.selectAll('.flow-link')
                 .attr("stroke", d => {
                     var sourceId = d.source.id || d.source;
@@ -711,14 +770,14 @@
                     if (isActive) return isDark ? "url(#arrow-active-dark)" : "url(#arrow-active-light)";
                     return isDark ? "url(#arrow-dark)" : "url(#arrow-light)";
                 });
-
+ 
             d3.selectAll('.node-bg')
                 .attr("class", d => {
                     var isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "7";
                     if (isActive) return isDark ? "node-bg fill-black stroke-white stroke-[2px]" : "node-bg fill-white stroke-black stroke-[2px]";
                     return isDark ? "node-bg fill-[#0a0a0a] stroke-white/10 stroke-[1px]" : "node-bg fill-white stroke-gray-200 stroke-[1.5px]";
                 });
-
+ 
             d3.selectAll('.node-text')
                 .attr("class", d => {
                     var isActive = targetNodes.includes(`node-${d.id}`) || activeCardId === "7";
@@ -726,46 +785,47 @@
                     return isDark ? "node-text font-mono text-[11px] font-medium fill-zinc-500 pointer-events-none" : "node-text font-mono text-[11px] font-medium fill-gray-400 pointer-events-none";
                 });
         }
-
+ 
         // --- CMS MODULE BINDING ---
         var playbookTitles = {
             "1": "Streaming Ingest & Deterministic Audit",
-            "2": "The Content-Addressed Chunk Ledger",
+            "2": "Content Identity & the Chronicle",
             "3": "Swarm Compute & the NVENC Session Ceiling",
             "4": "The VRAM-Invariant Filter Graph",
             "5": "HLS Assembly, Origin & Zero-Trust Playback",
-            "6": "Edge Intelligence Roadmap",
-            "7": "Genesis: The Cloud-Native Predecessor"
+            "6": "Edge Intelligence",
+            "7": "Genesis: The Cloud-Native Predecessor",
+            "8": "Two Planes & the Authority Hierarchy"
         };
-
+ 
         function selectModule(tabElement) {
             var id = tabElement.dataset.id;
             var targetNodes = tabElement.dataset.nodes.split(',');
             var isDark = document.documentElement.classList.contains('dark');
-
+ 
             if (activeCardId === id) return; 
-
+ 
             activeCardId = id;
-
+ 
             // Reset all tabs
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active', 'border-black', 'border-white', 'dark:border-white', 'text-black', 'dark:text-white');
                 btn.classList.add('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
             });
-
+ 
             // Highlight active tab
             tabElement.classList.add('active', 'border-black', 'dark:border-white', 'text-black', 'dark:text-white');
             tabElement.classList.remove('border-transparent', 'text-gray-500', 'dark:text-zinc-400');
-
+ 
             // Update Reading Pane
             var paneTitle = document.getElementById('pane-title');
             var paneContent = document.getElementById('reading-pane');
             
             paneTitle.innerText = playbookTitles[id];
             paneContent.innerHTML = document.getElementById('content-' + id).innerHTML;
-
+ 
             document.querySelectorAll('#reading-pane pre code').forEach((block) => hljs.highlightElement(block));
-
+ 
             // --- MERMAID EXECUTION MUTATION ---
             // Re-run Mermaid parser specifically on the newly injected dynamic DOM block
             var mermaidBlocks = paneContent.querySelectorAll('.mermaid');
@@ -774,11 +834,12 @@
                 mermaidBlocks.forEach(b => b.removeAttribute('data-processed'));
                 mermaid.run({ querySelector: '#reading-pane .mermaid' }).catch(e => console.error(e));
             }
-
-            // Instruct D3 Engine to Highlight Focus Areas
+ 
+            // Instruct D3 Engine to Highlight Focus Areas (skip when graph unavailable)
+            if (typeof d3 === 'undefined' || !svg) return;
             d3.selectAll('.node-group').transition().duration(400)
                 .style("opacity", d => (targetNodes.includes(`node-${d.id}`) || id === "7") ? 1 : 0.35);
-
+ 
             d3.selectAll('.flow-link').transition().duration(400)
                 .attr("class", d => {
                     var sourceId = d.source.id || d.source;
@@ -786,14 +847,19 @@
                     var isActive = targetNodes.includes(`node-${sourceId}`) && targetNodes.includes(`node-${targetId}`);
                     return isActive ? "flow-link flow-line active-link" : "flow-link flow-line";
                 });
-
+ 
             updateD3Theme(isDark);
         }
-
+ 
         // --- BOOTSTRAP & RESIZE HANDLING ---
         window.addEventListener('load', () => {
             var isDark = initTheme();
-            initD3();
+            if (typeof d3 === 'undefined') {
+                var c = document.getElementById('d3-graph-container');
+                if (c) c.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#71717a;">Topology offline — d3 failed to load. Refresh to retry.</div>';
+            } else {
+                initD3();
+            }
             
             var firstModule = document.querySelector('.tab-btn');
             if(firstModule) selectModule(firstModule);
